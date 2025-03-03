@@ -1,0 +1,134 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the \"swapoff\" command, which disables the swapping of paging devices on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This activity is significant because disabling swap can be a tactic used by malware, such as Awfulshred, to evade detection and hinder forensic analysis. If confirmed malicious, this action could allow an attacker to manipulate system memory management, potentially leading to data corruption, system instability, or evasion of memory-based detection mechanisms.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "administrator may disable swapping of devices in a linux host. Filter is needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 4
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Hardware Addition SwapOff",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    },
+    {
+      "name": "process.parent.name",
+      "type": "string"
+    },
+    {
+      "name": "process.executable",
+      "type": "string"
+    },
+    {
+      "name": "process.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.parent.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.entity_id",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 36,
+  "risk_score_mapping": [
+    {
+      "field": "host.hostname",
+      "operator": "exists",
+      "risk_score": 36,
+      "value": "host.hostname"
+    },
+    {
+      "field": "user.name",
+      "operator": "exists",
+      "risk_score": 36,
+      "value": "user.name"
+    }
+  ],
+  "rule_id": "linux_hardware_addition_swapoff",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AwfulShred",
+    "Data Destruction",
+    "Endpoint",
+    "T1200"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where event.type == \"start\" and process.name == \"swapoff\"]\n",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

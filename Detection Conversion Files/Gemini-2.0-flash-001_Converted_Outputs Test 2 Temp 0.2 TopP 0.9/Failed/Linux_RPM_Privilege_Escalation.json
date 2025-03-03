@@ -1,0 +1,65 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the RPM Package Manager with elevated privileges, specifically when it is used to run system commands as root via the `--eval` and `lua:os.execute` options. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process metadata. This activity is significant because it indicates a potential privilege escalation attempt, allowing a user to gain root access. If confirmed malicious, this could lead to full system compromise, unauthorized access to sensitive data, and further exploitation of the environment. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux RPM Privilege Escalation",
+  "note": "The following analytic detects the execution of the RPM Package Manager with elevated privileges, specifically when it is used to run system commands as root via the `--eval` and `lua:os.execute` options. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process metadata. This activity is significant because it indicates a potential privilege escalation attempt, allowing a user to gain root access. If confirmed malicious, this could lead to full system compromise, unauthorized access to sensitive data, and further exploitation of the environment.",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/rpm/",
+    "https://en.wikipedia.org/wiki/RPM_Package_Manager"
+  ],
+  "risk_score": 30,
+  "rule_id": "f8e58a23-cecd-495f-9c65-6c76b4cb9774",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 7,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where process.name == "rpm" and process.args : "*--eval*" and process.args : "*lua:os.execute*" and process.args : "*sudo*"]
+  """,
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+  "data_view_id": "default"
+}

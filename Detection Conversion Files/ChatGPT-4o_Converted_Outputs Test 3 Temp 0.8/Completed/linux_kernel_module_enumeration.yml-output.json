@@ -1,0 +1,38 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic identifies the use of the 'kmod' process to list kernel modules on a Linux system. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. While listing kernel modules is not inherently malicious, it can be a precursor to loading unauthorized modules using 'insmod'. If confirmed malicious, this activity could allow an attacker to load kernel modules, potentially leading to privilege escalation, persistence, or other malicious actions within the system. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Automated tooling or system administrative usage."],
+  "from": "now-360s",
+  "index": ["your-index-name"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o-Linux Kernel Module Enumeration",
+  "output_index": ".siem-signals-default",
+  "query": "process where process.name == \"kmod\" and process.args : (\"*lsmod*\", \"*list*\")",
+  "references": ["https://man7.org/linux/man-pages/man8/kmod.8.html"],
+  "risk_score": 42,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Kernel", "Module Enumeration", "Threat Detection"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

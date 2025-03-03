@@ -1,0 +1,61 @@
+{
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of 'curl' and 'wget' commands within a Linux environment. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names, user information, and command-line executions. This activity is significant as 'curl' and 'wget' are commonly used for downloading files, which can indicate potential ingress of malicious tools. If confirmed malicious, this activity could lead to unauthorized code execution, data exfiltration, or further compromise of the system. Monitoring and tuning this detection helps identify and differentiate between normal and potentially harmful usage. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives will be present. This query is meant to help tune other curl and wget analytics."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Ingress Tool Transfer Hunting",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions.",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://curl.se/docs/manpage.html#-I",
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://github.com/rapid7/metasploit-framework/search?q=curl"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_ingress_tool_transfer_hunting",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Ingress Tool Transfer",
+    "Linux Living Off The Land",
+    "XorDDos",
+    "Endpoint",
+    "T1105"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id\n  [process where process.name == \"curl\" or process.name == \"wget\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

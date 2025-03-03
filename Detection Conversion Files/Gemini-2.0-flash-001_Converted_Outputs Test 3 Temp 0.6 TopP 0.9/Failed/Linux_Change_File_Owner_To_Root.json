@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'chown' command to change a file owner to 'root' on a Linux system. It leverages Endpoint Detection and Response (EDR) telemetry, specifically monitoring command-line executions and process details. This activity is significant as it may indicate an attempt to escalate privileges by adversaries, malware, or red teamers. If confirmed malicious, this action could allow an attacker to gain root-level access, leading to full control over the compromised host and potential persistence within the environment.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Change File Owner To Root",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://unix.stackexchange.com/questions/101073/how-to-change-permissions-from-root-user-to-all-users",
+    "https://askubuntu.com/questions/617850/changing-from-user-to-superuser"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_change_file_owner_to_root",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Living Off The Land",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1222.002",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1222",
+          "name": "Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/"
+        },
+        {
+          "id": "T1222.002",
+          "name": "Linux and Mac File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/002/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "query": """sequence by process.pid with maxspan=5s
+    [process where event.type == "start" and process.name == "chown" and process.args == "root"]
+    [file where event.type == "change" and file.owner == "root"]""",
+  "language": "eql",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "description": "The following analytic detects suspicious data transfer activities that\n  involve the use of the `split` syscall, potentially indicating an attempt to evade\n  detection by breaking large files into smaller parts. Attackers may use this technique\n  to bypass size-based security controls, facilitating the covert exfiltration of\n  sensitive data. By monitoring for unusual or unauthorized use of the `split` syscall,\n  this analytic helps identify potential data exfiltration attempts, allowing security\n  teams to intervene and prevent the unauthorized transfer of critical information\n  from the network.\n  Converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001 Linux Auditd Data Transfer Size Limits Via Split Syscall",
+  "note": "To implement this detection, the process begins by ingesting auditd\n  data, that consist SYSCALL, TYPE, EXECVE and PROCTITLE events, which captures command-line\n  executions and process details on Unix/Linux systems. These logs should be ingested\n  and processed using Splunk Add-on for Unix and Linux (https://splunkbase.splunk.com/app/833), which is essential for correctly parsing and categorizing the data. The next step involves normalizing the field names  to match the field names set by the Splunk Common Information Model (CIM) to ensure consistency across different data sources and enhance the efficiency of data modeling. This approach enables effective monitoring and detection of linux endpoints where auditd is deployed",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 25,
+  "severity": "medium",
+  "tags": [
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1030",
+          "name": "Data Transfer Size Limits",
+          "reference": "https://attack.mitre.org/techniques/T1030/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by audit.session_id, process.pid\n  [\n    audit where event.type == \"process\" and audit.syscall == \"split\" or process.name == \"split\"\n  ]\n  [\n    audit where event.type == \"syscall\" and audit.syscall == \"split\"\n  ]",
+  "index": [
+    "auditbeat-*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "exceptions_list": [],
+  "false_positives_query": null,
+  "machine_learning_job_id": null,
+  "filters": [],
+  "building_block_type": null,
+  "output_index": ".siem-signals-default",
+  "rule_id": "linux_auditd_data_transfer_size_limits_via_split_syscall",
+  "max_signals": 100,
+  "alert_suppression": {
+    "enabled": false,
+    "terms": []
+  },
+  "artifact_extraction_settings": {
+    "enabled": false
+  },
+  "metadata": {
+    "created_at": "2024-02-20T00:00:00.000Z",
+    "updated_at": "2024-02-20T00:00:00.000Z",
+    "created_by": "Teoderick Contreras",
+    "updated_by": "Teoderick Contreras",
+    "data_source": [
+      "Linux Auditd Syscall"
+    ],
+    "effective_query": "sequence by audit.session_id, process.pid\n  [\n    audit where event.type == \"process\" and audit.syscall == \"split\" or process.name == \"split\"\n  ]\n  [\n    audit where event.type == \"syscall\" and audit.syscall == \"split\"\n  ]"
+  }
+}

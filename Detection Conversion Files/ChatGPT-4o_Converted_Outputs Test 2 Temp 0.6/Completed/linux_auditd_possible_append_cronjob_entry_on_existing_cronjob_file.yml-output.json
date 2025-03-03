@@ -1,0 +1,49 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Possible Append Cronjob Entry On Existing Cronjob File",
+  "description": "The following analytic detects potential tampering with cronjob files on a Linux system by identifying 'echo' commands that append code to existing cronjob files. It leverages logs from Linux Auditd, focusing on process names, parent processes, and command-line executions. This activity is significant because adversaries often use it for persistence or privilege escalation. If confirmed malicious, this could allow attackers to execute unauthorized code automatically, leading to system compromises and unauthorized data access, thereby impacting business operations and data integrity. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "medium",
+  "interval": "5m",
+  "enabled": true,
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.003",
+              "name": "Cron",
+              "reference": "https://attack.mitre.org/techniques/T1053/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "index": ["auditd-*"],
+  "query": "process where event.type == \"start\" and process.name == \"echo\" and process.args : (\"*/etc/cron*\" or \"*/var/spool/cron/*\" or \"*/etc/anacrontab*\")",
+  "language": "eql",
+  "type": "eql",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/003/",
+    "https://blog.aquasec.com/threat-alert-kinsing-malware-container-vulnerability",
+    "https://www.intezer.com/blog/research/kaiji-new-chinese-linux-malware-turning-to-golang/"
+  ],
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives may arise from legitimate actions by administrators or network operators who may use these commands for automation purposes. Therefore, it's recommended to adjust filter macros to eliminate such false positives."
+  ],
+  "setup": "To implement this detection, the process begins by ingesting auditd data, that consists of SYSCALL, TYPE, EXECVE and PROCTITLE events, which captures command-line executions and process details on Unix/Linux systems. These logs should be ingested and processed using Splunk Add-on for Unix and Linux (https://splunkbase.splunk.com/app/833), which is essential for correctly parsing and categorizing the data. The next step involves normalizing the field names to match the field names set by the Splunk Common Information Model (CIM) to ensure consistency across different data sources and enhance the efficiency of data modeling. This approach enables effective monitoring and detection of linux endpoints where auditd is deployed"
+}

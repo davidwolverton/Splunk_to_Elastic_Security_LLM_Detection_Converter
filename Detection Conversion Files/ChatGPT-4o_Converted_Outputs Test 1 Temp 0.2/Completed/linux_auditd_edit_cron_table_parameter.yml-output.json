@@ -1,0 +1,45 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Edit Cron Table Parameter",
+  "description": "The following analytic detects the suspicious editing of cron jobs in Linux using the crontab command-line parameter (-e). It identifies this activity by monitoring command-line executions involving 'crontab' and the edit parameter. This behavior is significant for a SOC as cron job manipulations can indicate unauthorized persistence attempts or scheduled malicious actions. If confirmed malicious, this activity could lead to system compromise, unauthorized access, or broader network compromise. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Scheduled Tasks", "Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Living Off The Land", "Compromised Linux Host"],
+  "risk_score": 64,
+  "severity": "medium",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.003",
+              "name": "Cron",
+              "reference": "https://attack.mitre.org/techniques/T1053/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "query": "process where event.action == \"SYSCALL\" and process.name == \"crontab\" and process.args : \"-e\" and not user.id : \"daemon\"",
+  "language": "eql",
+  "index": ["auditd-*"],
+  "type": "eql",
+  "enabled": true,
+  "references": ["https://attack.mitre.org/techniques/T1053/003/"],
+  "exceptions_list": [],
+  "max_signals": 100,
+  "interval": "5m",
+  "from": "now-6m",
+  "to": "now",
+  "version": 1,
+  "output_index": ".siem-signals-default"
+}

@@ -1,0 +1,42 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the deletion of SSL certificates on a Linux machine. It leverages filesystem event logs to identify when files with extensions .pem or .crt are deleted from the /etc/ssl/certs/ directory. This activity is significant because attackers may delete or modify SSL certificates to disable security features or evade defenses on a compromised system. If confirmed malicious, this behavior could indicate an attempt to disrupt secure communications, evade detection, or execute a destructive payload, potentially leading to significant security breaches and data loss. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-360m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Deletion of SSL Certificate",
+  "references": ["https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"],
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "AcidRain", "AcidPour"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070.004",
+          "name": "File Deletion",
+          "reference": "https://attack.mitre.org/techniques/T1070/004/"
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "query": "file where event.action == \"deletion\" and file.path : \"/etc/ssl/certs/*\" and file.extension in (\"pem\", \"crt\")",
+  "index": ["filebeat-*", "logs-*"],
+  "language": "eql",
+  "version": 1
+}

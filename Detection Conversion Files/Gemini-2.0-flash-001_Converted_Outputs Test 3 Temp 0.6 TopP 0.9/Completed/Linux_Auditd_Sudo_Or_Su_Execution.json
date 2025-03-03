@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the \"sudo\" or \"su\" command on a Linux operating system. It leverages data from Linux Auditd, focusing on process names and parent process names. This activity is significant because \"sudo\" and \"su\" commands are commonly used by adversaries to elevate privileges, potentially leading to unauthorized access or control over the system. If confirmed malicious, this activity could allow attackers to execute commands with root privileges, leading to severe security breaches, data exfiltration, or further system compromise.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-*"
+  ],
+  "interval": "5m",
+  "license": "ASL 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Sudo Or Su Execution",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL.",
+  "references": [
+    "https://attack.mitre.org/techniques/T1548/003/"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_auditd_sudo_or_su_execution",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1548.003",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Su",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"sudo\" and process.args : \"*\"]\n  [process where event.type == \"start\" and process.name == \"su\" and process.args : \"*\"]",
+  "version": 1
+}

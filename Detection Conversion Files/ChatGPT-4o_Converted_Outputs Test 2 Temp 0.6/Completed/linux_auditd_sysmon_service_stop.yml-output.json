@@ -1,0 +1,37 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the suspicious sysmon service stop. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "index": ["linux_auditd"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd Sysmon Service Stop",
+  "query": "sequence by host where event.action == \"SERVICE_STOP\" and process.name == \"sysmon\"",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host", "OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

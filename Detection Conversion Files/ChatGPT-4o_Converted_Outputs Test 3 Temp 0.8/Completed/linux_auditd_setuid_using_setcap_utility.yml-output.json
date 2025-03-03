@@ -1,0 +1,52 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the 'setcap' utility to enable the SUID bit on Linux systems. It leverages Linux Auditd data, focusing on process names and command-line arguments that indicate the use of 'setcap' with specific capabilities. This activity is significant because setting the SUID bit allows a user to temporarily gain root access, posing a substantial security risk. If confirmed malicious, an attacker could escalate privileges, execute arbitrary commands with elevated permissions, and potentially compromise the entire system. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-5m",
+  "interval": "5m",
+  "name": "OpenAI GPT4-o Linux Auditd Setuid Using Setcap Utility",
+  "note": "This query was converted using OpenAI GPT4-o.",
+  "references": [
+    "https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/"
+  ],
+  "risk_score": 73,
+  "severity": "medium",
+  "tags": [
+    "OpenAI GPT4-o",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.001",
+              "name": "Setuid and Setgid",
+              "reference": "https://attack.mitre.org/techniques/T1548/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "process where event.type == \"start\" and process.name == \"setcap\" and process.args : (\"*cap_setuid+ep*\", \"*cap_setuid=ep*\", \"*cap_net_bind_service+p*\", \"*cap_net_raw+ep*\", \"*cap_dac_read_search+ep*\")",
+  "version": 1
+}

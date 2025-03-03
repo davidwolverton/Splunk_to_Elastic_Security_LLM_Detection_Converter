@@ -1,0 +1,70 @@
+{
+    "actions": [],
+    "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+    "building_block_type": "default",
+    "description": "The following analytic detects the deletion of services on a Linux machine. It leverages filesystem event logs to identify when service files within system directories (e.g., /etc/systemd/, /lib/systemd/, /run/systemd/) are deleted. This activity is significant because attackers may delete or modify services to disable security features or evade defenses. If confirmed malicious, this behavior could indicate an attempt to impair system functionality or execute a destructive payload, potentially leading to system instability or data loss. Immediate investigation is required to determine the responsible process and user. Converted with OpenAI GPT4-o.",
+    "enabled": true,
+    "exceptions_list": [],
+    "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+    "from": "now-60m",
+    "interval": "5m",
+    "investigation_fields": {
+        "field_names": []
+    },
+    "license": "Elastic License",
+    "max_signals": 100,
+    "name": "OpenAI GPT4-o: Linux Deletion Of Services",
+    "note": "This rule detects the deletion of service files in critical system directories on Linux. Converted with OpenAI GPT4-o.",
+    "references": [
+        "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/",
+        "https://unix.stackexchange.com/questions/224992/where-do-i-put-my-systemd-unit-file",
+        "https://cert.gov.ua/article/3718487"
+    ],
+    "risk_score": 64,
+    "risk_score_mapping": [],
+    "rule_id": "b509bbd3-0331-4aaa-8e4a-d2affe100af6",
+    "severity": "high",
+    "severity_mapping": [],
+    "tags": ["OpenAI GPT4-o", "endpoint", "Linux", "service deletion", "AwsomeShred", "AcidRain", "Data Destruction", "AcidPour", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud"],
+    "threat": [{
+        "framework": "MITRE ATT&CK",
+        "tactic": {
+            "id": "TA0005",
+            "name": "Defense Evasion",
+            "reference": "https://attack.mitre.org/tactics/TA0005/"
+        },
+        "technique": [{
+            "id": "T1070.004",
+            "name": "File Deletion",
+            "reference": "https://attack.mitre.org/techniques/T1070/004/"
+        }, {
+            "id": "T1485",
+            "name": "Data Destruction",
+            "reference": "https://attack.mitre.org/techniques/T1485/"
+        }]
+    }],
+    "throttle": "no_actions",
+    "timeline_id": "",
+    "timeline_title": "",
+    "timestamp_override": "",
+    "timestamp_override_fallback_disabled": false,
+    "to": "now",
+    "version": 6,
+    "language": "eql",
+    "query": "file where event.action == \"deleted\" and file.extension == \"service\" and (file.path : \"/etc/systemd/*\" or file.path : \"*/lib/systemd/*\" or file.path : \"*/run/systemd/*\")",
+    "type": "eql",
+    "alert_suppression": {
+        "duration": {
+            "unit": "s",
+            "value": 3600
+        },
+        "group_by": ["host.name", "process.entity_id"],
+        "missing_fields_strategy": "doNotSuppress"
+    },
+    "data_view_id": "",
+    "event_category_override": "",
+    "filters": [],
+    "index": ["filebeat-*", "logs-*", "sysmon-*"],
+    "tiebreaker_field": "@timestamp",
+    "timestamp_field": "@timestamp"
+}

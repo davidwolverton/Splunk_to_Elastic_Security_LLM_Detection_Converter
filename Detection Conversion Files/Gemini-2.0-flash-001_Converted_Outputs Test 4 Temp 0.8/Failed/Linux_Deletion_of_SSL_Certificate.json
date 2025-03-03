@@ -1,0 +1,128 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic detects the deletion of SSL certificates on a\nLinux machine. It leverages filesystem event logs to identify when files with extensions\n.pem or .crt are deleted from the /etc/ssl/certs/ directory. This activity is significant\nbecause attackers may delete or modify SSL certificates to disable security features\nor evade defenses on a compromised system. If confirmed malicious, this behavior\ncould indicate an attempt to disrupt secure communications, evade detection, or\nexecute a destructive payload, potentially leading to significant security breaches\nand data loss.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command.\nPlease update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 6
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Deletion of SSL Certificate",
+  "namespace": "default",
+  "note": "The following analytic detects the deletion of SSL certificates on a\nLinux machine. It leverages filesystem event logs to identify when files with extensions\n.pem or .crt are deleted from the /etc/ssl/certs/ directory. This activity is significant\nbecause attackers may delete or modify SSL certificates to disable security features\nor evade defenses on a compromised system. If confirmed malicious, this behavior\ncould indicate an attempt to disrupt secure communications, evade detection, or\nexecute a destructive payload, potentially leading to significant security breaches\nand data loss.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "event.action",
+      "type": "string"
+    },
+    {
+      "name": "file.path",
+      "type": "string"
+    },
+    {
+      "name": "file.name",
+      "type": "string"
+    },
+    {
+      "name": "host.name",
+      "type": "string"
+    },
+    {
+      "name": "process.entity_id",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 49,
+  "risk_score_mapping": [],
+  "rule_id": "839ab790-a60a-4f81-bfb3-02567063f615",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AcidRain",
+    "AcidPour",
+    "Endpoint",
+    "T1070.004",
+    "T1485",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 6,
+  "language": "eql",
+  "query": "sequence by host.name\n  [\n    process where event.type == \"start\" and process.name == \"rm\"\n  ]\n  [\n    file where event.type == \"deletion\" and file.path : \"/etc/ssl/certs/*\" and file.name : (\"*.pem\", \"*.crt\")\n  ]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

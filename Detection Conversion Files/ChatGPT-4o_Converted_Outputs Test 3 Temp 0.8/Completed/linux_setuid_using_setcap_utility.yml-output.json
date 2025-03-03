@@ -1,0 +1,45 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the 'setcap' utility to enable the SUID bit on Linux systems. It leverages Endpoint Detection and Response (EDR) data, focusing on process names and command-line arguments that indicate the use of 'setcap' with specific capabilities. This activity is significant because setting the SUID bit allows a user to temporarily gain root access, posing a substantial security risk. If confirmed malicious, an attacker could escalate privileges, execute arbitrary commands with elevated permissions, and potentially compromise the entire system. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Setuid Using Setcap Utility",
+  "query": "process where process.name == 'setcap' and process.args : ('* cap_setuid=ep *' or '* cap_setuid+ep *' or '* cap_net_bind_service+p *' or '* cap_net_raw+ep *' or '* cap_dac_read_search+ep *')",
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "9d96022e-6250-11ec-9a19-acde48001122",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["Linux Privilege Escalation", "Linux Persistence Techniques", "endpoint", "OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.001",
+          "name": "Setuid and Setgid",
+          "reference": "https://attack.mitre.org/techniques/T1548/001/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "index": ["endpoint-*"]
+}

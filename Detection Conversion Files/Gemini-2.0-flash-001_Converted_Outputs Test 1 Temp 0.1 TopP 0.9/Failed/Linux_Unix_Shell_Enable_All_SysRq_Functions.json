@@ -1,0 +1,102 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of a command to enable all SysRq functions on a Linux system, a technique associated with the AwfulShred malware. It leverages Endpoint Detection and Response (EDR) data to identify processes executing the command to pipe bitmask '1' to /proc/sys/kernel/sysrq. This activity is significant as it can indicate an attempt to manipulate kernel system requests, which is uncommon and potentially malicious. If confirmed, this could allow an attacker to reboot the system or perform other critical actions, leading to system instability or further compromise.",
+  "enabled": true,
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "1"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Unix Shell Enable All SysRq Functions",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html",
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.command_line",
+    "host.hostname",
+    "user.name"
+  ],
+  "risk_score": 36,
+  "risk_score_mapping": [],
+  "rule_id": "linux_unix_shell_enable_all_sysrq_functions",
+  "rule_name_override": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "AwfulShred",
+    "Endpoint",
+    "T1059.004"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1059.004",
+          "name": "Command and Scripting Interpreter: Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, user.id\n  [process where process.name in (\"dash\", \"sudo\", \"bash\") and process.args : \"echo\" and process.args : \"/proc/sys/kernel/sysrq\" and process.args : \"1\" ]\n",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [
+      "host.hostname",
+      "user.name"
+    ],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

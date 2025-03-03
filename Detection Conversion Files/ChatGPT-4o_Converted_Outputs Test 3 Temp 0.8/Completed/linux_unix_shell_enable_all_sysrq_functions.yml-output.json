@@ -1,0 +1,50 @@
+{
+  "name": "OpenAI GPT4-o Linux Unix Shell Enable All SysRq Functions",
+  "description": "The following analytic detects the execution of a command to enable all SysRq functions on a Linux system, a technique associated with the AwfulShred malware. It leverages Endpoint Detection and Response (EDR) data to identify processes executing the command to pipe bitmask '1' to /proc/sys/kernel/sysrq. This activity is significant as it can indicate an attempt to manipulate kernel system requests, which is uncommon and potentially malicious. If confirmed, this could allow an attacker to reboot the system or perform other critical actions, leading to system instability or further compromise. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/"
+        },
+        {
+          "id": "T1059.004",
+          "name": "Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/"
+        }
+      ]
+    }
+  ],
+  "severity": "medium",
+  "risk_score": 73,
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name in (\"dash\", \"sudo\", \"bash\") and process.args : \"*echo 1>*\" and process.args : \"*/proc/sys/kernel/sysrq\"",
+  "index": ["logs-*"],
+  "version": 1,
+  "enabled": true,
+  "references": [
+    "https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html",
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "exceptions_list": [],
+  "max_signals": 100,
+  "interval": "5m",
+  "from": "now-15m",
+  "to": "now",
+  "throttle": "no_actions",
+  "timestamp_field": "@timestamp",
+  "tiebreaker_field": "process.entity_id",
+  "filters": []
+}

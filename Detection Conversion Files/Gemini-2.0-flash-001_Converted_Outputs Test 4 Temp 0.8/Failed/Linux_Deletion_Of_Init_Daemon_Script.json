@@ -1,0 +1,74 @@
+{
+  "actions": [],
+  "alias_purpose": "threat_detection",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of init daemon scripts on a Linux machine. It leverages filesystem event logs to identify when files within the /etc/init.d/ directory are deleted. This activity is significant because init daemon scripts control the start and stop of critical services, and their deletion can indicate an attempt to impair security features or evade defenses. If confirmed malicious, this behavior could allow an attacker to disrupt essential services, execute destructive payloads, or persist undetected in the environment. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Deletion Of Init Daemon Script",
+  "note": "Investigate the process that deleted the init script and the user account associated with it.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "risk_score": 49,
+  "rule_id": "linux_deletion_of_init_daemon_script",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AcidRain",
+    "Data Destruction",
+    "AcidPour",
+    "Endpoint",
+    "T1070.004",
+    "T1485"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "file where event.type == \"deletion\" and file.path : \"/etc/init.d/*\"",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

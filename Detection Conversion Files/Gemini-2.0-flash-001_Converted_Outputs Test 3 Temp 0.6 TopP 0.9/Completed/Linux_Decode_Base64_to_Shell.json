@@ -1,0 +1,61 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "description": "The following analytic detects the behavior of decoding base64-encoded data and passing it to a Linux shell. Additionally, it mitigates the potential damage and protects the organization's systems and data.The detection is made by searching for specific commands in the Splunk query, namely \"base64 -d\" and \"base64 --decode\", within the Endpoint.Processes data model. The analytic also includes a filter for Linux shells. The detection is important because  it indicates the presence of malicious activity since Base64 encoding is commonly used to obfuscate malicious commands or payloads, and decoding it can be a step in running those commands. It suggests that an attacker is attempting to run malicious commands on a Linux system to gain unauthorized access, for data exfiltration, or perform other malicious actions.\n\nNote: This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present based on legitimate software being utilized. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "name": "Google Gemini 2.0 Flash 001 Linux Decode Base64 to Shell",
+  "note": "The following analytic detects the behavior of decoding base64-encoded data and passing it to a Linux shell. Additionally, it mitigates the potential damage and protects the organization's systems and data.The detection is made by searching for specific commands in the Splunk query, namely \"base64 -d\" and \"base64 --decode\", within the Endpoint.Processes data model. The analytic also includes a filter for Linux shells. The detection is important because  it indicates the presence of malicious activity since Base64 encoding is commonly used to obfuscate malicious commands or payloads, and decoding it can be a step in running those commands. It suggests that an attacker is attempting to run malicious commands on a Linux system to gain unauthorized access, for data exfiltration, or perform other malicious actions.\n\nNote: This rule was converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1027/T1027.md#atomic-test-1---decode-base64-data-into-script",
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/",
+    "https://linux.die.net/man/1/base64"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_decode_base64_to_shell",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1027",
+    "T1059.004"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/"
+        },
+        {
+          "id": "T1059.004",
+          "name": "Command and Scripting Interpreter: Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"base64\" and process.args in (\"-d\", \"--decode\")]\n  [process where event.type == \"start\" and process.parent.name == \"base64\" and process.args in (\"/bin/sh\", \"/bin/bash\", \"/usr/bin/zsh\", \"/usr/bin/ksh\", \"/usr/bin/csh\", \"/bin/dash\", \"/bin/tcsh\", \"/bin/zsh\")]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

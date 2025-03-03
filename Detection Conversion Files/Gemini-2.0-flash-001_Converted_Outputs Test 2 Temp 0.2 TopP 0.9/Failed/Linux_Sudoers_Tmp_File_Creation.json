@@ -1,0 +1,110 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the creation of the \"sudoers.tmp\" file, which occurs when editing the /etc/sudoers file using visudo or another editor on a Linux platform. This detection leverages filesystem data to identify the presence of \"sudoers.tmp\" files. Monitoring this activity is crucial as adversaries may exploit it to gain elevated privileges on a compromised host. If confirmed malicious, this activity could allow attackers to modify sudoers configurations, potentially granting them unauthorized access to execute commands as other users, including root, thereby compromising the system's security.",
+  "enabled": true,
+  "false_positives": [
+    "administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "7"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Sudoers Tmp File Creation",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://forum.ubuntuusers.de/topic/sudo-visudo-gibt-etc-sudoers-tmp/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "file.path",
+    "host.name",
+    "process.guid",
+    "file.name"
+  ],
+  "risk_score": 72,
+  "risk_score_mapping": [],
+  "rule_id": "linux_sudoers_tmp_file_creation",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "China-Nexus Threat Activity",
+    "Linux Persistence Techniques",
+    "Linux Privilege Escalation",
+    "Earth Estries",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "default",
+  "timeline_title": "Linux Sudoers Tmp File Creation Timeline",
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"visudo\"]\n  [file where event.type == \"creation\" and file.path : \"/etc/sudoers.tmp\"]",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [
+      "host.name",
+      "file.path"
+    ],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "filters": [
+    {
+      "query": "not process.name : (\"yum\", \"apt\", \"dnf\", \"rpm\")",
+      "exists": false
+    }
+  ],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": "event.id",
+  "timestamp_field": "@timestamp"
+}

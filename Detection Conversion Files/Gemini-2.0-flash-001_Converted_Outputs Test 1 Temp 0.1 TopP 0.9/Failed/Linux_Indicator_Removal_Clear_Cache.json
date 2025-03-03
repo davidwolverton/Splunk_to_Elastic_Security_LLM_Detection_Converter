@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects processes that clear or free page cache on a Linux system. It leverages Endpoint Detection and Response (EDR) data, focusing on specific command-line executions involving the kernel system request `drop_caches`. This activity is significant as it may indicate an attempt to delete forensic evidence or the presence of wiper malware like Awfulshred. If confirmed malicious, this behavior could allow an attacker to cover their tracks, making it difficult to investigate other malicious activities or system compromises. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Indicator Removal Clear Cache",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions.",
+  "output_index": ".siem-signals-*",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "risk_score": 49,
+  "rule_id": "linux_indicator_removal_clear_cache",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "Endpoint",
+    "T1070",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint",
+    "AwfulShred"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name in (\"dash\", \"sudo\", \"bash\") and process.args : \"/proc/sys/vm/drop_caches\" and process.args : (\"echo 3 >\", \"echo 2 >\", \"echo 1 >\")]\n",
+  "index": [
+    "logs-endpoint.events.*",
+    "auditbeat-*",
+    "filebeat-*",
+    "winlogbeat-*"
+  ]
+}

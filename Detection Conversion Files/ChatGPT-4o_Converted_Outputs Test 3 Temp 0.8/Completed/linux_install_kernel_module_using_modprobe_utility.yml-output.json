@@ -1,0 +1,46 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the installation of a Linux kernel module using the modprobe utility. Converted with OpenAI GPT4-o. This activity is significant because installing a kernel module can indicate an attempt to deploy a rootkit or other malicious kernel-level code, potentially leading to elevated privileges and bypassing security detections. If confirmed malicious, this could allow an attacker to gain persistent, high-level access to the system, compromising its integrity and security.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-5m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Install Kernel Module Using Modprobe Utility",
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "linux_install_kernel_module_modprobe_utility",
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Rootkit"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": [
+            {
+              "id": "T1547.006",
+              "name": "Kernel Modules and Extensions",
+              "reference": "https://attack.mitre.org/techniques/T1547/006/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "process where (process.name == \"kmod\" or process.name == \"sudo\") and process.args : \"*modprobe*\""
+}

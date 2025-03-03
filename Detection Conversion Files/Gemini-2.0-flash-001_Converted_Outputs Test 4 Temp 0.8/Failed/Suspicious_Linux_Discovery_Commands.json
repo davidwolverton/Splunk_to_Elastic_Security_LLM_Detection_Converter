@@ -1,0 +1,92 @@
+{
+  "actions": [],
+  "alias_purpose": "rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Bhavin Patel, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of suspicious bash commands commonly used in scripts like AutoSUID, LinEnum, and LinPeas for system discovery on a Linux host. It leverages Endpoint Detection and Response (EDR) data, specifically looking for a high number of distinct commands executed within a short time frame. This activity is significant as it often precedes privilege escalation or other malicious actions. If confirmed malicious, an attacker could gain detailed system information, identify vulnerabilities, and potentially escalate privileges, posing a severe threat to the environment. Converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Unless an administrator is using these commands to troubleshoot or audit a system, the execution of these commands should be monitored."
+  ],
+  "from": "now-5m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "from": "1674277000000",
+    "version": "4"
+  },
+  "name": "Google Gemini 2.0 Flash 001 Suspicious Linux Discovery Commands",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Agent integrations that are specific to the EDR product. The logs must also be mapped to the Elastic Common Schema (ECS).",
+  "output_index": ".alerts-security.alerts-default",
+  "references": [
+    "https://attack.mitre.org/matrices/enterprise/linux/",
+    "https://attack.mitre.org/techniques/T1059/004/",
+    "https://github.com/IvanGlinkin/AutoSUID",
+    "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS",
+    "https://github.com/rebootuser/LinEnum"
+  ],
+  "risk_score": 47,
+  "rule_id": "suspicious_linux_discovery_commands",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Post-Exploitation",
+    "Endpoint",
+    "T1059.004",
+    "Elastic Security",
+    "Endpoint Security"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": [
+            {
+              "id": "T1059.004",
+              "name": "Unix Shell",
+              "reference": "https://attack.mitre.org/techniques/T1059/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.name, user.name
+  [process where event.type == "start" and process.name in ("uname", "id", "whoami", "hostname", "lsb_release", "cat", "find", "which", "whereis", "type", "env", "printenv", "w", "groups", "sudo", "dpkg", "rpm", "yum", "apt-get") and process.args in ("-a", "-r", "-m", "-n", "-v", "/etc/os-release", "/etc/lsb-release", "/proc/version", "/proc/cpuinfo", "/proc/meminfo", "/etc/passwd", "/etc/shadow", "/etc/group", "/etc/sudoers", "-l", "-ll", "-la", "-al", "-ltr", "-h", "-help", "--help", "-version", "--version")] with in 5m
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  [process where event.type == "start"] by host.name, user.name
+  """,
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*",
+    "logs-system.*"
+  ],
+  "data_view_id": "global"
+}

@@ -1,0 +1,39 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Base64 Decode Files",
+  "description": "The following analytic detects suspicious Base64 decode operations that may indicate malicious activity, such as data exfiltration or execution of encoded commands. Base64 is commonly used to encode data for safe transmission, but attackers may abuse it to conceal malicious payloads. This detection focuses on identifying unusual or unexpected Base64 decoding processes, particularly when associated with critical files or directories. By monitoring these activities, the analytic helps uncover potential threats, enabling security teams to respond promptly and mitigate risks associated with encoded malware or unauthorized data access. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "medium",
+  "query": "process where process.name : \"*base64*\" and process.args : (\"*-d*\", \"* --d*\")",
+  "language": "eql",
+  "index": ["auditd-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1140",
+          "name": "Deobfuscate/Decode Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1140/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "enabled": true,
+  "exceptions_list": [],
+  "from": "now-360s",
+  "interval": "5m",
+  "max_signals": 100,
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://gtfobins.github.io/gtfobins/dd/"
+  ],
+  "version": 1
+}

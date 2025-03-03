@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'make' command with elevated privileges to execute system commands as root, potentially leading to a root shell. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions that include 'make', '--eval', and 'sudo'. This activity is significant because it indicates a possible privilege escalation attempt, allowing a user to gain root access. If confirmed malicious, an attacker could achieve full control over the system, execute arbitrary commands, and compromise the entire environment.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Make Privilege Escalation",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/make/",
+    "https://www.javatpoint.com/linux-make-command"
+  ],
+  "risk_score": 20,
+  "rule_id": "linux_make_privilege_escalation",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Abuse Elevation Control Mechanism: Sudo and su",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname, user.name\n  [process where event.type == \"start\" and process.name == \"make\" and process.args : \"-s\" and process.args : \"--eval\" and process.args : \"sudo\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global",
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "from": "now-5m",
+  "to": "now"
+}

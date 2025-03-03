@@ -1,0 +1,37 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the use of the LD_PRELOAD environment variable to hijack or hook library functions on a Linux platform. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because adversaries, malware authors, and red teamers commonly use this technique to gain elevated privileges and establish persistence on a compromised machine. If confirmed malicious, this behavior could allow attackers to execute arbitrary code, escalate privileges, and maintain long-term access to the system. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Preload Hijack Library Calls",
+  "note": "This rule was converted with OpenAI GPT4-o.",
+  "references": ["https://compilepeace.medium.com/memory-malware-part-0x2-writing-userland-rootkits-via-ld-preload-30121c8343d5"],
+  "risk_score": 64,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "China-Nexus Threat Activity", "Linux Persistence Techniques", "Linux Privilege Escalation", "Earth Estries"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574.006",
+          "name": "Hijack Execution Flow: LD_PRELOAD",
+          "reference": "https://attack.mitre.org/techniques/T1574/006/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.command_line : \"*LD_PRELOAD*\"",
+  "version": 1
+}

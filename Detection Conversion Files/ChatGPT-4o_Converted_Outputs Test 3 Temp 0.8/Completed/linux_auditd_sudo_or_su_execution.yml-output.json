@@ -1,0 +1,79 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "building_block_type": "string",
+  "description": "The following analytic detects the execution of the \"sudo\" or \"su\" command on a Linux operating system. It leverages data from Linux Auditd, focusing on process names and parent process names. This activity is significant because \"sudo\" and \"su\" commands are commonly used by adversaries to elevate privileges, potentially leading to unauthorized access or control over the system. If confirmed malicious, this activity could allow attackers to execute commands with root privileges, leading to severe security breaches, data exfiltration, or further system compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "interval": "5m",
+  "investigation_fields": {"field_names": ["event.category", "host.name"]},
+  "license": "string",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o: Linux Auditd Sudo Or Su Execution",
+  "namespace": "string",
+  "note": "string",
+  "outcome": "exactMatch",
+  "output_index": "string",
+  "references": ["https://attack.mitre.org/techniques/T1548/003/"],
+  "related_integrations": [],
+  "required_fields": [],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "817a5c89-5b92-4818-a22d-aa35e1361afe",
+  "rule_name_override": "string",
+  "setup": "string",
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "string",
+  "timeline_title": "string",
+  "timestamp_override": "string",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 5,
+  "language": "eql",
+  "query": "process where process.name in (\"sudo\", \"su\") and process.args : (\"*sudo *\", \"*su *\")",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 3600
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "string",
+  "event_category_override": "process",
+  "filters": [],
+  "index": ["auditbeat-*"],
+  "tiebreaker_field": "string",
+  "timestamp_field": "@timestamp"
+}

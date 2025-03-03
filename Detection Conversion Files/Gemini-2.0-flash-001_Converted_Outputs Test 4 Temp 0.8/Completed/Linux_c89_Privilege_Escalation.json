@@ -1,0 +1,62 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the 'c89' command with elevated privileges, which can be used to compile and execute C programs as root. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process creation events that include command-line arguments. This activity is significant because it indicates a potential privilege escalation attempt, allowing a user to execute arbitrary commands as root. If confirmed malicious, this could lead to full system compromise, enabling the attacker to gain root access and execute any command with elevated privileges.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux c89 Privilege Escalation",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/c89/",
+    "https://www.ibm.com/docs/en/zos/2.1.0?topic=guide-c89-compiler-invocation-using-host-environment-variables"
+  ],
+  "risk_score": 47,
+  "rule_id": "54c95f4d-3e5d-44be-9521-ea19ba62f7a8",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 7,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"c89\" and process.args == \"-wrapper\"]\n  [process where event.type == \"start\" and process.name == \"sudo\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+    "data_view_id": "global"
+}

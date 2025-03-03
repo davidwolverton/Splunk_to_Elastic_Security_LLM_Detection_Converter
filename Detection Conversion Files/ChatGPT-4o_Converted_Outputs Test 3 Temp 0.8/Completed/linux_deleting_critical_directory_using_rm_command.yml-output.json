@@ -1,0 +1,46 @@
+{
+  "name": "OpenAI GPT4-o Linux Deleting Critical Directory Using RM Command",
+  "description": "The following analytic detects the deletion of critical directories on a Linux machine using the `rm` command with argument rf. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions targeting directories like /boot, /var/log, /etc, and /dev. This activity is significant because deleting these directories can severely disrupt system operations and is often associated with destructive campaigns like Industroyer2. If confirmed malicious, this action could lead to system instability, data loss, and potential downtime, making it crucial for immediate investigation and response. Converted with OpenAI GPT4-o.",
+  "risk_score": 64,
+  "severity": "high",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "enabled": true,
+  "from": "now-360s",
+  "interval": "5m",
+  "query": "process where process.name == \"rm\" and process.args : \"* -rf *\" and process.args : (\"*/boot/*\", \"*/var/log/*\", \"*/etc/*\", \"*/dev/*\")",
+  "language": "eql",
+  "index": ["logs-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "tags": ["OpenAI GPT4-o", "endpoint", "AwfulShred", "Data Destruction", "Industroyer2"],
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "max_signals": 100,
+  "type": "eql",
+  "note": "A deletion in known critical list of folder using rm command $process$ executed on $dest$",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 300
+    },
+    "group_by": ["process.entity_id"],
+    "missing_fields_strategy": "doNotSuppress"
+  }
+}

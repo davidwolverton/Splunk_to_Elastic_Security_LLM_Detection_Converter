@@ -1,0 +1,45 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras, OpenAI GPT4-o"],
+  "building_block_type": "default",
+  "description": "The following analytic detects suspicious data transfer activities that involve the use of the `split` syscall, potentially indicating an attempt to evade detection by breaking large files into smaller parts. Attackers may use this technique to bypass size-based security controls, facilitating the covert exfiltration of sensitive data. By monitoring for unusual or unauthorized use of the `split` syscall, this analytic helps identify potential data exfiltration attempts, allowing security teams to intervene and prevent the unauthorized transfer of critical information from the network. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "index": ["linux_auditd"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd Data Transfer Size Limits Via Split Syscall",
+  "output_index": ".siem-signals-default",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "c03d4a49-cf9d-435b-86e9-c6f8c9b6c42e",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [{
+    "framework": "MITRE ATT&CK",
+    "tactic": {
+      "id": "TA0010",
+      "name": "Exfiltration",
+      "reference": "https://attack.mitre.org/tactics/TA0010/"
+    },
+    "technique": [{
+      "id": "T1030",
+      "name": "Data Transfer Size Limits",
+      "reference": "https://attack.mitre.org/techniques/T1030/"
+    }]
+  }],
+  "threshold": {},
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "event.ingested",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "query": "process where event.type == \"SYSCALL\" and (process.name == \"split\" or process.executable == \"*/split\") | stats count(), min(@timestamp) as firstTime, max(@timestamp) as lastTime by process.name, process.executable, process.pid, process.ppid, process.uid | convert ctime(firstTime) | convert ctime(lastTime)"
+}

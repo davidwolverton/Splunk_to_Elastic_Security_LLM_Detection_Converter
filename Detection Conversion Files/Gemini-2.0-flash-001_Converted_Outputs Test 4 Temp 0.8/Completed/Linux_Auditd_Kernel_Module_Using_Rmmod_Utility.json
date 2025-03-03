@@ -1,0 +1,69 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious use of the `rmmod` utility for kernel module removal, which may indicate an attacker attempt to unload critical or security-related kernel modules. The `rmmod` command is used to remove modules from the Linux kernel, and unauthorized use can be a tactic to disable security features, conceal malicious activities, or disrupt system operations. By monitoring for unusual or unauthorized `rmmod` activity, this analytic helps identify potential tampering with kernel modules, enabling security teams to take proactive measures to protect system integrity and security. Rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Kernel Module Using Rmmod Utility",
+  "note": "A SYSCALL - [comm] event was executed on host - [host.hostname] to remove a Linux kernel module using the rmmod utility.",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 72,
+  "rule_id": "31810b7a-0abe-42be-a210-0dec8106afee",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1547.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1547.006",
+          "name": "Boot or Logon Autostart Execution: Kernel Modules",
+          "reference": "https://attack.mitre.org/techniques/T1547/006/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.pid\n  [process where event.type == \"start\" and process.name == \"rmmod\" and auditd.data.syscall == \"rmmod\"]\n  [file where event.type == \"access\" and process.name == \"rmmod\"]",
+  "index": [
+    "auditbeat-*",
+    "logs-system.*",
+    "endgame-*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+   "tiebreaker_field": "@timestamp",
+  "filters": [
+  {
+      "query": "not event.category :\"process\"",
+      "exists": false
+    }
+  ]
+}

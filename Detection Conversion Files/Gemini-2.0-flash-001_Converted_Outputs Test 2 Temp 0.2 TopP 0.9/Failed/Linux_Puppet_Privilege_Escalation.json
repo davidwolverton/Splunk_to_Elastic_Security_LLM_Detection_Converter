@@ -1,0 +1,163 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of Puppet commands with\nelevated privileges, specifically when Puppet is used to apply configurations with\nsudo rights. This detection leverages data from Endpoint Detection and Response\n(EDR) agents, focusing on process execution logs that include command-line details.\nThis activity is significant because it indicates a potential privilege escalation\nattempt, where a user could gain root access and execute system commands as the\nroot user. If confirmed malicious, this could allow an attacker to fully compromise\nthe system, execute arbitrary commands, and maintain persistent control.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "data_source": [
+      "Sysmon for Linux EventID 1"
+    ],
+    "date": "2025-02-10",
+    "id": "1d19037f-466e-4d56-8d87-36fafd9aa3ce",
+    "references": [
+      "https://gtfobins.github.io/gtfobins/puppet/",
+      "https://en.wikipedia.org/wiki/Puppet_(software)"
+    ],
+    "tests": [
+      {
+        "attack_data": [
+          {
+            "data": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1548/puppet/sysmon_linux.log",
+            "source": "Syslog:Linux-Sysmon/Operational",
+            "sourcetype": "sysmon:linux"
+          }
+        ],
+        "name": "True Positive Test"
+      }
+    ],
+    "version": 7
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Puppet Privilege Escalation",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/puppet/",
+    "https://en.wikipedia.org/wiki/Puppet_(software)"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    },
+    {
+      "name": "process.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.parent.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.entity_id",
+      "type": "string"
+    },
+    {
+      "name": "process.parent.entity_id",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "linux_puppet_privilege_escalation",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname, user.name\n  [process where event.type == \"start\" and process.name == \"puppet\" and process.args == \"apply\" and process.args == \"-e\" and process.args == \"exec\" and process.args == \"sudo\"]\n",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.category:process",
+      "exists": false
+    },
+    {
+      "query": "event.type:start",
+      "exists": false
+    }
+  ],
+  "index": [
+    "logs-endpoint.events-*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

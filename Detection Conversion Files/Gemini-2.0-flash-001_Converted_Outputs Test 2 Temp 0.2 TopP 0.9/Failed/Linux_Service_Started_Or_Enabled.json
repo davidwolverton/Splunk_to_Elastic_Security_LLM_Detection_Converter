@@ -1,0 +1,86 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the creation or enabling of services on\nLinux platforms using the systemctl or service tools. It leverages Endpoint Detection\nand Response (EDR) logs, focusing on process names, parent processes, and command-line\nexecutions. This activity is significant as adversaries may create or modify services\nto maintain persistence or execute malicious payloads. If confirmed malicious, this\nbehavior could lead to persistent access, data theft, ransomware deployment, or\nother damaging outcomes. Monitoring and investigating such activities are crucial\nfor maintaining the security and integrity of the environment.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "meta": {
+    "version": "6"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Service Started Or Enabled",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1543/003/"
+  ],
+  "risk_score": 42,
+  "rule_id": "linux_service_started_or_enabled",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Scheduled Tasks",
+    "Gomir",
+    "Endpoint",
+    "T1053.006",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": [
+            {
+              "id": "T1543.003",
+              "name": "Linux and Mac System Service",
+              "reference": "https://attack.mitre.org/techniques/T1543/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and
+     (process.name in ("systemctl", "service") or process.command_line : "*systemctl*" or process.command_line : "*service*") and
+     process.command_line : "* start *" or process.command_line : "* enable *" and not (process.os.family == "windows")]
+    [process where event.type == "start"]""",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*",
+    "endgame-*"
+  ]
+}

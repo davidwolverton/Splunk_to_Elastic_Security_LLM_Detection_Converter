@@ -1,0 +1,54 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious modifications to cron jobs on Linux systems using the crontab command with list parameters. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant as it may indicate an attempt to establish persistence or execute malicious code on a schedule. If confirmed malicious, the impact could include unauthorized code execution, data destruction, or other damaging outcomes. Further investigation should analyze the added cron job, its associated command, and any related processes. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6h",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Adding Crontab Using List Parameter",
+  "query": "process where process.name == \"crontab\" and process.command_line == \"* -l*\"",
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "52f6d751-1fd4-4c74-a4c9-777ecfeb5c58",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Industroyer2", "Linux Privilege Escalation", "Linux Living Off The Land", "Data Destruction", "Linux Persistence Techniques", "Scheduled Tasks", "Gomir"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.003",
+              "name": "Cron",
+              "reference": "https://attack.mitre.org/techniques/T1053/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 5,
+  "language": "eql",
+  "index": ["logs-*"],
+  "timestamp_field": "@timestamp"
+}

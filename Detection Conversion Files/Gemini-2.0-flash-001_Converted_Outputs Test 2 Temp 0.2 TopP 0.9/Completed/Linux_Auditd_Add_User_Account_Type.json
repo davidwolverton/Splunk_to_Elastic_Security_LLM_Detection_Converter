@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the suspicious add user account type.\nThis behavior is critical for a SOC to monitor because it may indicate attempts\nto gain unauthorized access or maintain control over a system. Such actions could\nbe signs of malicious activity. If confirmed, this could lead to serious consequences,\nincluding a compromised system, unauthorized access to sensitive data, or even a\nwider breach affecting the entire network. Detecting and responding to these signs\nearly is essential to prevent potential security incidents.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Add User Account Type",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_auditd_add_user_account_type",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1136.001",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1136.001",
+          "name": "Create Account: Local Account",
+          "reference": "https://attack.mitre.org/techniques/T1136/001/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by audit.session, audit.pid\n  [process where event.category == \"process\" and event.type == \"start\" and process.name == \"useradd\"]\n  [file where event.category == \"file\" and event.type == \"creation\" and file.path == \"/etc/passwd\"]",
+  "index": [
+    "auditbeat-*"
+  ]
+}

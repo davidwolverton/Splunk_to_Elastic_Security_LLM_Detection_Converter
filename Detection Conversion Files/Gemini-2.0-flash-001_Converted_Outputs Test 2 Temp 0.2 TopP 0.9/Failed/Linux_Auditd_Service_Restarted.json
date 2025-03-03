@@ -1,0 +1,136 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the restarting or re-enabling of services on Linux systems using the `systemctl` or `service` commands. It leverages data from Linux Auditd, focusing on process and command-line execution logs. This activity is significant as adversaries may use it to maintain persistence or execute unauthorized actions. If confirmed malicious, this behavior could lead to repeated execution of malicious payloads, unauthorized access, or data destruction. Security analysts should investigate these events to mitigate risks and prevent further compromise. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "data_source": [
+      "Linux Auditd Proctitle"
+    ],
+    "date": "2025-02-20",
+    "how_to_implement": "To implement this detection, the process begins by ingesting auditd data, that consist SYSCALL, TYPE, EXECVE and PROCTITLE events, which captures command-line executions and process details on Unix/Linux systems. These logs should be ingested and processed using Splunk Add-on for Unix and Linux (https://splunkbase.splunk.com/app/833), which is essential for correctly parsing and categorizing the data. The next step involves normalizing the field names  to match the field names set by the Splunk Common Information Model (CIM) to ensure consistency across different data sources and enhance the efficiency of data modeling. This approach enables effective monitoring and detection of linux endpoints where auditd is deployed",
+    "id": "8eb3e858-18d3-44a4-a514-52cfa39f154a",
+    "known_false_positives": "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives.",
+    "references": [
+      "https://attack.mitre.org/techniques/T1543/003/"
+    ],
+    "rba": {
+      "message": "A [event.original] event occurred on host - [host.name] to restart or re-enable a service.",
+      "risk_objects": [
+        {
+          "field": "host.name",
+          "score": 25,
+          "type": "system"
+        }
+      ],
+      "threat_objects": []
+    },
+    "version": 5
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Service Restarted",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Converted from Splunk SPL to Elastic EQL.",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1543/003/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.title",
+      "type": "string"
+    },
+    {
+      "name": "host.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_service_restarted",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:AwfulShred",
+    "analytic_story:Scheduled Tasks",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Data Destruction",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Gomir",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1053.006",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": [
+            {
+              "id": "T1543.003",
+              "name": "Windows Service",
+              "reference": "https://attack.mitre.org/techniques/T1543/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id\n  [process where process.title : \"*systemctl *\" or process.title : \"*service *\" ]\n  [process where process.title : \"*restart*\" or process.title : \"*reenable*\" or process.title : \"*reload*\" ]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

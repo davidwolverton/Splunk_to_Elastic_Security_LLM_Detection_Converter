@@ -1,0 +1,60 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the Composer tool with elevated privileges on a Linux system. It identifies instances where Composer is run with the 'sudo' command, allowing the user to execute system commands as root. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs and command-line arguments. This activity is significant because it can indicate an attempt to escalate privileges, potentially leading to unauthorized root access. If confirmed malicious, an attacker could gain full control over the system, execute arbitrary commands, and compromise sensitive data.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Composer Privilege Escalation",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/composer/",
+    "https://getcomposer.org/doc/00-intro.md"
+  ],
+  "risk_score": 50,
+  "rule_id": "a3bddf71-6ba3-42ab-a6b2-396929b16d92",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"sudo\" and process.args == \"composer\"]\n  [process where event.type == \"start\" and process.name == \"composer\" and process.args == \"run-script\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global",
+  "threat_index": ".siem-signals-default"
+}

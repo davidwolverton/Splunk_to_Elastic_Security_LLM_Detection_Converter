@@ -1,0 +1,61 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of `pkexec` without any command-line arguments. This behavior leverages data from Endpoint Detection and Response (EDR) agents, focusing on process telemetry. The significance lies in the fact that this pattern is associated with the exploitation of CVE-2021-4034 (PwnKit), a critical vulnerability in Polkit's pkexec component. If confirmed malicious, this activity could allow an attacker to gain full root privileges on the affected Linux system, leading to complete system compromise and potential unauthorized access to sensitive information.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux pkexec Privilege Escalation",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.reddit.com/r/crowdstrike/comments/sdfeig/20220126_cool_query_friday_hunting_pwnkit_local/",
+    "https://linux.die.net/man/1/pkexec",
+    "https://www.bleepingcomputer.com/news/security/linux-system-service-bug-gives-root-on-all-major-distros-exploit-released/",
+    "https://access.redhat.com/security/security-updates/#/?q=polkit&p=1&sort=portal_publication_date%20desc&rows=10&portal_advisory_type=Security%20Advisory&documentKind=PortalProduct"
+  ],
+  "risk_score": 56,
+  "rule_id": "linux_pkexec_privilege_escalation",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "CVE-2021-4034",
+    "T1068"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, user.name\n  [process where event.type == \"start\" and process.name == \"pkexec\" and process.args == \"\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

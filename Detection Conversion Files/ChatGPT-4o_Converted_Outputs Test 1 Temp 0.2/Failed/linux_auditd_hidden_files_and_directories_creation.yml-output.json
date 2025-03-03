@@ -1,0 +1,38 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious creation of hidden files and directories, which may indicate an attacker's attempt to conceal malicious activities or unauthorized data. Hidden files and directories are often used to evade detection by security tools and administrators, providing a stealthy means for storing malware, logs, or sensitive information. By monitoring for unusual or unauthorized creation of hidden files and directories, this analytic helps identify potential attempts to hide or unauthorized creation of hidden files and directories, this analytic helps identify potential attempts to hide malicious operations, enabling security teams to uncover and address hidden threats effectively. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd Hidden Files And Directories Creation",
+  "query": "process where event.action == \"execve\" and process.command_line : (\"*touch *\", \"*mkdir *\", \"*vim *\", \"*vi *\", \"*nano *\") and process.command_line : (\"* ./.*\", \"* .*\", \"*/.*\")",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

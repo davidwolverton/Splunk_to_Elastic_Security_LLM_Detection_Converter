@@ -1,0 +1,108 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'dd' command to overwrite files on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because adversaries often use the 'dd' command to destroy or irreversibly overwrite files, disrupting system availability and services. If confirmed malicious, this behavior could lead to data destruction, making recovery difficult and potentially causing significant operational disruptions.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "4"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux DD File Overwrite",
+  "namespace": "default",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/dd/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1485/T1485.md"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    },
+    {
+      "name": "process.parent.name",
+      "type": "string"
+    },
+    {
+      "name": "process.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.parent.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.entity_id",
+      "type": "string"
+    }
+  ],
+  "risk_score": 64,
+  "rule_id": "linux_dd_file_overwrite",
+  "severity": "medium",
+  "tags": [
+    "Data Destruction",
+    "Industroyer2",
+    "Endpoint",
+    "T1485",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "linux_dd_file_overwrite_timeline",
+  "timeline_title": "Linux DD File Overwrite Timeline",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname, user.name\n  [process where event.type == \"start\" and process.name == \"dd\" and process.command_line : \"of=\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": "event.id",
+  "timestamp_field": "@timestamp"
+}

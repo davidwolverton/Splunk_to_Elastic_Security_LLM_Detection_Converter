@@ -1,0 +1,64 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "description": "The following analytic detects the use of the LD_PRELOAD environment variable to hijack or hook library functions on a Linux platform. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because adversaries, malware authors, and red teamers commonly use this technique to gain elevated privileges and establish persistence on a compromised machine. If confirmed malicious, this behavior could allow attackers to execute arbitrary code, escalate privileges, and maintain long-term access to the system.\n\nConverted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001 Linux Preload Hijack Library Calls",
+  "note": "The following analytic detects the use of the LD_PRELOAD environment variable to hijack or hook library functions on a Linux platform. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because adversaries, malware authors, and red teamers commonly use this technique to gain elevated privileges and establish persistence on a compromised machine. If confirmed malicious, this behavior could allow attackers to execute arbitrary code, escalate privileges, and maintain long-term access to the system.",
+  "references": [
+    "https://compilepeace.medium.com/memory-malware-part-0x2-writing-userland-rootkits-via-ld-preload-30121c8343d5"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_preload_hijack_library_calls",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:China-Nexus Threat Activity",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Earth Estries",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1574.006",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574.006",
+          "name": "Hijack Execution Flow: LD_PRELOAD",
+          "reference": "https://attack.mitre.org/techniques/T1574/006/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where process.name == \"/usr/bin/ld-linux*\"]\n  [process where process.args == \"LD_PRELOAD\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+    "data_view_id": "global",
+    "license": "Elastic License v2",
+  "risk_score": 73,
+  "severity": "high"
+}

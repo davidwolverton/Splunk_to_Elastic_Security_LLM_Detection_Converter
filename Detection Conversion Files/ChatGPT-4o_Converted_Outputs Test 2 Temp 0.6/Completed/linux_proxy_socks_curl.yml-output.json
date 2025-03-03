@@ -1,0 +1,45 @@
+{
+  "name": "OpenAI GPT4-o Linux Proxy Socks Curl",
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the use of the `curl` command with proxy-related arguments such as `-x`, `socks`, `--preproxy`, and `--proxy`. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process details. This activity is significant as it may indicate an adversary attempting to use a proxy to evade network monitoring and obscure their actions. If confirmed malicious, this behavior could allow attackers to bypass security controls, making it difficult to track their activities and potentially leading to unauthorized data access or exfiltration. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "severity": "medium",
+  "risk_score": 56,
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Ingress Tool Transfer", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command and Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/"
+        },
+        {
+          "id": "T1095",
+          "name": "Non-Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1095/"
+        }
+      ]
+    }
+  ],
+  "index": ["sysmon-*"],
+  "language": "eql",
+  "query": "process where process.name == \"curl\" and\n  (process.command_line : \"*-x *\" or\n   process.command_line : \"*socks4a://*\" or\n   process.command_line : \"*socks5h://*\" or\n   process.command_line : \"*socks4://*\" or\n   process.command_line : \"*socks5://*\" or\n   process.command_line : \"*--preproxy *\" or\n   process.command_line : \"--proxy*\")",
+  "interval": "5m",
+  "max_signals": 100,
+  "references": [
+    "https://www.offensive-security.com/metasploit-unleashed/proxytunnels/",
+    "https://curl.se/docs/manpage.html",
+    "https://en.wikipedia.org/wiki/SOCKS",
+    "https://oxylabs.io/blog/curl-with-proxy",
+    "https://reqbin.com/req/c-ddxflki5/curl-proxy-server#:~:text=To%20use%20a%20proxy%20with,be%20URL%20decoded%20by%20Curl.",
+    "https://gtfobins.github.io/gtfobins/curl/"
+  ],
+  "type": "eql"
+}

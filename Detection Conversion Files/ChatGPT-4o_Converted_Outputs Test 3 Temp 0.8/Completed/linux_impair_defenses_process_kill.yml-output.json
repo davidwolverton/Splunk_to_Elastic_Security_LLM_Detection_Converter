@@ -1,0 +1,50 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic identifies the execution of the 'pkill' command, which is used to terminate processes on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant because threat actors often use 'pkill' to disable security defenses or terminate critical processes, facilitating further malicious actions. If confirmed malicious, this behavior could lead to the disruption of security applications, enabling attackers to evade detection and potentially corrupt or destroy files on the targeted system. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["network admin can terminate a process using this linux command. Filter is needed."],
+  "from": "now-60m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Impair Defenses Process Kill",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "risk_score": 50,
+  "rule_id": "435c6b33-adf9-47fe-be87-8e29fd6654f5",
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Data Destruction", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": [
+            {
+              "id": "T1562.001",
+              "name": "Indicator Blocking",
+              "reference": "https://attack.mitre.org/techniques/T1562/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name in (\"pgrep\", \"pkill\") and process.command_line : \"*pkill *\"",
+  "index": ["logs-endpoint.*"],
+  "timestamp_override": "event.ingested",
+  "license": "elastic license",
+  "version": 5
+}

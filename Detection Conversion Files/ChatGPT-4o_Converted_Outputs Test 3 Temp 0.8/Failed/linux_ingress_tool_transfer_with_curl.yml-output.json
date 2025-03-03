@@ -1,0 +1,75 @@
+{
+  "actions": [],
+  "author": ["Michael Haag, Splunk", "OpenAI GPT4-o"],
+  "building_block_type": "string",
+  "description": "The following analytic detects the use of the curl command with specific switches (-O, -sO, -ksO, --output) commonly used to download remote scripts or binaries. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line arguments. This activity is significant as it may indicate an attempt to download and execute potentially malicious files, often used in initial stages of an attack. If confirmed malicious, this could lead to unauthorized code execution, enabling attackers to compromise the system further. Converted with OpenAI GPT4-o",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["False positives will be present. Tune and then change type to TTP."],
+  "from": "now-6m",
+  "interval": "5m",
+  "investigation_fields": {"field_names": []},
+  "license": "",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Ingress Tool Transfer with Curl",
+  "namespace": "string",
+  "note": "string",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://curl.se/docs/manpage.html#-I",
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://github.com/rapid7/metasploit-framework/search?q=curl"
+  ],
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "risk_score": 75,
+  "risk_score_mapping": [],
+  "rule_id": "string",
+  "rule_name_override": "string",
+  "setup": "string",
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Ingress Tool Transfer", "Linux Living Off The Land", "XorDDos"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command and Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "string",
+  "timeline_title": "string",
+  "timestamp_override": "string",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"curl\" and process.args : (\"-O\", \"-sO\", \"-ksO\", \"--output\")",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {"unit": "s", "value": 3600},
+    "group_by": ["host.name", "user.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "string",
+  "event_category_override": "string",
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "string",
+  "timestamp_field": "@timestamp"
+}

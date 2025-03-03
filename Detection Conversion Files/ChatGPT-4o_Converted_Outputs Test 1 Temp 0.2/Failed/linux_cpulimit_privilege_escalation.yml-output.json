@@ -1,0 +1,39 @@
+{
+  "name": "OpenAI GPT4-o Linux Cpulimit Privilege Escalation",
+  "description": "The following analytic detects the use of the 'cpulimit' command with specific flags ('-l', '-f') executed with 'sudo' privileges. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process command-line arguments and execution details. This activity is significant because if 'cpulimit' is granted sudo rights, a user can potentially execute system commands as root, leading to privilege escalation. If confirmed malicious, this could allow an attacker to gain root access, execute arbitrary commands, and fully compromise the affected system. Converted with OpenAI GPT4-o.",
+  "author": ["Gowthamaraj Rajendran", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 50,
+  "severity": "high",
+  "index": ["logs-endpoint-*"],
+  "language": "eql",
+  "query": "process where process.name == \"cpulimit\" and process.args : \"*-l*\" and process.args : \"*-f*\" and process.parent.name == \"sudo\"",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://gtfobins.github.io/gtfobins/cpulimit/",
+    "http://cpulimit.sourceforge.net/"
+  ],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1,
+  "exceptions_list": [],
+  "actions": [],
+  "throttle": "no_actions"
+}

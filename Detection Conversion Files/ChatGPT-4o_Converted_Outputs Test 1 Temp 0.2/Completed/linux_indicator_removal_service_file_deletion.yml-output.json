@@ -1,0 +1,51 @@
+{
+  "name": "OpenAI GPT4-o Linux Indicator Removal Service File Deletion",
+  "description": "The following analytic detects the deletion of Linux service unit configuration files by suspicious processes. It leverages Endpoint Detection and Response (EDR) telemetry, focusing on processes executing the 'rm' command targeting '.service' files. This activity is significant as it may indicate malware attempting to disable critical services or security products, a common defense evasion tactic. If confirmed malicious, this behavior could lead to service disruption, security tool incapacitation, or complete system compromise, severely impacting the integrity and availability of the affected Linux host. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "medium",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name == \"rm\" and process.command_line regex \".*rm .*\" and process.command_line regex \".*\\.service\"",
+  "index": ["logs-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1,
+  "exceptions_list": [],
+  "actions": [],
+  "false_positives": [
+    "Network admin can delete services unit configuration file as part of normal software installation. Filter is needed."
+  ],
+  "from": "now-6m",
+  "to": "now"
+}

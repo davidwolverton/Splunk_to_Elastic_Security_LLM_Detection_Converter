@@ -1,0 +1,48 @@
+{
+  "name": "OpenAI GPT4-o: Linux GDB Privilege Escalation",
+  "description": "The following analytic detects the execution of the GNU Debugger (GDB) with specific flags that indicate an attempt to escalate privileges on a Linux system. It leverages Endpoint Detection and Response (EDR) telemetry to identify processes where GDB is run with the `-nx`, `-ex`, and `sudo` flags. This activity is significant because it can allow a user to execute system commands as root, potentially leading to a root shell. If confirmed malicious, this could result in full system compromise, allowing an attacker to gain complete control over the affected endpoint. Converted with OpenAI GPT4-o.",
+  "author": ["OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "high",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.executable : \"*gdb*\" and process.args : \"*-nx*\" and process.args : \"*-ex*!*\" and process.args : \"*sudo*\"",
+  "index": ["endpoints"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "enabled": true,
+  "from": "now-6m",
+  "to": "now",
+  "max_signals": 100,
+  "references": [
+    "https://gtfobins.github.io/gtfobins/gdb/"
+  ],
+  "exceptions_list": [],
+  "actions": [],
+  "note": "",
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ]
+}

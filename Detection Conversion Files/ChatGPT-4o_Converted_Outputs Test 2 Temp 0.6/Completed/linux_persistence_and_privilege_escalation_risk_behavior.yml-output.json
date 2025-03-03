@@ -1,0 +1,39 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic identifies potential Linux persistence and privilege escalation activities. It leverages risk scores and event counts from various Linux-related data sources, focusing on tactics associated with persistence and privilege escalation. This activity is significant for a SOC because it highlights behaviors that could allow an attacker to maintain access or gain elevated privileges on a Linux system. If confirmed malicious, this activity could enable an attacker to execute code with higher privileges, persist in the environment, and potentially access sensitive information, posing a severe security risk. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["False positives will be present based on many factors. Tune the correlation as needed to reduce too many triggers."],
+  "from": "now-6h",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Persistence and Privilege Escalation Risk Behavior",
+  "query": "sequence by All_Risk.risk_object with maxspan=6h [All_Risk where All_Risk.analyticstories in ('Linux Privilege Escalation', 'Linux Persistence Techniques') or source: \"*Linux*\" and All_Risk.annotations.mitre_attack.mitre_tactic in ('persistence', 'privilege-escalation') and All_Risk.risk_object_type: 'system']",
+  "references": ["https://attack.mitre.org/tactics/TA0004/"],
+  "risk_score": 75,
+  "rule_id": "ad5ac21b-3b1e-492c-8e19-ea5d5e8e5cf1",
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Endpoint", "T1548", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud", "audit"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "index": ["risk-*"]
+}

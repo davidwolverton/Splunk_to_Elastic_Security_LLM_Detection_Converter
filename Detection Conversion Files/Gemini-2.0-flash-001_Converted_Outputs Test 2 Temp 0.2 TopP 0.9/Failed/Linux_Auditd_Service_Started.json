@@ -1,0 +1,150 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the suspicious service started. This behavior\nis critical for a SOC to monitor because it may indicate attempts to gain unauthorized\naccess or maintain control over a system. Such actions could be signs of malicious\nactivity. If confirmed, this could lead to serious consequences, including a compromised\nsystem, unauthorized access to sensitive data, or even a wider breach affecting\nthe entire network. Detecting and responding to these signs early is essential to\nprevent potential security incidents. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application\nfor automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "data_source": [
+      "Linux Auditd Proctitle"
+    ],
+    "date": "2025-02-20",
+    "how_to_implement": "To implement this detection, the process begins by ingesting auditd\ndata, that consist SYSCALL, TYPE, EXECVE and PROCTITLE events, which captures command-line\nexecutions and process details on Unix/Linux systems. These logs should be ingested\nand processed using Splunk Add-on for Unix and Linux (https://splunkbase.splunk.com/app/833),\nwhich is essential for correctly parsing and categorizing the data. The next step\ninvolves normalizing the field names  to match the field names set by the Splunk\nCommon Information Model (CIM) to ensure consistency across different data sources\nand enhance the efficiency of data modeling. This approach enables effective monitoring\nand detection of linux endpoints where auditd is deployed",
+    "id": "b5eed06d-5c97-4092-a3a1-fa4b7e77c71a",
+    "references": [
+      "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+    ],
+    "rba": {
+      "message": "A [$proctitle$] event occurred on host - [$dest$] to start or enable a\nservice.",
+      "risk_objects": [
+        {
+          "field": "dest",
+          "score": 40,
+          "type": "system"
+        }
+      ],
+      "threat_objects": []
+    },
+    "tests": [
+      {
+        "attack_data": [
+          {
+            "data": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1569.002/linux_service_start/auditd_proctitle_service_start.log",
+            "source": "auditd",
+            "sourcetype": "auditd"
+          }
+        ],
+        "name": "True Positive Test"
+      }
+    ]
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Service Started",
+  "namespace": "default",
+  "note": null,
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.title",
+      "type": "string"
+    },
+    {
+      "name": "host.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 40,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_service_started",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1569.002",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": [
+            {
+              "id": "T1569.002",
+              "name": "Service Execution",
+              "reference": "https://attack.mitre.org/techniques/T1569/002/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.title : \"*systemctl *\" and process.title : (\"*start*\", \"*enable*\")]\n  [process where event.type == \"start\" and process.title : \"*service *\" and process.title : (\"*start*\", \"*enable*\")]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

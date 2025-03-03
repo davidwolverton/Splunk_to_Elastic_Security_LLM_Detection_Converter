@@ -1,0 +1,53 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the deletion of init daemon scripts on a Linux machine. It leverages filesystem event logs to identify when files within the /etc/init.d/ directory are deleted. This activity is significant because init daemon scripts control the start and stop of critical services, and their deletion can indicate an attempt to impair security features or evade defenses. If confirmed malicious, this behavior could allow an attacker to disrupt essential services, execute destructive payloads, or persist undetected in the environment. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-60m",
+  "interval": "1h",
+  "name": "OpenAI GPT4-o Linux Deletion Of Init Daemon Script",
+  "risk_score": 49,
+  "risk_score_mapping": [],
+  "rule_id": "729aab57-d26f-4156-b97f-ab8dda8f44b1",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "AcidRain", "Data Destruction", "AcidPour", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "file where event.action == \"deletion\" and file.path : \"/etc/init.d/*\"",
+  "references": ["https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"],
+  "version": 6,
+  "max_signals": 100,
+  "risk_score": 49
+}

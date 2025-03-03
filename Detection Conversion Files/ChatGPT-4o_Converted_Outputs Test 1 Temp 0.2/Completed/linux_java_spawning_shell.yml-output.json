@@ -1,0 +1,39 @@
+{
+  "name": "OpenAI GPT4-o Linux Java Spawning Shell",
+  "description": "The following analytic detects instances where Java, Apache, or Tomcat processes spawn a Linux shell, which may indicate exploitation attempts, such as those related to CVE-2021-44228 (Log4Shell). This detection leverages Endpoint Detection and Response (EDR) telemetry, focusing on process names and parent-child process relationships. This activity is significant as it can signify a compromised Java application, potentially leading to unauthorized shell access. If confirmed malicious, attackers could execute arbitrary commands, escalate privileges, or maintain persistent access, posing a severe threat to the environment. Converted with OpenAI GPT4-o.",
+  "author": ["Michael Haag", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "high",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where (process.parent.name == \"java\" or process.parent.name == \"apache\" or process.parent.name == \"tomcat\") and process.name in (\"sh\", \"bash\", \"dash\", \"ksh\", \"csh\", \"tcsh\", \"zsh\")",
+  "index": ["logs-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://blog.netlab.360.com/ten-families-of-malicious-samples-are-spreading-using-the-log4j2-vulnerability-now/",
+    "https://gist.github.com/olafhartong/916ebc673ba066537740164f7e7e1d72"
+  ],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "from": "now-6m",
+  "to": "now",
+  "version": 1
+}

@@ -1,0 +1,110 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the \"At\" application\nin Linux, which can be used by attackers to create persistence entries on a compromised\nhost. This detection leverages data from Endpoint Detection and Response (EDR) agents,\nfocusing on process names and parent process names associated with \"at\" or \"atd\".\nThis activity is significant because the \"At\" application can be exploited to maintain\nunauthorized access or deliver additional malicious payloads. If confirmed malicious,\nthis behavior could lead to data theft, ransomware attacks, or other severe consequences.\nImmediate investigation is required to determine the legitimacy of the execution\nand mitigate potential risks.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": "6"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux At Application Execution",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/001/",
+    "https://www.linkedin.com/pulse/getting-attacker-ip-address-from-malicious-linux-job-craig-rowland/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.parent.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "bf0a378e-5f3c-11ec-a6de-acde48001122",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Scheduled Tasks",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1053.002",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.001",
+              "name": "At",
+              "reference": "https://attack.mitre.org/techniques/T1053/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where process.name in (\"at\", \"atd\") or process.parent.name in (\"at\", \"atd\")]\n",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

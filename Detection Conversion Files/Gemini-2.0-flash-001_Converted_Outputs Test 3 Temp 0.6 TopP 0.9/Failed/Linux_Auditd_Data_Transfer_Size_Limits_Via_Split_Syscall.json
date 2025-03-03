@@ -1,0 +1,67 @@
+{
+  "actions": [],
+  "alias_purpose": "rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious data transfer activities that involve the use of the `split` syscall, potentially indicating an attempt to evade detection by breaking large files into smaller parts. Attackers may use this technique to bypass size-based security controls, facilitating the covert exfiltration of sensitive data. By monitoring for unusual or unauthorized use of the `split` syscall, this analytic helps identify potential data exfiltration attempts, allowing security teams to intervene and prevent the unauthorized transfer of critical information from the network. Rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Data Transfer Size Limits Via Split Syscall",
+  "note": "This rule detects suspicious data transfer activities involving the `split` syscall, potentially indicating evasion techniques by breaking large files into smaller parts to bypass size-based security controls.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_auditd_data_transfer_size_limits_via_split_syscall",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story: Linux Living Off The Land",
+    "analytic_story: Linux Privilege Escalation",
+    "analytic_story: Linux Persistence Techniques",
+    "analytic_story: Compromised Linux Host",
+    "asset_type: Endpoint",
+    "mitre_attack_id: T1030",
+    "product: Splunk Enterprise",
+    "product: Splunk Enterprise Security",
+    "product: Splunk Cloud",
+    "security_domain: endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1030",
+          "name": "Data Transfer Size Limits",
+          "reference": "https://attack.mitre.org/techniques/T1030/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by audit.session, audit.pid\n  [process where event.category == \"process\" and process.name == \"split\"]\n  [file where event.category == \"file\" and file.name == \"split\"]",
+  "index": [
+    "auditbeat-*",
+    "logs-system.*"
+  ]
+}

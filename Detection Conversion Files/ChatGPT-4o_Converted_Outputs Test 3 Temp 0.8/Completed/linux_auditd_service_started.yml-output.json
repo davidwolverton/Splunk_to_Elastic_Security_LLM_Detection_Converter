@@ -1,0 +1,50 @@
+{
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the suspicious service started. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents. Converted with OpenAI GPT4-o",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes."],
+  "from": "now-360s",
+  "index": ["auditd-*"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Auditd Service Started",
+  "note": "Converted with OpenAI GPT4-o",
+  "query": "file where proctitle == '*systemctl *' or proctitle == '*service *' and proctitle == '*start*' or proctitle == '*enable*'",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "risk_score": 40,
+  "risk_score_mapping": [],
+  "rule_id": "b5eed06d-5c97-4092-a3a1-fa4b7e77c71a",
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": [
+            {
+              "id": "T1569.002",
+              "name": "Service Execution",
+              "reference": "https://attack.mitre.org/techniques/T1569/002/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 5
+}

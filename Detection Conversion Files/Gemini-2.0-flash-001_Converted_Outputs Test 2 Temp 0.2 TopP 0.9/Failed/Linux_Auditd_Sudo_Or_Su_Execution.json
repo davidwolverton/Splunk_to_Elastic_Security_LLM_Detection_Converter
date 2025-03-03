@@ -1,0 +1,158 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic detects the execution of the \"sudo\" or \"su\" command\non a Linux operating system. It leverages data from Linux Auditd, focusing on process\nnames and parent process names. This activity is significant because \"sudo\" and\n\"su\" commands are commonly used by adversaries to elevate privileges, potentially\nleading to unauthorized access or control over the system. If confirmed malicious,\nthis activity could allow attackers to execute commands with root privileges, leading\nto severe security breaches, data exfiltration, or further system compromise.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "data_source": [
+      "Linux Auditd Proctitle"
+    ],
+    "date": "2025-02-20",
+    "drilldown_searches": [
+      {
+        "earliest_offset": "$info_min_time$",
+        "latest_offset": "$info_max_time$",
+        "name": "View the detection results for - \"$dest$\"",
+        "search": "%original_detection_search% | search  dest = \"$dest$\""
+      },
+      {
+        "earliest_offset": "$info_min_time$",
+        "latest_offset": "$info_max_time$",
+        "name": "View risk events for the last 7 days for - \"$dest$\"",
+        "search": "| from datamodel Risk.All_Risk | search normalized_risk_object IN (\"$dest$\")\nstarthoursago=168  | stats count min(_time) as firstTime max(_time) as lastTime\nvalues(search_name) as \"Search Name\" values(risk_message) as \"Risk Message\" values(analyticstories)\nas \"Analytic Stories\" values(annotations._all) as \"Annotations\" values(annotations.mitre_attack.mitre_tactic)\nas \"ATT&CK Tactics\" by normalized_risk_object | `security_content_ctime(firstTime)`\n| `security_content_ctime(lastTime)`"
+      }
+    ],
+    "how_to_implement": "To implement this detection, the process begins by ingesting auditd\ndata, that consists of SYSCALL, TYPE, EXECVE and PROCTITLE events, which captures\ncommand-line executions and process details on Unix/Linux systems. These logs should\nbe ingested and processed using Splunk Add-on for Unix and Linux (https://splunkbase.splunk.com/app/833),\nwhich is essential for correctly parsing and categorizing the data. The next step\ninvolves normalizing the field names  to match the field names set by the Splunk\nCommon Information Model (CIM) to ensure consistency across different data sources\nand enhance the efficiency of data modeling. This approach enables effective monitoring\nand detection of linux endpoints where auditd is deployed",
+    "id": "817a5c89-5b92-4818-a22d-aa35e1361afe",
+    "known_false_positives": "Administrator or network operator can execute this command.\nPlease update the filter macros to remove false positives.",
+    "rba": {
+      "message": "A [$proctitle$] event occurred on host - [$dest$] to execute the sudo or su command.",
+      "risk_objects": [
+        {
+          "field": "dest",
+          "score": 25,
+          "type": "system"
+        }
+      ],
+      "threat_objects": []
+    },
+    "references": [
+      "https://attack.mitre.org/techniques/T1548/003/"
+    ],
+    "status": "production",
+    "tests": [
+      {
+        "attack_data": [
+          {
+            "data": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1548.003/linux_auditd_sudo_su/auditd_proctitle_sudo.log",
+            "source": "auditd",
+            "sourcetype": "auditd"
+          }
+        ],
+        "name": "True Positive Test"
+      }
+    ]
+  },
+  "name": "Google Gemini 2.0 Flash 001 Linux Auditd Sudo Or Su Execution",
+  "namespace": "default",
+  "note": null,
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1548/003/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.title",
+      "type": "string"
+    },
+    {
+      "name": "host.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_sudo_or_su_execution",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1548.003",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Su",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where process.title : \"*sudo *\" or process.title : \"*su *\"]\n",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

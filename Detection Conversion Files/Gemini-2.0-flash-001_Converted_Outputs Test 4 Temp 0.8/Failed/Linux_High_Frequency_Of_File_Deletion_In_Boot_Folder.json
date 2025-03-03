@@ -1,0 +1,80 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects a high frequency of file deletions in the /boot/ folder on Linux systems. It leverages filesystem event logs to identify when 200 or more files are deleted within an hour by the same process. This behavior is significant as it may indicate the presence of wiper malware, such as Industroyer2, which targets critical system directories. If confirmed malicious, this activity could lead to system instability or failure, hindering the boot process and potentially causing a complete system compromise. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Linux package installer/uninstaller may cause this event. Please update you filter macro to remove false positives."
+  ],
+  "from": "now-1h",
+  "interval": "1h",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux High Frequency Of File Deletion In Boot Folder",
+  "note": "Multiple files detection in /boot/ folder on {{host.hostname}} by process GUID -  {{process.entity_id}}",
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "risk_score": 80,
+  "rule_id": "e27fbc5d-0445-4c4a-bc39-87f060d5c602",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "Industroyer2",
+    "AcidPour",
+    "Endpoint",
+    "T1070.004",
+    "T1485"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        },
+        {
+          "id": "T1070.004",
+          "name": "Indicator Removal on Host: File Deletion",
+          "reference": "https://attack.mitre.org/techniques/T1070/004/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where event.type == \"start\" and process.name != \"rm\"]\n  [file where event.type == \"deletion\" and file.path : \"/boot/*\"]\n",
+  "risk_score_mapping": [
+    {
+      "field": "host.hostname",
+      "operator": "exists",
+      "risk_score": 80,
+      "value": "*"
+    }
+  ],
+  "severity_mapping": [
+    {
+      "field": "event.outcome",
+      "operator": "exists",
+      "severity": "high",
+      "value": "failure"
+    }
+  ]
+}

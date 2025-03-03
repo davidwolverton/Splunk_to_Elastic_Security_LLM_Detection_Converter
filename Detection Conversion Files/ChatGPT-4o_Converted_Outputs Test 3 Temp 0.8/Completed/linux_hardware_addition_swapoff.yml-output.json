@@ -1,0 +1,38 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the 'swapoff' command, which disables the swapping of paging devices on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This activity is significant because disabling swap can be a tactic used by malware, such as Awfulshred, to evade detection and hinder forensic analysis. If confirmed malicious, this action could allow an attacker to manipulate system memory management, potentially leading to data corruption, system instability, or evasion of memory-based detection mechanisms. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["administrator may disable swapping of devices in a linux host. Filter is needed."],
+  "from": "now-6h",
+  "index": ["your-index-name"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Hardware Addition SwapOff",
+  "query": "process where process.name == \"swapoff\"",
+  "references": ["https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"],
+  "risk_score": 42,
+  "rule_id": "c1eea697-99ed-44c2-9b70-d8935464c499",
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Data Destruction", "Endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1200",
+          "name": "Hardware Additions",
+          "reference": "https://attack.mitre.org/techniques/T1200/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

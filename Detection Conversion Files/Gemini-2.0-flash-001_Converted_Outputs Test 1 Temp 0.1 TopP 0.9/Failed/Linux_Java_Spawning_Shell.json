@@ -1,0 +1,128 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects instances where Java, Apache, or Tomcat processes spawn a Linux shell, which may indicate exploitation attempts, such as those related to CVE-2021-44228 (Log4Shell). This detection leverages Endpoint Detection and Response (EDR) telemetry, focusing on process names and parent-child process relationships. This activity is significant as it can signify a compromised Java application, potentially leading to unauthorized shell access. If confirmed malicious, attackers could execute arbitrary commands, escalate privileges, or maintain persistent access, posing a severe threat to the environment. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Filtering may be required on internal developer build systems or classify assets as web facing and restrict the analytic based on asset type."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 6
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Java Spawning Shell",
+  "namespace": "default",
+  "note": "An instance of $parent_process_name$ spawning $process_name$ was identified on endpoint $dest$ spawning a Linux shell, potentially indicative of exploitation.",
+  "outcome": null,
+  "output_index": ".siem-signals-*",
+  "references": [
+    "https://blog.netlab.360.com/ten-families-of-malicious-samples-are-spreading-using-the-log4j2-vulnerability-now/",
+    "https://gist.github.com/olafhartong/916ebc673ba066537740164f7e7e1d72"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.parent.name",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 40,
+  "risk_score_mapping": [],
+  "rule_id": "7b09db8a-5c20-11ec-9945-acde48001122",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "Spring4Shell CVE-2022-22965",
+    "Hermetic Wiper",
+    "Log4Shell CVE-2021-44228",
+    "Endpoint",
+    "CVE-2021-44228",
+    "T1190",
+    "T1133",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "reference": "https://attack.mitre.org/techniques/T1190/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1133",
+          "name": "External Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1133/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where process.parent.name in (\"java\", \"apache\", \"tomcat\")]\n  [process where process.name in (\"sh\", \"bash\", \"zsh\", \"ksh\", \"tcsh\", \"csh\", \"dash\")]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.category:process",
+      "exists": false
+    }
+  ],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

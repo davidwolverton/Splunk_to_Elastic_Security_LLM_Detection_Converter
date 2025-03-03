@@ -1,0 +1,38 @@
+{
+  "name": "OpenAI GPT4-o Linux GDB Privilege Escalation",
+  "description": "The following analytic detects the execution of the GNU Debugger (GDB) with specific flags that indicate an attempt to escalate privileges on a Linux system. It leverages Endpoint Detection and Response (EDR) telemetry to identify processes where GDB is run with the `-nx`, `-ex`, and `sudo` flags. This activity is significant because it can allow a user to execute system commands as root, potentially leading to a root shell. If confirmed malicious, this could result in full system compromise, allowing an attacker to gain complete control over the affected endpoint. Converted with OpenAI GPT4-o.",
+  "author": ["Gowthamaraj Rajendran, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "high",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name == \"gdb\" and process.args : \"*-nx*\" and process.args : \"*-ex*\" and process.args : \"*sudo*\"",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    }
+  ],
+  "references": ["https://gtfobins.github.io/gtfobins/gdb/"],
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-360s",
+  "max_signals": 100,
+  "actions": [],
+  "exceptions_list": [],
+  "false_positives": ["False positives may be present, filter as needed."],
+  "index": ["logs-*"],
+  "version": 1
+}

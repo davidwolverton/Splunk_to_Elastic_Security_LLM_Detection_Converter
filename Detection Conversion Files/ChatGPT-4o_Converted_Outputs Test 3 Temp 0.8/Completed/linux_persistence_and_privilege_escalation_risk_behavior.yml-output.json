@@ -1,0 +1,52 @@
+{
+  "name": "OpenAI GPT4-o Linux Persistence and Privilege Escalation Risk Behavior",
+  "description": "The following analytic identifies potential Linux persistence and privilege escalation activities. It leverages risk scores and event counts from various Linux-related data sources, focusing on tactics associated with persistence and privilege escalation. This activity is significant for a SOC because it highlights behaviors that could allow an attacker to maintain access or gain elevated privileges on a Linux system. If confirmed malicious, this activity could enable an attacker to execute code with higher privileges, persist in the environment, and potentially access sensitive information, posing a severe security risk. Converted with OpenAI GPT4-o.",
+  "author": ["Michael Haag, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    }
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "type": "eql",
+  "language": "eql",
+  "query": "sequence by risk_object [any where event.module == \"Risk\" and event.dataset == \"All_Risk\" and All_Risk.analyticstories in (\"Linux Privilege Escalation\", \"Linux Persistence Techniques\") or source : \"*Linux*\" and All_Risk.annotations.mitre_attack.mitre_tactic in (\"persistence\", \"privilege-escalation\") and All_Risk.risk_object_type == \"system\"] with maxspan=2m",
+  "index": ["risk-*"],
+  "max_signals": 100,
+  "references": ["https://attack.mitre.org/tactics/TA0004/"],
+  "exceptions_list": [],
+  "false_positives": ["False positives could be present due to benign administrative actions."],
+  "from": "now-5m",
+  "to": "now"
+}

@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "author": ["Michael Haag", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the modification of SSH Authorized Keys on Linux systems. It leverages process execution data from Endpoint Detection and Response (EDR) agents, specifically monitoring commands like 'bash' and 'cat' interacting with 'authorized_keys' files. This activity is significant as adversaries often modify SSH Authorized Keys to establish persistent access to compromised endpoints. If confirmed malicious, this behavior could allow attackers to maintain unauthorized access, bypassing traditional authentication mechanisms and potentially leading to further exploitation or data exfiltration. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Filtering will be required as system administrators will add and remove. One way to filter query is to add 'echo'."],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {"field_names": ["process.name", "process.parent.name", "process.executable", "host.name", "user.name"]},
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux SSH Authorized Keys Modification",
+  "note": "Converted with OpenAI GPT4-o",
+  "references": ["https://redcanary.com/blog/lateral-movement-with-secure-shell/", "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1098.004/T1098.004.md"],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "f5ab595e-28e5-4327-8077-5008ba97c850",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["endpoint", "OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1098",
+          "name": "Account Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1098/",
+          "subtechnique": [
+            {
+              "id": "T1098.004",
+              "name": "SSH Authorized Keys",
+              "reference": "https://attack.mitre.org/techniques/T1098/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name in ('bash', 'cat') and process.executable : '*authorized_keys*' and event.action : 'executed' and process.parent.name : 'sshd'",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": ["host.name", "user.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "",
+  "timestamp_field": "@timestamp"
+}

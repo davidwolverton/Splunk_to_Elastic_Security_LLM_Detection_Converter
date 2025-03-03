@@ -1,0 +1,108 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the \"At\" application in Linux, which can be used by attackers to create persistence entries on a compromised host. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and parent process names associated with \"at\" or \"atd\". This activity is significant because the \"At\" application can be exploited to maintain unauthorized access or deliver additional malicious payloads. If confirmed malicious, this behavior could lead to data theft, ransomware attacks, or other severe consequences. Immediate investigation is required to determine the legitimacy of the execution and mitigate potential risks.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "1676943600000",
+    "savedQueryId": "a64e30e0-b091-11ed-99b2-8b811c3c2317",
+    "updated_by": "elastic",
+    "version": "1"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd At Application Execution",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted with Google Gemini 2.0 Flash 001.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/001/",
+    "https://www.linkedin.com/pulse/getting-attacker-ip-address-from-malicious-linux-job-craig-rowland/"
+  ],
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "9f306e0a-1c36-469e-8892-968ca12470dd",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Scheduled Tasks",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1053.002",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.002",
+              "name": "At",
+              "reference": "https://attack.mitre.org/techniques/T1053/002/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where event.type == \"start\" and process.name in (\"at\", \"atd\")]\n  [process where event.type == \"start\" and process.executable in (\"/usr/bin/at\", \"/usr/bin/atd\") and not user.id == \"daemon\"]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

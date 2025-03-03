@@ -1,0 +1,125 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the suspicious editing of cron jobs in Linux using the crontab command-line parameter (-e). It identifies this activity by monitoring command-line executions involving 'crontab' and the edit parameter. This behavior is significant for a SOC as cron job manipulations can indicate unauthorized persistence attempts or scheduled malicious actions. If confirmed malicious, this activity could lead to system compromise, unauthorized access, or broader network compromise. Rule converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 5
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Edit Cron Table Parameter",
+  "namespace": "default",
+  "note": "To implement this detection, the process begins by ingesting auditd data, that consist SYSCALL, TYPE, EXECVE and PROCTITLE events, which captures command-line executions and process details on Unix/Linux systems. These logs should be ingested and processed using Splunk Add-on for Unix and Linux (https://splunkbase.splunk.com/app/833), which is essential for correctly parsing and categorizing the data. The next step involves normalizing the field names  to match the field names set by the Splunk Common Information Model (CIM) to ensure consistency across different data sources and enhance the efficiency of data modeling. This approach enables effective monitoring and detection of linux endpoints where auditd is deployed",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/003/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "event.type",
+      "type": "string"
+    },
+    {
+      "name": "process.args",
+      "type": "string"
+    },
+    {
+      "name": "user.id",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_edit_cron_table_parameter",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Scheduled Tasks",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1053.003",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/"
+        },
+        {
+          "id": "T1053.003",
+          "name": "Cron",
+          "reference": "https://attack.mitre.org/techniques/T1053/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"crontab\" and process.args == \"-e\" and user.id != \"0\" ]\n  [file where event.type == \"change\" and file.path == \"/etc/crontab\" ]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "not user.id : \"0\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

@@ -1,0 +1,45 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the 'swapoff' command, which disables the swapping of paging devices on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This activity is significant because disabling swap can be a tactic used by malware, such as Awfulshred, to evade detection and hinder forensic analysis. If confirmed malicious, this action could allow an attacker to manipulate system memory management, potentially leading to data corruption, system instability, or evasion of memory-based detection mechanisms. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["administrator may disable swapping of devices in a linux host. Filter is needed."],
+  "from": "now-6m",
+  "interval": "5m",
+  "language": "eql",
+  "license": "",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Auditd Hardware Addition Swapoff",
+  "note": "",
+  "outcome": "exactMatch",
+  "references": ["https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "5728bb16-1a0b-4b66-bce2-0074ac839770",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Data Destruction", "AwfulShred", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1200",
+          "name": "Hardware Addition",
+          "reference": "https://attack.mitre.org/techniques/T1200/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "query": "process where process.name == \"swapoff\" and process.command_line == \"*-a*\""
+}

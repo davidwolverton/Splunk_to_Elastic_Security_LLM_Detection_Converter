@@ -1,0 +1,39 @@
+{
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious command lines that append user entries to /etc/at.allow or /etc/at.deny files. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions involving these files. This activity is significant because altering these configuration files can allow attackers to schedule tasks with elevated permissions, facilitating persistence on a compromised Linux host. If confirmed malicious, this could enable attackers to execute arbitrary code at scheduled intervals, potentially leading to further system compromise and unauthorized access to sensitive information. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "index": ["logs-endpoint-*"],
+  "interval": "5m",
+  "language": "eql",
+  "name": "OpenAI GPT4-o Linux Possible Append Command To At Allow Config File",
+  "query": "process where process.name == \"echo\" and process.command_line : (\"*/etc/at.allow\", \"*/etc/at.deny\")",
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Scheduled Tasks", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.002",
+              "name": "At (Linux)",
+              "reference": "https://attack.mitre.org/techniques/T1053/002/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

@@ -1,0 +1,114 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic detects the suspicious sysmon service stop. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents.\n\nConverted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "now-60m",
+    "interval": "10m"
+  },
+  "name": "Google Gemini 2.0 Flash 001 Linux Auditd Sysmon Service Stop",
+  "namespace": "default",
+  "note": "The following analytic detects the suspicious sysmon service stop. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "host",
+    "event.type",
+    "process.pid",
+    "user.id",
+    "process.name",
+    "process.executable"
+  ],
+  "response_actions": [],
+  "risk_score": 40,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_sysmon_service_stop",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1489",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"systemd\" and process.args == \"stop\" and process.args == \"sysmon\"]\n  [process where event.type == \"end\" and process.name == \"systemd\" and process.args == \"stop\" and process.args == \"sysmon\"]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.dataset:\"auditd.log\" AND auditd.data.type:\"SERVICE_STOP\" AND auditd.data.unit:\"sysmon\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

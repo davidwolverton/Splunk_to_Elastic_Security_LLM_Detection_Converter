@@ -1,0 +1,115 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of Linux service unit configuration files by suspicious processes. It leverages Endpoint Detection and Response (EDR) telemetry, focusing on processes executing the 'rm' command targeting '.service' files. This activity is significant as it may indicate malware attempting to disable critical services or security products, a common defense evasion tactic. If confirmed malicious, this behavior could lead to service disruption, security tool incapacitation, or complete system compromise, severely impacting the integrity and availability of the affected Linux host.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Network admin can delete services unit configuration file as part of normal software installation. Filter is needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": [],
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": "5"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Indicator Removal Service File Deletion",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted from Splunk SPL to Elastic EQL using Google Gemini 2.0 Flash 001.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.args",
+    "process.executable",
+    "host.hostname",
+    "user.name"
+  ],
+  "response_actions": [],
+  "risk_score": 36,
+  "risk_score_mapping": [],
+  "rule_id": "linux_indicator_removal_service_file_deletion",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "AwfulShred",
+    "Endpoint",
+    "T1070.004",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, user.id\n  [process where process.name == \"rm\" and process.args : \"*.service\"]\n",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.category :\"process\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

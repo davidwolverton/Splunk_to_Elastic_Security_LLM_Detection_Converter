@@ -1,0 +1,42 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the suspicious disable or modify system firewall. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd Disable Or Modify System Firewall",
+  "query": "process where event.action == \"end\" and process.name in (\"firewalld\", \"ufw\")",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "risk_score": 64,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": [
+            {
+              "id": "T1562.004",
+              "name": "Disable or Modify System Firewall",
+              "reference": "https://attack.mitre.org/techniques/T1562/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

@@ -1,0 +1,46 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Unload Module Via Modprobe",
+  "description": "The following analytic detects suspicious use of the `modprobe` command to unload kernel modules, which may indicate an attempt to disable critical system components or evade detection. The `modprobe` utility manages kernel modules, and unauthorized unloading of modules can disrupt system security features, remove logging capabilities, or conceal malicious activities. By monitoring for unusual or unauthorized `modprobe` operations involving module unloading, this analytic helps identify potential tampering with kernel functionality, enabling security teams to investigate and address possible threats to system integrity. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 49,
+  "severity": "medium",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name == \"modprobe\" and process.args : \"*-r *\"",
+  "index": ["auditd-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": [
+            {
+              "id": "T1547.006",
+              "name": "Kernel Modules and Extensions",
+              "reference": "https://attack.mitre.org/techniques/T1547/006/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "exceptions_list": [],
+  "enabled": true,
+  "from": "now-6m",
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1,
+  "throttle": "no_actions"
+}

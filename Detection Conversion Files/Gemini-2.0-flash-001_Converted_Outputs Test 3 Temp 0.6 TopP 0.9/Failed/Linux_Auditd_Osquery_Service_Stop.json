@@ -1,0 +1,132 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious stopping of the `osquery` service, which may indicate an attempt to disable monitoring and evade detection. `Osquery` is a powerful tool used for querying system information and detecting anomalies, and stopping its service can be a sign that an attacker is trying to disrupt security monitoring or hide malicious activities. By monitoring for unusual or unauthorized stops of the `osquery` service, this analytic helps identify potential efforts to bypass security controls, enabling security teams to investigate and respond to possible threats effectively.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 4
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Osquery Service Stop",
+  "namespace": "default",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.pid",
+      "type": "number"
+    },
+    {
+      "name": "user.id",
+      "type": "string"
+    },
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.executable",
+      "type": "string"
+    },
+    {
+      "name": "service.name",
+      "type": "string"
+    },
+    {
+      "name": "host.name",
+      "type": "string"
+    },
+    {
+      "name": "event.type",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "0c320fea-6e87-4b99-a884-74d09d4b655d",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1489"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "type": "eql",
+  "version": 4,
+  "language": "eql",
+  "query": "sequence by host.name, process.pid\n  [process where event.type == \"start\" and process.name == \"osqueryd\"]\n  [process where event.type == \"end\" and process.name == \"osqueryd\"]\n",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+  {
+    "query": "event.category:process and event.module:auditd",
+    "exists": false
+  }
+  ],
+  "index": [
+    "auditbeat-*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

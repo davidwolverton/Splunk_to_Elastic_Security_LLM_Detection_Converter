@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the chmod utility to set the SUID or SGID bit on files, which can allow users to temporarily gain root or group-level access. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line arguments related to chmod. This activity is significant as it can indicate an attempt to escalate privileges or maintain persistence on a system. If confirmed malicious, an attacker could gain elevated access, potentially compromising sensitive data or critical system functions.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Setuid Using Chmod Utility",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted with Google Gemini 2.0 Flash 001.",
+  "references": [
+    "https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/"
+  ],
+  "risk_score": 49,
+  "rule_id": "bf0304b6-6250-11ec-9d7c-acde48001122",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.001",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.001",
+          "name": "Setuid and Setgid",
+          "reference": "https://attack.mitre.org/techniques/T1548/001/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 5,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"chmod\" and process.args in (\"g+s\", \"u+s\", \"4777\", \"4577\")]\n  [file where file.path != null]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "timestamp_override": null
+}

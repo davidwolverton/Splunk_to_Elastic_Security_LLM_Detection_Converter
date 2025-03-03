@@ -1,0 +1,69 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the modification of SSH Authorized Keys on Linux systems. It leverages process execution data from Endpoint Detection and Response (EDR) agents, specifically monitoring commands like \"bash\" and \"cat\" interacting with \"authorized_keys\" files. This activity is significant as adversaries often modify SSH Authorized Keys to establish persistent access to compromised endpoints. If confirmed malicious, this behavior could allow attackers to maintain unauthorized access, bypassing traditional authentication mechanisms and potentially leading to further exploitation or data exfiltration.",
+  "enabled": true,
+  "false_positives": [
+    "Filtering will be required as system administrators will add and remove. One way to filter query is to add \"echo\"."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux SSH Authorized Keys Modification",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1098.004/T1098.004.md"
+  ],
+  "risk_score": 50,
+  "rule_id": "f5ab595e-28e5-4327-8077-5008ba97c850",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1098.004",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1098",
+          "name": "Account Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1098/",
+          "subtechnique": [
+            {
+              "id": "T1098.004",
+              "name": "SSH Authorized Keys",
+              "reference": "https://attack.mitre.org/techniques/T1098/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and process.name in ("bash", "cat") and process.args : "authorized_keys"]
+    [file where event.type == "change" and file.path : "*authorized_keys*"]""",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "default"
+}

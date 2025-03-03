@@ -1,0 +1,126 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag",
+    "Splunk",
+    "0xC0FFEEEE",
+    "Github Community"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the `curl` command with proxy-related arguments such as `-x`, `socks`, `--preproxy`, and `--proxy`. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process details. This activity is significant as it may indicate an adversary attempting to use a proxy to evade network monitoring and obscure their actions. If confirmed malicious, this behavior could allow attackers to bypass security controls, making it difficult to track their activities and potentially leading to unauthorized data access or exfiltration.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present based on proxy usage internally. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "1"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Proxy Socks Curl",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.offensive-security.com/metasploit-unleashed/proxytunnels/",
+    "https://curl.se/docs/manpage.html",
+    "https://en.wikipedia.org/wiki/SOCKS",
+    "https://oxylabs.io/blog/curl-with-proxy",
+    "https://reqbin.com/req/c-ddxflki5/curl-proxy-server#:~:text=To%20use%20a%20proxy%20with,be%20URL%20decoded%20by%20Curl.",
+    "https://gtfobins.github.io/gtfobins/curl/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    }
+  ],
+  "risk_score": 56,
+  "risk_score_mapping": [],
+  "rule_id": "linux_proxy_socks_curl",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Ingress Tool Transfer",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1090",
+    "mitre_attack_id:T1095",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0102",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0102/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/"
+        },
+        {
+          "id": "T1095",
+          "name": "Non-Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1095/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "e8637a40-1635-11e9-a24a-05872c623456",
+  "timeline_title": "Endpoint Activity Timeline",
+  "timestamp_override": "@timestamp",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, process.entity_id\n  [process where process.name == \"curl\" and process.args : \"-x\" or process.args : \"socks4a://\" or process.args : \"socks5h://\" or process.args : \"socks4://\" or process.args : \"socks5://\" or process.args : \"--preproxy\" or process.args : \"--proxy\"]\n  [network where network.protocol == \"socks\" or network.transport == \"tcp\"]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [
+      "host.id",
+      "process.name"
+    ],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": "process",
+  "filters": [
+    {
+      "query": {
+        "match_all": {}
+      }
+    }
+  ],
+  "index": [
+    "logs-endpoint.events.*",
+    "winlogbeat-*",
+    "filebeat-*",
+    "auditbeat-*"
+  ],
+  "tiebreaker_field": "event.id",
+  "timestamp_field": "@timestamp"
+}

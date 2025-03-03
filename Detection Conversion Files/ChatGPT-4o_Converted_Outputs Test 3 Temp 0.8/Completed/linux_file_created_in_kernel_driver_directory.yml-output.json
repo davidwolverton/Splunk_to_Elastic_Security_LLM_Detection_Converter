@@ -1,0 +1,40 @@
+{
+  "name": "OpenAI GPT4-o Linux File Created In Kernel Driver Directory",
+  "description": "The following analytic detects the creation of files in the Linux kernel/driver directory. It leverages filesystem data to identify new files in this critical directory. This activity is significant because the kernel/driver directory is typically reserved for kernel modules, and unauthorized file creation here can indicate a rootkit installation. If confirmed malicious, this could allow an attacker to gain high-level privileges, potentially compromising the entire system by executing code at the kernel level. Converted with OpenAI GPT4-o.",
+  "risk_score": 72,
+  "severity": "high",
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Rootkit", "endpoint"],
+  "interval": "5m",
+  "enabled": true,
+  "from": "now-6m",
+  "max_signals": 100,
+  "to": "now",
+  "namespace": "default",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules/",
+    "https://security.stackexchange.com/questions/175953/how-to-load-a-malicious-lkm-at-startup",
+    "https://0x00sec.org/t/kernel-rootkits-getting-your-hands-dirty/1485"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/"
+        }
+      ]
+    }
+  ],
+  "language": "eql",
+  "query": "file where file.path : \"*/kernel/drivers/*\"",
+  "type": "eql"
+}

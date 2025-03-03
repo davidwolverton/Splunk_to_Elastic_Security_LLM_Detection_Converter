@@ -1,0 +1,55 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of SSH to move laterally and execute a script or file on a remote host. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on specific SSH command-line parameters and URLs. This activity is significant as it may indicate an attacker attempting to execute remote commands or scripts, potentially leading to unauthorized access or control over additional systems. If confirmed malicious, this could result in lateral movement, privilege escalation, or the execution of malicious payloads, compromising the security of the network. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "This is not a common command to be executed. Filter as needed."
+  ],
+  "from": "now-30m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux SSH Remote Services Script Execute",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Splunk Technology Add-ons that are specific to the EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint` data model. Use the Splunk Common Information Model (CIM) to normalize the field names and speed up the data modeling process.",
+  "references": [
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/"
+  ],
+  "risk_score": 56,
+  "rule_id": "aa1748dd-4a5c-457a-9cf6-ca7b4eb711b3",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1021.004"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021.004",
+          "name": "Remote Services: SSH",
+          "reference": "https://attack.mitre.org/techniques/T1021/004/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n [process where process.name == \"ssh\" and process.args in (\"-oStrictHostKeyChecking*\", \"-oConnectTimeout*\", \"-oBatchMode*\") and process.args : \"http*\" ]\n [process where event.type == \"start\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the GNU Debugger (GDB) with specific flags that indicate an attempt to escalate privileges on a Linux system. It leverages Endpoint Detection and Response (EDR) telemetry to identify processes where GDB is run with the `-nx`, `-ex`, and `sudo` flags. This activity is significant because it can allow a user to execute system commands as root, potentially leading to a root shell. If confirmed malicious, this could result in full system compromise, allowing an attacker to gain complete control over the affected endpoint.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "7"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux GDB Privilege Escalation",
+  "namespace": "default",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/gdb/"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_gdb_privilege_escalation",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where process.name == \"gdb\" and process.args : \"-nx\" and process.args : \"-ex\" and process.args : \"sudo\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

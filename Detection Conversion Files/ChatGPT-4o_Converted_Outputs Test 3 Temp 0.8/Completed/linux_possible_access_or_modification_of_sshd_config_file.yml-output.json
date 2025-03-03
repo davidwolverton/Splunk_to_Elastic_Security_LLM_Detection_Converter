@@ -1,0 +1,87 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Teoderick Contreras", 
+    "Splunk", 
+    "OpenAI GPT4-o"
+  ],
+  "description": "The following analytic detects suspicious access or modification of the sshd_config file on Linux systems. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions involving processes like \"cat,\" \"nano,\" \"vim,\" and \"vi\" accessing the sshd_config file. This activity is significant because unauthorized changes to sshd_config can allow threat actors to redirect port connections or use unauthorized keys, potentially compromising the system. If confirmed malicious, this could lead to unauthorized access, privilege escalation, or persistent backdoor access, posing a severe security risk. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": ["process.executable", "process.name", "process.parent.name", "host.name", "user.name"]
+  },
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o: Linux Possible Access Or Modification Of sshd Config File",
+  "outcome": "exactMatch",
+  "references": [
+    "https://www.hackingarticles.in/ssh-penetration-testing-port-22/",
+    "https://attack.mitre.org/techniques/T1098/004/"
+  ],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "linux_possible_access_modification_sshd_config_file",
+  "severity": "high",
+  "tags": [
+    "endpoint",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "OpenAI GPT4-o"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0032",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0032/"
+      },
+      "technique": [
+        {
+          "id": "T1098",
+          "name": "Account Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1098/",
+          "subtechnique": [
+            {
+              "id": "T1098.004",
+              "name": "SSH Authorized Keys",
+              "reference": "https://attack.mitre.org/techniques/T1098/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "default",
+  "timeline_title": "Default Timeline",
+  "timestamp_override": "event.ingested",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name in (\"cat\", \"nano\", \"vim\", \"vi\") and process.executable : \"*/etc/ssh/sshd_config\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 3600
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "security-solution",
+  "event_category_override": "process",
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "@timestamp",
+  "timestamp_field": "@timestamp"
+}

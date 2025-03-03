@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious file permissions modifications using the chattr command, which may indicate an attacker attempting to manipulate file attributes to evade detection or prevent alteration. The chattr command can be used to make files immutable or restrict deletion, which can be leveraged to protect malicious files or disrupt system operations. By monitoring for unusual or unauthorized chattr usage, this analytic helps identify potential tampering with critical files, enabling security teams to quickly respond to and mitigate threats associated with unauthorized file attribute changes. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd File Permissions Modification Via Chattr",
+  "note": "",
+  "outcome": "exactMatch",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_file_permissions_modification_via_chattr",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1222",
+          "name": "File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/"
+        },
+        {
+          "id": "T1222.002",
+          "name": "Chattr",
+          "reference": "https://attack.mitre.org/techniques/T1222/002/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where event.type == \"start\" and process.name == \"chattr\" and process.args : \"-i\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 3600
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["auditd-*"],
+  "tiebreaker_field": "",
+  "timestamp_field": "@timestamp"
+}

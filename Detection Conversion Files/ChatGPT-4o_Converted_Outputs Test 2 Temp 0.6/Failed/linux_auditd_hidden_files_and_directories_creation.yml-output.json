@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious creation of hidden files and directories, which may indicate an attacker's attempt to conceal malicious activities or unauthorized data. Hidden files and directories are often used to evade detection by security tools and administrators, providing a stealthy means for storing malware, logs, or sensitive information. By monitoring for unusual or unauthorized creation of hidden files and directories, this analytic helps identify potential attempts to hide malicious operations, enabling security teams to uncover and address hidden threats effectively. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd Hidden Files And Directories Creation",
+  "note": "",
+  "outcome": "exactMatch",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_hidden_files_and_directories_creation",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.executable with maxspan=5s [file where event.action == \"creation\" and file.path regex~ \".*\\/.\\..*\" and process.command_line regex~ \".*(touch|mkdir|vim|vi|nano).*\" ]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 3600
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["auditd-*"],
+  "tiebreaker_field": "",
+  "timestamp_field": "@timestamp"
+}

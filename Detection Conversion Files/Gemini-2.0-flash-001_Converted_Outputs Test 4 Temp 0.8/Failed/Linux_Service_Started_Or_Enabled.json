@@ -1,0 +1,87 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the creation or enabling of services on\nLinux platforms using the systemctl or service tools. It leverages Endpoint Detection\nand Response (EDR) logs, focusing on process names, parent processes, and command-line\nexecutions. This activity is significant as adversaries may create or modify services\nto maintain persistence or execute malicious payloads. If confirmed malicious, this\nbehavior could lead to persistent access, data theft, ransomware deployment, or\nother damaging outcomes. Monitoring and investigating such activities are crucial\nfor maintaining the security and integrity of the environment.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "ASL 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux Service Started Or Enabled",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1543/003/"
+  ],
+  "risk_score": 42,
+  "rule_id": "e0428212-61b7-11ec-88a3-acde48001122",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Scheduled Tasks",
+    "Gomir",
+    "Endpoint",
+    "T1053.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": [
+            {
+              "id": "T1543.003",
+              "name": "Linux or Mac System Service",
+              "reference": "https://attack.mitre.org/techniques/T1543/003/"
+            }
+          ]
+        },
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.006",
+              "name": "Systemd Timer",
+              "reference": "https://attack.mitre.org/techniques/T1053/006/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 6,
+  "language": "eql",
+  "query": """sequence by host.hostname, user.name
+  [process where event.type == "start" and process.name in ("systemctl", "service") and
+   (process.args : "* start *" or process.args : "* enable *") and not (os.family == "windows") ]
+  """,
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*",
+    "endgame-*",
+    "logs-auditd.*"
+  ]
+}

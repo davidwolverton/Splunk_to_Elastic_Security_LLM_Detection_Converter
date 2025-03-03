@@ -1,0 +1,80 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the behavior of decoding base64-encoded data and passing it to a Linux shell. Additionally, it mitigates the potential damage and protects the organization's systems and data.The detection is made by searching for specific commands in the Splunk query, namely \"base64 -d\" and \"base64 --decode\", within the Endpoint.Processes data model. The analytic also includes a filter for Linux shells. The detection is important because  it indicates the presence of malicious activity since Base64 encoding is commonly used to obfuscate malicious commands or payloads, and decoding it can be a step in running those commands. It suggests that an attacker is attempting to run malicious commands on a Linux system to gain unauthorized access, for data exfiltration, or perform other malicious actions. Converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present based on legitimate software being utilized. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": 7
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Decode Base64 to Shell",
+  "namespace": "default",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Technology Add-ons that are specific to the EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint` data model. Use the Elastic Common Schema (ECS) to normalize the field names and speed up the data modeling process.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1027/T1027.md#atomic-test-1---decode-base64-data-into-script",
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/",
+    "https://linux.die.net/man/1/base64"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_decode_base64_to_shell",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1027",
+    "mitre_attack_id:T1059.004",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/"
+        },
+        {
+          "id": "T1059.004",
+          "name": "Command and Scripting Interpreter: Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and process.name == "base64" and process.args in ("-d", "--decode") and process.parent.name : ("sh", "bash", "zsh", "ksh", "tcsh", "csh", "dash")]
+    [process where event.type == "start" and process.parent.name == "base64" and process.name : ("sh", "bash", "zsh", "ksh", "tcsh", "csh", "dash")]""",
+  "type": "eql",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+  "tiebreaker_field": "process.pid"
+}

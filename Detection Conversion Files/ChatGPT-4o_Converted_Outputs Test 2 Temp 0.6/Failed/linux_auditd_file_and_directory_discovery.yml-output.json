@@ -1,0 +1,63 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd File And Directory Discovery",
+  "description": "The following analytic detects suspicious file and directory discovery activities, which may indicate an attacker's effort to locate sensitive documents and files on a compromised system. This behavior often precedes data exfiltration, as adversaries seek to identify valuable or confidential information for theft. By identifying unusual or unauthorized attempts to browse or enumerate files and directories, this analytic helps security teams detect potential reconnaissance or preparatory actions by an attacker, enabling timely intervention to prevent data breaches or unauthorized access. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/"
+        }
+      ]
+    }
+  ],
+  "risk_score": 50,
+  "severity": "medium",
+  "index": ["linux_auditd"],
+  "language": "eql",
+  "query": "process where process.name in (\"grep\", \"find\") and process.args in (\"*.tif*\", \"*.tiff*\", \"*.gif*\", \"*.jpeg*\", \"*.jpg*\", \"*.jif*\", \"*.jfif*\", \"*.jp2*\", \"*.jpx*\", \"*.j2k*\", \"*.j2c*\", \"*.fpx*\", \"*.pcd*\", \"*.png*\", \"*.flv*\", \"*.pdf*\", \"*.mp4*\", \"*.mp3*\", \"*.gifv*\", \"*.avi*\", \"*.mov*\", \"*.mpeg*\", \"*.wav*\", \"*.doc*\", \"*.docx*\", \"*.xls*\", \"*.xlsx*\", \"*.svg*\")",
+  "type": "eql",
+  "enabled": true,
+  "from": "now-30m",
+  "to": "now",
+  "interval": "5m",
+  "max_signals": 100,
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "license": "",
+  "meta": {},
+  "building_block_type": "",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "setup": "",
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": false,
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "tiebreaker_field": "",
+  "timestamp_field": ""
+}

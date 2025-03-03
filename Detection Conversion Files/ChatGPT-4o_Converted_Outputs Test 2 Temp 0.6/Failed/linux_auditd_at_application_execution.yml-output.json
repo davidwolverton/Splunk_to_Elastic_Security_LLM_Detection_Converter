@@ -1,0 +1,50 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd At Application Execution",
+  "description": "The following analytic detects the execution of the \"At\" application in Linux, which can be used by attackers to create persistence entries on a compromised host. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and parent process names associated with \"at\" or \"atd\". This activity is significant because the \"At\" application can be exploited to maintain unauthorized access or deliver additional malicious payloads. If confirmed malicious, this behavior could lead to data theft, ransomware attacks, or other severe consequences. Immediate investigation is required to determine the legitimacy of the execution and mitigate potential risks. Converted with OpenAI GPT4-o.",
+  "tags": [
+    "OpenAI GPT4-o"
+  ],
+  "author": [
+    "OpenAI GPT4-o"
+  ],
+  "risk_score": 50,
+  "severity": "medium",
+  "index": [
+    "linux_auditd"
+  ],
+  "language": "eql",
+  "query": "process where event.type == \"SYSCALL\" and (process.name == \"at\" or process.name == \"atd\" or process.executable == \"/usr/bin/at\" or process.executable == \"/usr/bin/atd\") and not process.uid == \"daemon\"",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.002",
+              "name": "At",
+              "reference": "https://attack.mitre.org/techniques/T1053/002/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/001/",
+    "https://www.linkedin.com/pulse/getting-attacker-ip-address-from-malicious-linux-job-craig-rowland/"
+  ],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "actions": [],
+  "version": 1
+}

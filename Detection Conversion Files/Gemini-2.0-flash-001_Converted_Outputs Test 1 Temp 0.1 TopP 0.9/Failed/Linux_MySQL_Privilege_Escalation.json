@@ -1,0 +1,63 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of MySQL commands with elevated privileges using sudo, which can lead to privilege escalation. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because it indicates a potential misuse of MySQL to execute system commands as root, which could allow an attacker to gain root shell access. If confirmed malicious, this could result in full control over the affected system, leading to severe security breaches and unauthorized access to sensitive data.",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux MySQL Privilege Escalation",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/mysql/"
+  ],
+  "risk_score": 30,
+  "rule_id": "c0d810f4-230c-44ea-b703-989da02ff145",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Abuse Elevation Control Mechanism: Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 7,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where process.name == "sudo" and event.category == "process" and event.type == "start"]
+    [process where process.name == "mysql" and process.args : "*-e*" and process.args : "*!*" and event.category == "process" and event.type == "start"]""",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

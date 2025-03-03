@@ -1,0 +1,101 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of a Unix shell command designed to wipe root directories on a Linux host. It leverages data from Linux Auditd, focusing on the 'rm' command with force recursive deletion and the '--no-preserve-root' option. This activity is significant as it indicates potential data destruction attempts, often associated with malware like Awfulshred. If confirmed malicious, this behavior could lead to severe data loss, system instability, and compromised integrity of the affected Linux host. Immediate investigation and response are crucial to mitigate potential damage. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "unknown"
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "now-60m",
+    "references": [
+      "https://cert.gov.ua/article/3718487",
+      "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+    ]
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Data Destruction Command",
+  "namespace": "default",
+  "note": "## What\nThe following analytic detects the execution of a Unix shell command designed to wipe root directories on a Linux host. It leverages data from Linux Auditd, focusing on the 'rm' command with force recursive deletion and the '--no-preserve-root' option. This activity is significant as it indicates potential data destruction attempts, often associated with malware like Awfulshred. If confirmed malicious, this behavior could lead to severe data loss, system instability, and compromised integrity of the affected Linux host. Immediate investigation and response are crucial to mitigate potential damage.\n\n## Why\nData destruction attempts can lead to severe data loss, system instability, and compromised integrity of the affected Linux host.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.command_line",
+    "host.name"
+  ],
+  "response_actions": [],
+  "risk_score": 73,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_data_destruction_command",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "AwfulShred",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1485"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name, process.pid\n  [process where event.type == \"start\" and process.name == \"rm\" and process.args contains \"-rf\" and process.args contains \"--no-preserve-root\"]\n  [file where event.type == \"deletion\" and file.path != null]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "auditbeat-*",
+    "logs-system.*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

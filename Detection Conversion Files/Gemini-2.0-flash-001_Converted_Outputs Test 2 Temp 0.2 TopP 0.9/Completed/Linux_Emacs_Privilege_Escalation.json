@@ -1,0 +1,67 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of Emacs with elevated privileges using the `sudo` command and the `--eval` option. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line arguments. This activity is significant because it indicates a potential privilege escalation attempt, where a user could gain root access by running Emacs with elevated permissions. If confirmed malicious, this could allow an attacker to execute arbitrary commands as root, leading to full system compromise and unauthorized access to sensitive information.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Emacs Privilege Escalation",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-*",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/emacs/",
+    "https://en.wikipedia.org/wiki/Emacs"
+  ],
+  "risk_score": 50,
+  "rule_id": "92033cab-1871-483d-a03b-a7ce98665cfc",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"sudo\" and process.args == \"emacs\" and process.args == \"--eval\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "default"
+}

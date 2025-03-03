@@ -1,0 +1,42 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the \"sudo\" or \"su\" command on a Linux operating system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and parent process names. This activity is significant because \"sudo\" and \"su\" commands are commonly used by adversaries to elevate privileges, potentially leading to unauthorized access or control over the system. If confirmed malicious, this activity could allow attackers to execute commands with root privileges, leading to severe security breaches, data exfiltration, or further system compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Sudo OR Su Execution",
+  "query": "process where process.name in (\"sudo\", \"su\") or process.parent.name in (\"sudo\", \"su\")",
+  "references": ["https://attack.mitre.org/techniques/T1548/003/"],
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

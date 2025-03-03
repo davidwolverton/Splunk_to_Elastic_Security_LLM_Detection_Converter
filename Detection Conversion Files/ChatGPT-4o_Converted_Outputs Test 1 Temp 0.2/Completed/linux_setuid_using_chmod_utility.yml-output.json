@@ -1,0 +1,44 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the chmod utility to set the SUID or SGID bit on files, which can allow users to temporarily gain root or group-level access. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line arguments related to chmod. This activity is significant as it can indicate an attempt to escalate privileges or maintain persistence on a system. If confirmed malicious, an attacker could gain elevated access, potentially compromising sensitive data or critical system functions. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "index": ["logs-endpoint-*"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Setuid Using Chmod Utility",
+  "query": "process where process.name == \"chmod\" and (process.command_line : \"* g+s *\" or process.command_line : \"* u+s *\" or process.command_line : \"* 4777 *\" or process.command_line : \"* 4577 *\")",
+  "references": ["https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/"],
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Living Off The Land"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.001",
+              "name": "Setuid and Setgid",
+              "reference": "https://attack.mitre.org/techniques/T1548/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

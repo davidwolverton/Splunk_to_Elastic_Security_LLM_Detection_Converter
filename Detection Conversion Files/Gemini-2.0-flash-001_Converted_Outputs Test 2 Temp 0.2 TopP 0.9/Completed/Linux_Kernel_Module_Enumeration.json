@@ -1,0 +1,70 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic identifies the use of the 'kmod' process to list kernel modules on a Linux system. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. While listing kernel modules is not inherently malicious, it can be a precursor to loading unauthorized modules using 'insmod'. If confirmed malicious, this activity could allow an attacker to load kernel modules, potentially leading to privilege escalation, persistence, or other malicious actions within the system. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "meta": {
+    "version": "7"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Kernel Module Enumeration",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Agent integrations that are specific to the EDR product. The logs must also be mapped to the Elastic Common Schema (ECS).",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://man7.org/linux/man-pages/man8/kmod.8.html"
+  ],
+  "risk_score": 30,
+  "rule_id": "linux_kernel_module_enumeration",
+  "severity": "low",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:XorDDos",
+    "analytic_story:Linux Rootkit",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1082",
+    "mitre_attack_id:T1014",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/"
+        },
+        {
+          "id": "T1014",
+          "name": "Rootkit",
+          "reference": "https://attack.mitre.org/techniques/T1014/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"kmod\" and process.args in (\"lsmod\", \"list\")]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

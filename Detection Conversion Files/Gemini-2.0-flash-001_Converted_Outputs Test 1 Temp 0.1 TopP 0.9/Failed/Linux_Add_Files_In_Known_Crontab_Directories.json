@@ -1,0 +1,71 @@
+{
+  "actions": [],
+  "alias_purpose": "rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects unauthorized file creation in known crontab directories on Unix-based systems. It leverages filesystem data to identify new files in directories such as /etc/cron* and /var/spool/cron/*. This activity is significant as it may indicate an attempt by threat actors or malware to establish persistence on a compromised host. If confirmed malicious, this could allow attackers to execute arbitrary code at scheduled intervals, potentially leading to further system compromise and unauthorized access to sensitive information. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can create file in crontab folders for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Add Files In Known Crontab Directories",
+  "note": "Google Gemini 2.0 Flash 001: This rule detects unauthorized file creation in known crontab directories on Unix-based systems.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.sandflysecurity.com/blog/detecting-cronrat-malware-on-linux-instantly/",
+    "https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_add_files_in_known_crontab_directories",
+  "severity": "low",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:XorDDos",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Scheduled Tasks",
+    "analytic_story:Linux Persistence Techniques",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1053.003",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/"
+        },
+        {
+          "id": "T1053.003",
+          "name": "Scheduled Task/Job: Cron",
+          "reference": "https://attack.mitre.org/techniques/T1053/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"cron\"]\n  [file where event.type == \"creation\" and file.path : (\"/etc/cron*\", \"/var/spool/cron/*\")]",
+  "index": [
+    "filebeat-*",
+    "logs-endpoint.events.*"
+  ]
+}

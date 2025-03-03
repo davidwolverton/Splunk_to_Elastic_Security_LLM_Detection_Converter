@@ -1,0 +1,80 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the execution of Ruby commands with elevated privileges on a Linux system. It identifies processes where Ruby is used with the `-e` flag to execute commands via `sudo`, leveraging Endpoint Detection and Response (EDR) telemetry. This activity is significant because it indicates a potential privilege escalation attempt, allowing a user to execute commands as root. If confirmed malicious, this could lead to full system compromise, enabling an attacker to gain root access, execute arbitrary commands, and maintain persistent control over the affected system. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": 7
+  },
+  "name": "Google Gemini 2.0 Flash 001 Linux Ruby Privilege Escalation",
+  "namespace": "default",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Agent integrations that are specific to the EDR product.",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/ruby/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.command_line",
+    "process.parent.name"
+  ],
+  "risk_score": 30,
+  "risk_score_mapping": [],
+  "rule_id": "linux_ruby_privilege_escalation",
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "linux_ruby_privilege_escalation_timeline",
+  "timeline_title": "Linux Ruby Privilege Escalation Timeline",
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, user.id\n  [process where event.type == \"start\" and process.name == \"sudo\" and process.args == \"ruby\" and process.args == \"-e\" ]\n  [process where event.type == \"start\" and process.name == \"ruby\" and process.args == \"-e\" ]",
+  "type": "eql",
+  "data_view_id": "global",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

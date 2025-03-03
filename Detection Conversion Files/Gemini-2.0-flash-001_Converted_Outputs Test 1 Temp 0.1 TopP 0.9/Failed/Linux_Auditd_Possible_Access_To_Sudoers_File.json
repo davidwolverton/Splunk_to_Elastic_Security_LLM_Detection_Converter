@@ -1,0 +1,78 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects potential access or modification of the /etc/sudoers file on a Linux system. It leverages data from Linux Auditd, focusing on processes like \"cat,\" \"nano,\" \"vim,\" and \"vi\" accessing the /etc/sudoers file. This activity is significant because the sudoers file controls user permissions for executing commands with elevated privileges. If confirmed malicious, an attacker could gain persistence or escalate privileges, compromising the security of the targeted host.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Possible Access To Sudoers File",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted from Splunk SPL to Elastic EQL.",
+  "references": [
+    "https://attack.mitre.org/techniques/T1548/003/",
+    "https://web.archive.org/web/20210708035426/https://www.cobaltstrike.com/downloads/csmanual43.pdf"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_auditd_possible_access_to_sudoers_file",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Compromised Linux Host",
+    "Linux Persistence Techniques",
+    "China-Nexus Threat Activity",
+    "Earth Estries",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.pid
+    [process where event.category == "process" and event.type == "start" and
+     process.name in ("cat", "nano", "vim", "vi") and
+     process.args == "/etc/sudoers"]
+    [file where event.category == "file" and event.type == "access" and
+     file.path == "/etc/sudoers"]""",
+  "index": [
+    "auditbeat-*",
+    "logs-system.auditd-*",
+    "filebeat-*",
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

@@ -1,0 +1,75 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "alias_target_id": "string",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "building_block_type": "string",
+  "description": "The following analytic detects the suspicious editing of cron jobs in Linux using the crontab command-line parameter (-e). It identifies this activity by monitoring command-line executions involving 'crontab' and the edit parameter. This behavior is significant for a SOC as cron job manipulations can indicate unauthorized persistence attempts or scheduled malicious actions. If confirmed malicious, this activity could lead to system compromise, unauthorized access, or broader network compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6h",
+  "interval": "5m",
+  "investigation_fields": {},
+  "license": "string",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Auditd Edit Cron Table Parameter",
+  "namespace": "string",
+  "note": "Converted with OpenAI GPT4-o",
+  "outcome": "exactMatch",
+  "output_index": "string",
+  "references": ["https://attack.mitre.org/techniques/T1053/003/"],
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "f4bb7321-7e64-4d1e-b1aa-21f8b019a91f",
+  "rule_name_override": "string",
+  "setup": "string",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Scheduled Tasks", "Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Living Off The Land", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053.003",
+          "name": "Cron Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "string",
+  "timeline_title": "string",
+  "timestamp_override": "event.ingested",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 42,
+  "language": "eql",
+  "query": "process where event.action == \"SYSCALL\" and (process.name : \"crontab\" or process.executable : \"*/crontab\") and event.outcome == \"success\" and not user.id : \"daemon\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "string",
+  "event_category_override": "string",
+  "filters": [],
+  "index": ["auditbeat-*"],
+  "tiebreaker_field": "string",
+  "timestamp_field": "@timestamp"
+}

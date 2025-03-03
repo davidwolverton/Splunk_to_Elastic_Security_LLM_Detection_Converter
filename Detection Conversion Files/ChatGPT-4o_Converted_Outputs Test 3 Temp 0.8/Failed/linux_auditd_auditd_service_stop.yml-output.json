@@ -1,0 +1,82 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o", "Teoderick Contreras", "Splunk"],
+  "description": "The following analytic detects the suspicious auditd service stop. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-6m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": ["dest", "type", "pid", "UID", "comm", "exe", "unit", "firstTime", "lastTime"]
+  },
+  "language": "eql",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Auditd Auditd Service Stop",
+  "note": "",
+  "outcome": "exactMatch",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "6cb9d0e1-eabe-41de-a11a-5efade354e9d",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "OpenAI GPT4-o",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1489",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 4,
+  "query": "process where event.action == \"end\" and process.name : \"auditd\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": ["dest"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["linux_auditd"],
+  "tiebreaker_field": "",
+  "timestamp_field": ""
+}

@@ -1,0 +1,63 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the 'doas' tool on a Linux host. This tool allows standard users to perform tasks with root privileges, similar to 'sudo'. The detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant as 'doas' can be exploited by adversaries to gain elevated privileges on a compromised host. If confirmed malicious, this could lead to unauthorized administrative access, potentially compromising the entire system.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Doas Tool Execution",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted from Splunk SPL to Elastic EQL.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://wiki.gentoo.org/wiki/Doas",
+    "https://www.makeuseof.com/how-to-install-and-use-doas/"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_doas_tool_execution",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1548.003",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Abuse Elevation Control Mechanism: Sudo and UAC Bypass",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [\n    process where event.type == \"start\" and process.name == \"doas\"\n  ]\n  [process where event.type == \"end\"]\n",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*",
+    "winlogbeat-*",
+    "logs-system.*"
+  ]
+}

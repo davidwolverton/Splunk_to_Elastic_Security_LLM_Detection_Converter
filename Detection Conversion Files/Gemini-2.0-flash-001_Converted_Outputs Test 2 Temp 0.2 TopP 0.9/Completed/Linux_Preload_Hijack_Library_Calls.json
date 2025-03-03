@@ -1,0 +1,64 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the LD_PRELOAD environment variable to hijack or hook library functions on a Linux platform. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because adversaries, malware authors, and red teamers commonly use this technique to gain elevated privileges and establish persistence on a compromised machine. If confirmed malicious, this behavior could allow attackers to execute arbitrary code, escalate privileges, and maintain long-term access to the system. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Preload Hijack Library Calls",
+  "namespace": "default",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Agent integrations that are specific to the EDR product. The logs must also be mapped to the Elastic Common Schema (ECS).",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://compilepeace.medium.com/memory-malware-part-0x2-writing-userland-rootkits-via-ld-preload-30121c8343d5"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_preload_hijack_library_calls",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:China-Nexus Threat Activity",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Earth Estries",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1574.006",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574.006",
+          "name": "Hijack Execution Flow: LD_PRELOAD",
+          "reference": "https://attack.mitre.org/techniques/T1574/006/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"ld-linux.so.2\" and process.args like \"LD_PRELOAD*\"",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

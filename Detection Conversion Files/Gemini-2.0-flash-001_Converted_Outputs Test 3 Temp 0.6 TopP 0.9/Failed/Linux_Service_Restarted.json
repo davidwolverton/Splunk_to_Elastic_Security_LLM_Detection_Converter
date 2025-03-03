@@ -1,0 +1,131 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic detects the restarting or re-enabling of services on Linux systems using the `systemctl` or `service` commands. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and command-line execution logs. This activity is significant as adversaries may use it to maintain persistence or execute unauthorized actions. If confirmed malicious, this behavior could lead to repeated execution of malicious payloads, unauthorized access, or data destruction. Security analysts should investigate these events to mitigate risks and prevent further compromise.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 5
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Service Restarted",
+  "namespace": "default",
+  "note": "The following analytic detects the restarting or re-enabling of services on Linux systems using the `systemctl` or `service` commands. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and command-line execution logs. This activity is significant as adversaries may use it to maintain persistence or execute unauthorized actions. If confirmed malicious, this behavior could lead to repeated execution of malicious payloads, unauthorized access, or data destruction. Security analysts should investigate these events to mitigate risks and prevent further compromise.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1543/003/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    },
+    {
+      "name": "process.parent.name",
+      "type": "string"
+    },
+    {
+      "name": "process.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.parent.pid",
+      "type": "long"
+    },
+    {
+      "name": "process.entity_id",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "linux_service_restarted",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AwfulShred",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Data Destruction",
+    "Linux Persistence Techniques",
+    "Scheduled Tasks",
+    "Gomir",
+    "Endpoint",
+    "T1053.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543.003",
+          "name": "Create or Modify System Process: Linux and Mac System Services",
+          "reference": "https://attack.mitre.org/techniques/T1543/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname, user.name\n  [process where process.name in (\"systemctl\", \"service\") and process.command_line != null and process.command_line : (\"*restart*\", \"*reload*\", \"*reenable*\")]\n",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.category :\"process\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

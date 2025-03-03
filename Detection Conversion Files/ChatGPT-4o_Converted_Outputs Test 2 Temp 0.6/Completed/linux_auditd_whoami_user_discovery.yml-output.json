@@ -1,0 +1,48 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Whoami User Discovery",
+  "description": "The following analytic detects the suspicious use of the whoami command, which may indicate an attacker trying to gather information about the current user account on a compromised system. The whoami command is commonly used to verify user privileges and identity, especially during initial stages of an attack to assess the level of access. By monitoring for unusual or unauthorized executions of whoami, this analytic helps in identifying potential reconnaissance activities, enabling security teams to take action before the attacker escalates privileges or conducts further malicious operations. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "medium",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where event.action == 'executed' and (process.name == 'whoami' or process.executable == '*whoami')",
+  "index": ["auditbeat-*"],
+  "interval": "5m",
+  "enabled": true,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "exceptions_list": [],
+  "max_signals": 100,
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-6m",
+  "to": "now",
+  "version": 1,
+  "throttle": "no_actions",
+  "actions": [],
+  "building_block_type": "default"
+}

@@ -1,0 +1,109 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic detects potential access or modification of the /etc/sudoers file on a Linux system. It leverages data from Linux Auditd, focusing on processes like \"cat,\" \"nano,\" \"vim,\" and \"vi\" accessing the /etc/sudoers file. This activity is significant because the sudoers file controls user permissions for executing commands with elevated privileges. If confirmed malicious, an attacker could gain persistence or escalate privileges, compromising the security of the targeted host. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 7
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Possible Access To Sudoers File",
+  "namespace": "default",
+  "note": null,
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1548/003/",
+    "https://web.archive.org/web/20210708035426/https://www.cobaltstrike.com/downloads/csmanual43.pdf"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "host",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_possible_access_to_sudoers_file",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Endpoint",
+    "Linux Privilege Escalation",
+    "Compromised Linux Host",
+    "Linux Persistence Techniques",
+    "China-Nexus Threat Activity",
+    "Earth Estries",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [file where event.type == \"start\" and file.path : \"/etc/sudoers*\" and process.name in (\"cat\", \"nano\", \"vim\", \"vi\")]\n  [process where event.type == \"info\"]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.dataset : \"auditd.log\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "logs-system.auditd-*",
+    "filebeat-*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

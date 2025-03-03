@@ -1,0 +1,75 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the base64 decode command on Linux systems, which is often used to deobfuscate files. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions that include \"base64 -d\" or \"base64 --decode\". This activity is significant as it may indicate an attempt to hide malicious payloads or scripts. If confirmed malicious, an attacker could use this technique to execute hidden code, potentially leading to unauthorized access, data exfiltration, or further system compromise.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present and will require some tuning based on processes. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "meta": {
+    "version": "7"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Obfuscated Files or Information Base64 Decode",
+  "namespace": "default",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1027/T1027.md#atomic-test-1---decode-base64-data-into-script",
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/",
+    "https://linux.die.net/man/1/base64"
+  ],
+  "risk_score": 47,
+  "rule_id": "303b38b2-c03f-44e2-8f41-4594606fcfc7",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1027",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 7,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where process.executable : \"/usr/bin/base64\" and process.args : \"-d\"]\n",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-system.*"
+  ],
+  "data_view_id": "global",
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

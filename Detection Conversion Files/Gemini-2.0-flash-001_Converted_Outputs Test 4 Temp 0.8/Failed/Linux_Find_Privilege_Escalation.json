@@ -1,0 +1,109 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'find' command with 'sudo' and '-exec' options, which can indicate an attempt to escalate privileges on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line arguments. This activity is significant because it can allow a user to execute system commands as root, potentially leading to a root shell. If confirmed malicious, this could enable an attacker to gain full control over the system, leading to severe security breaches and unauthorized access to sensitive data.",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Find Privilege Escalation",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/find/",
+    "https://en.wikipedia.org/wiki/Find_(Unix)"
+  ],
+  "risk_score": 47,
+  "rule_id": "2ff4e0c2-8256-4143-9c07-1e39c7231111",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.hostname
+  [process where event.type == "start" and process.name == "find" and process.args contains "sudo" and process.args contains "-exec"]""",
+  "index": [
+    "logs-endpoint.events.*",
+    "auditbeat-*",
+    "logs-system.*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "timestamp_override": null,
+  "exceptions_list": [],
+  "false_positives_query": null,
+  "filters": [],
+  "note_timeline": null,
+  "anomaly_threshold": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "event_category_override": null,
+  "output_index": ".siem-signals-default",
+  "machine_learning_job_id": null,
+  "environment": null,
+  "threat_filters": [],
+  "threat_index": null,
+  "references_filters": [],
+  "references_index": null,
+  "related_integrations": [],
+  "max_signals": 10000,
+  "detection_engine_id": "eql",
+  "event_properties": null,
+  "output_type": "signal",
+  "advanced_query": null,
+  "alert_suppression": {
+    "enabled": false,
+    "terms": []
+  },
+  "data_view_id": null,
+  "investigation_fields": [],
+  "tiebreaker_field": null,
+  "timestamp_field": null,
+  "alerts_filter": null,
+  "alerts_filter_fields": [],
+  "alerts_filter_types": [],
+  "alias_purpose": null,
+  "setup": null,
+  "throttle": null,
+  "version_es": null,
+  "building_block": null,
+  "rule_name_override": null,
+  "tiebreaker_override": null,
+  "building_block_fields": [],
+  "building_block_field_values": [],
+  "building_block_field_values_types": []
+}

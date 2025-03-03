@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects instances where Java, Apache, or Tomcat processes spawn a Linux shell, which may indicate exploitation attempts, such as those related to CVE-2021-44228 (Log4Shell). This detection leverages Endpoint Detection and Response (EDR) telemetry, focusing on process names and parent-child process relationships. This activity is significant as it can signify a compromised Java application, potentially leading to unauthorized shell access. If confirmed malicious, attackers could execute arbitrary commands, escalate privileges, or maintain persistent access, posing a severe threat to the environment.  Rule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Filtering may be required on internal developer build systems or classify assets as web facing and restrict the analytic based on asset type."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001 Linux Java Spawning Shell",
+  "note": "The following analytic detects instances where Java, Apache, or Tomcat processes spawn a Linux shell, which may indicate exploitation attempts, such as those related to CVE-2021-44228 (Log4Shell). This detection leverages Endpoint Detection and Response (EDR) telemetry, focusing on process names and parent-child process relationships. This activity is significant as it can signify a compromised Java application, potentially leading to unauthorized shell access. If confirmed malicious, attackers could execute arbitrary commands, escalate privileges, or maintain persistent access, posing a severe threat to the environment.",
+  "references": [
+    "https://blog.netlab.360.com/ten-families-of-malicious-samples-are-spreading-using-the-log4j2-vulnerability-now/",
+    "https://gist.github.com/olafhartong/916ebc673ba066537740164f7e7e1d72"
+  ],
+  "risk_score": 40,
+  "rule_id": "7b09db8a-5c20-11ec-9945-acde48001122",
+  "severity": "high",
+  "tags": [
+    "Data Destruction",
+    "Spring4Shell CVE-2022-22965",
+    "Hermetic Wiper",
+    "Log4Shell CVE-2021-44228",
+    "Endpoint",
+    "CVE-2021-44228",
+    "T1190",
+    "T1133",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "reference": "https://attack.mitre.org/techniques/T1190/"
+        },
+        {
+          "id": "T1133",
+          "name": "External Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1133/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and\n   process.name : (\"java\", \"apache\", \"tomcat\")\n  ]\n  [process where event.type == \"start\" and\n   process.parent.name : (\"java\", \"apache\", \"tomcat\") and\n   process.executable : (\"/bin/sh\", \"/bin/bash\", \"/usr/bin/sh\", \"/usr/bin/bash\", \"/bin/zsh\", \"/usr/bin/zsh\", \"/bin/ksh\", \"/usr/bin/ksh\", \"/bin/csh\", \"/usr/bin/csh\", \"/bin/tcsh\", \"/usr/bin/tcsh\", \"/bin/dash\", \"/usr/bin/dash\")\n  ]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag",
+    "Splunk",
+    "0xC0FFEEEE",
+    "Github Community"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the `curl` command with proxy-related arguments such as `-x`, `socks`, `--preproxy`, and `--proxy`. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process details. This activity is significant as it may indicate an adversary attempting to use a proxy to evade network monitoring and obscure their actions. If confirmed malicious, this behavior could allow attackers to bypass security controls, making it difficult to track their activities and potentially leading to unauthorized data access or exfiltration. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives may be present based on proxy usage internally. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": "7"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Proxy Socks Curl",
+  "namespace": "default",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Technology Add-ons that are specific to the EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint` data model. Use the Elastic Common Schema (ECS) to normalize the field names and speed up the data modeling process.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.offensive-security.com/metasploit-unleashed/proxytunnels/",
+    "https://curl.se/docs/manpage.html",
+    "https://en.wikipedia.org/wiki/SOCKS",
+    "https://oxylabs.io/blog/curl-with-proxy",
+    "https://reqbin.com/req/c-ddxflki5/curl-proxy-server#:~:text=To%20use%20a%20proxy%20with,be%20URL%20decoded%20by%20Curl.",
+    "https://gtfobins.github.io/gtfobins/curl/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 56,
+  "risk_score_mapping": [
+    {
+      "field": "user.name",
+      "operator": "exists",
+      "risk_score": 56,
+      "value": "*"
+    },
+    {
+      "field": "host.hostname",
+      "operator": "exists",
+      "risk_score": 56,
+      "value": "*"
+    }
+  ],
+  "rule_id": "google_gemini_2_flash_001_linux_proxy_socks_curl",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Ingress Tool Transfer",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1090",
+    "mitre_attack_id:T1095",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1095",
+          "name": "Non-Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1095/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.id, user.id
+  [process where event.type == "start" and process.name == "curl" and process.command_line != null and
+   (process.command_line : "*-x *" or process.command_line : "*socks4a://*" or process.command_line : "*socks5h://*" or process.command_line : "*socks4://*" or process.command_line : "*socks5://*" or process.command_line : "*--preproxy *" or process.command_line : "*--proxy*")]
+  [process where event.type == "end"]""",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.category : process and event.dataset : process",
+      "exists": false
+    }
+  ],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

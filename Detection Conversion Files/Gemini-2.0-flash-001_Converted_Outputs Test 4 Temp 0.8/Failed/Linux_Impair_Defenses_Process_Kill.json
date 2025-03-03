@@ -1,0 +1,95 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic identifies the execution of the 'pkill' command, which is used to terminate processes on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant because threat actors often use 'pkill' to disable security defenses or terminate critical processes, facilitating further malicious actions. If confirmed malicious, this behavior could lead to the disruption of security applications, enabling attackers to evade detection and potentially corrupt or destroy files on the targeted system. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Network admin can terminate a process using this Linux command. Filter is needed."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": 5
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Impair Defenses Process Kill",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Splunk Technology Add-ons that are specific to the EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint` data model. Use the Splunk Common Information Model (CIM) to normalize the field names and speed up the data modeling process.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    }
+  ],
+  "risk_score": 47,
+  "rule_id": "435c6b33-adf9-47fe-be87-8e29fd6654f5",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story: AwfulShred",
+    "analytic_story: Data Destruction",
+    "asset_type: Endpoint",
+    "mitre_attack_id: T1562.001",
+    "product: Splunk Enterprise",
+    "product: Splunk Enterprise Security",
+    "product: Splunk Cloud",
+    "security_domain: endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/"
+        },
+        {
+          "id": "T1562.001",
+          "name": "Disable or Modify Tools",
+          "reference": "https://attack.mitre.org/techniques/T1562/001/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, user.id\n  [process where process.name in (\"pkill\", \"pgrep\") and process.args : \"pkill\"]",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+  "data_view_id": "global",
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

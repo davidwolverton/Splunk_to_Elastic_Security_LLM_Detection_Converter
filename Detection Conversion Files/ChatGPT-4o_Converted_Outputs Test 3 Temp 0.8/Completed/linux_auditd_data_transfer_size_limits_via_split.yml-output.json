@@ -1,0 +1,35 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Data Transfer Size Limits Via Split",
+  "description": "The following analytic detects suspicious data transfer activities that involve the use of the `split` syscall, potentially indicating an attempt to evade detection by breaking large files into smaller parts. Attackers may use this technique to bypass size-based security controls, facilitating the covert exfiltration of sensitive data. By monitoring for unusual or unauthorized use of the `split` syscall, this analytic helps identify potential data exfiltration attempts, allowing security teams to intervene and prevent the unauthorized transfer of critical information from the network. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "risk_score": 49,
+  "severity": "medium",
+  "interval": "5m",
+  "enabled": true,
+  "index": ["auditd-*"],
+  "type": "eql",
+  "query": "process where event.action == \"execve\" and process.command_line : \"*split*\" and process.command_line : \"*-b *\" | stats count(), min(@timestamp) as firstTime, max(@timestamp) as lastTime by process.args_count, process.command_line, host.name",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1030",
+          "name": "Data Transfer Size Limits",
+          "reference": "https://attack.mitre.org/techniques/T1030/"
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "language": "eql",
+  "max_signals": 100,
+  "exceptions_list": []
+}

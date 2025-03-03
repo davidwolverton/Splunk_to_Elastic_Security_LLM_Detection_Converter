@@ -1,0 +1,51 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects potential tampering with cronjob files on a Linux system by identifying 'echo' commands that append code to existing cronjob files. It leverages logs from Endpoint Detection and Response (EDR) agents, focusing on process names, parent processes, and command-line executions. This activity is significant because adversaries often use it for persistence or privilege escalation. If confirmed malicious, this could allow attackers to execute unauthorized code automatically, leading to system compromises and unauthorized data access, thereby impacting business operations and data integrity. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Legitimate actions by administrators or network operators."],
+  "from": "now-360s",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "meta": {
+    "kibana_siem_app_url": "",
+    "search_version": 1
+  },
+  "name": "OpenAI GPT4-o Linux Possible Append Cronjob Entry on Existing Cronjob File",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/003/",
+    "https://blog.aquasec.com/threat-alert-kinsing-malware-container-vulnerability",
+    "https://www.intezer.com/blog/research/kaiji-new-chinese-linux-malware-turning-to-golang/"
+  ],
+  "risk_score": 50,
+  "rule_id": "b5b91200-5f27-11ec-bb4e-acde48001122",
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "XorDDos", "Linux Living Off The Land", "Linux Privilege Escalation", "Scheduled Tasks", "Linux Persistence Techniques"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053.003",
+          "name": "Cron Jobs",
+          "reference": "https://attack.mitre.org/techniques/T1053/003/"
+        }
+      ]
+    }
+  ],
+  "timestamp_override": "event.ingested",
+  "type": "eql",
+  "language": "eql",
+  "query": """
+    process where process.executable : "*echo*" and process.executable : ("*/etc/cron*", "*/var/spool/cron/*", "*/etc/anacrontab*")
+    | unique_count(process.id) by process.name, process.parent.name, process.user.name
+  """
+}

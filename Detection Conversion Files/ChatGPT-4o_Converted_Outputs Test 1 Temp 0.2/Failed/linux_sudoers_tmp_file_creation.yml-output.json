@@ -1,0 +1,52 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the creation of the \"sudoers.tmp\" file, which occurs when editing the /etc/sudoers file using visudo or another editor on a Linux platform. This detection leverages filesystem data to identify the presence of \"sudoers.tmp\" files. Monitoring this activity is crucial as adversaries may exploit it to gain elevated privileges on a compromised host. If confirmed malicious, this activity could allow attackers to modify sudoers configurations, potentially granting them unauthorized access to execute commands as other users, including root, thereby compromising the system's security. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Sudoers Tmp File Creation",
+  "references": ["https://forum.ubuntuusers.de/topic/sudo-visudo-gibt-etc-sudoers-tmp/"],
+  "risk_score": 72,
+  "risk_score_mapping": [],
+  "rule_id": "be254a5c-63e7-11ec-89da-acde48001122",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "China-Nexus Threat Activity", "Linux Persistence Techniques", "Linux Privilege Escalation", "Earth Estries", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "language": "eql",
+  "query": "file where file.path : \"*sudoers.tmp*\"",
+  "index": ["filebeat-*", "logs-*"],
+  "version": 1
+}

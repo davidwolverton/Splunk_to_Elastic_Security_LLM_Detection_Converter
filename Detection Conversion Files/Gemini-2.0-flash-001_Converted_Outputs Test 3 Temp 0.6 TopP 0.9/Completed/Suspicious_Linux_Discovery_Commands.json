@@ -1,0 +1,64 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "description": "The following analytic detects the execution of suspicious bash commands commonly used in scripts like AutoSUID, LinEnum, and LinPeas for system discovery on a Linux host. It leverages Endpoint Detection and Response (EDR) data, specifically looking for a high number of distinct commands executed within a short time frame. This activity is significant as it often precedes privilege escalation or other malicious actions. If confirmed malicious, an attacker could gain detailed system information, identify vulnerabilities, and potentially escalate privileges, posing a severe threat to the environment.\n\nNote: This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Unless an administrator is using these commands to troubleshoot or audit a system, the execution of these commands should be monitored."
+  ],
+  "from": "now-5m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001 Suspicious Linux Discovery Commands",
+  "note": "The following analytic detects the execution of suspicious bash commands commonly used in scripts like AutoSUID, LinEnum, and LinPeas for system discovery on a Linux host. It leverages Endpoint Detection and Response (EDR) data, specifically looking for a high number of distinct commands executed within a short time frame. This activity is significant as it often precedes privilege escalation or other malicious actions. If confirmed malicious, an attacker could gain detailed system information, identify vulnerabilities, and potentially escalate privileges, posing a severe threat to the environment.",
+  "references": [
+    "https://attack.mitre.org/matrices/enterprise/linux/",
+    "https://attack.mitre.org/techniques/T1059/004/",
+    "https://github.com/IvanGlinkin/AutoSUID",
+    "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS",
+    "https://github.com/rebootuser/LinEnum"
+  ],
+  "risk_score": 47,
+  "rule_id": "suspicious_linux_discovery_commands",
+  "severity": "high",
+  "tags": [
+    "Linux Post-Exploitation",
+    "Endpoint",
+    "T1059.004",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1059.004",
+          "name": "Command and Scripting Interpreter: Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name in (\"find\", \"locate\", \"which\", \"whereis\", \"uname\", \"id\", \"w\", \"whoami\", \"groups\", \"cat\", \"ls\", \"ps\", \"netstat\", \"ss\", \"ip\", \"ifconfig\", \"arp\", \"route\", \"df\", \"du\", \"mount\", \"env\", \"set\", \"history\", \"sudo\", \"su\", \"rpm\", \"dpkg\", \"yum\", \"apt-get\", \"head\", \"tail\", \"more\", \"less\", \"wc\", \"grep\", \"awk\", \"sed\", \"cut\", \"sort\", \"uniq\", \"tr\", \"xargs\", \"tee\", \"chmod\", \"chown\", \"passwd\", \"useradd\", \"userdel\", \"groupadd\", \"groupdel\", \"crontab\", \"ssh\", \"scp\", \"sftp\", \"wget\", \"curl\", \"nc\", \"nmap\", \"lsof\", \"iptables\", \"netcat\", \"python\", \"perl\", \"php\", \"ruby\", \"lua\", \"java\", \"javac\", \"gcc\", \"g++\")\n   and not process.parent.name in (\"sshd\", \"sudo\", \"su\", \"doas\", \"tmux\", \"screen\", \"systemd\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\", \"gnome-terminal-server\", \"konsole\", \"xterm\", \"rxvt\", \"terminator\", \"kitty\", \"wezterm\", \"alacritty\", \"iTerm.app\", \"login\", \"bash\", \"zsh\", \"sh\", \"dash\", \"fish\", \"tcsh\", \"csh\", \"ksh\", \"rlogin\", \"telnet\", \"mosh\", \"screen\", \"tmux\", \"byobu\", \"nohup\", \"at\", \"batch\", \"cron\", \"anacron\", \"systemd-timer\", \"launchd\", \"launchctl\", \"xinit\", \"startx\", \"slim\", \"gdm\", \"lightdm\", \"sddm\", \"kdm\", \"xdm\", \"displaymanager\", \"console-kit-daemon\", \"upstart\", \"init\", \"systemd-logind\", \"pam_systemd\", \"login\", \"agetty\", \"mingetty\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\", \"gnome-terminal-server\", \"konsole\", \"xterm\", \"rxvt\", \"terminator\", \"kitty\", \"wezterm\", \"alacritty\", \"iTerm.app\", \"login\", \"bash\", \"zsh\", \"sh\", \"dash\", \"fish\", \"tcsh\", \"csh\", \"ksh\", \"rlogin\", \"telnet\", \"mosh\", \"screen\", \"tmux\", \"byobu\", \"nohup\", \"at\", \"batch\", \"cron\", \"anacron\", \"systemd-timer\", \"launchd\", \"launchctl\", \"xinit\", \"startx\", \"slim\", \"gdm\", \"lightdm\", \"sddm\", \"kdm\", \"xdm\", \"displaymanager\", \"console-kit-daemon\", \"upstart\", \"init\", \"systemd-logind\", \"pam_systemd\", \"login\", \"agetty\", \"mingetty\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\")] with runs=3\n  [process where event.type == \"start\" and process.name in (\"find\", \"locate\", \"which\", \"whereis\", \"uname\", \"id\", \"w\", \"whoami\", \"groups\", \"cat\", \"ls\", \"ps\", \"netstat\", \"ss\", \"ip\", \"ifconfig\", \"arp\", \"route\", \"df\", \"du\", \"mount\", \"env\", \"set\", \"history\", \"sudo\", \"su\", \"rpm\", \"dpkg\", \"yum\", \"apt-get\", \"head\", \"tail\", \"more\", \"less\", \"wc\", \"grep\", \"awk\", \"sed\", \"cut\", \"sort\", \"uniq\", \"tr\", \"xargs\", \"tee\", \"chmod\", \"chown\", \"passwd\", \"useradd\", \"userdel\", \"groupadd\", \"groupdel\", \"crontab\", \"ssh\", \"scp\", \"sftp\", \"wget\", \"curl\", \"nc\", \"nmap\", \"lsof\", \"iptables\", \"netcat\", \"python\", \"perl\", \"php\", \"ruby\", \"lua\", \"java\", \"javac\", \"gcc\", \"g++\")\n   and not process.parent.name in (\"sshd\", \"sudo\", \"su\", \"doas\", \"tmux\", \"screen\", \"systemd\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\", \"gnome-terminal-server\", \"konsole\", \"xterm\", \"rxvt\", \"terminator\", \"kitty\", \"wezterm\", \"alacritty\", \"iTerm.app\", \"login\", \"bash\", \"zsh\", \"sh\", \"dash\", \"fish\", \"tcsh\", \"csh\", \"ksh\", \"rlogin\", \"telnet\", \"mosh\", \"screen\", \"tmux\", \"byobu\", \"nohup\", \"at\", \"batch\", \"cron\", \"anacron\", \"systemd-timer\", \"launchd\", \"launchctl\", \"xinit\", \"startx\", \"slim\", \"gdm\", \"lightdm\", \"sddm\", \"kdm\", \"xdm\", \"displaymanager\", \"console-kit-daemon\", \"upstart\", \"init\", \"systemd-logind\", \"pam_systemd\", \"login\", \"agetty\", \"mingetty\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\", \"gnome-terminal-server\", \"konsole\", \"xterm\", \"rxvt\", \"terminator\", \"kitty\", \"wezterm\", \"alacritty\", \"iTerm.app\", \"login\", \"bash\", \"zsh\", \"sh\", \"dash\", \"fish\", \"tcsh\", \"csh\", \"ksh\", \"rlogin\", \"telnet\", \"mosh\", \"screen\", \"tmux\", \"byobu\", \"nohup\", \"at\", \"batch\", \"cron\", \"anacron\", \"systemd-timer\", \"launchd\", \"launchctl\", \"xinit\", \"startx\", \"slim\", \"gdm\", \"lightdm\", \"sddm\", \"kdm\", \"xdm\", \"displaymanager\", \"console-kit-daemon\", \"upstart\", \"init\", \"systemd-logind\", \"pam_systemd\", \"login\", \"agetty\", \"mingetty\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\")] with runs=3\n  [process where event.type == \"start\" and process.name in (\"find\", \"locate\", \"which\", \"whereis\", \"uname\", \"id\", \"w\", \"whoami\", \"groups\", \"cat\", \"ls\", \"ps\", \"netstat\", \"ss\", \"ip\", \"ifconfig\", \"arp\", \"route\", \"df\", \"du\", \"mount\", \"env\", \"set\", \"history\", \"sudo\", \"su\", \"rpm\", \"dpkg\", \"yum\", \"apt-get\", \"head\", \"tail\", \"more\", \"less\", \"wc\", \"grep\", \"awk\", \"sed\", \"cut\", \"sort\", \"uniq\", \"tr\", \"xargs\", \"tee\", \"chmod\", \"chown\", \"passwd\", \"useradd\", \"userdel\", \"groupadd\", \"groupdel\", \"crontab\", \"ssh\", \"scp\", \"sftp\", \"wget\", \"curl\", \"nc\", \"nmap\", \"lsof\", \"iptables\", \"netcat\", \"python\", \"perl\", \"php\", \"ruby\", \"lua\", \"java\", \"javac\", \"gcc\", \"g++\")\n   and not process.parent.name in (\"sshd\", \"sudo\", \"su\", \"doas\", \"tmux\", \"screen\", \"systemd\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\", \"gnome-terminal-server\", \"konsole\", \"xterm\", \"rxvt\", \"terminator\", \"kitty\", \"wezterm\", \"alacritty\", \"iTerm.app\", \"login\", \"bash\", \"zsh\", \"sh\", \"dash\", \"fish\", \"tcsh\", \"csh\", \"ksh\", \"rlogin\", \"telnet\", \"mosh\", \"screen\", \"tmux\", \"byobu\", \"nohup\", \"at\", \"batch\", \"cron\", \"anacron\", \"systemd-timer\", \"launchd\", \"launchctl\", \"xinit\", \"startx\", \"slim\", \"gdm\", \"lightdm\", \"sddm\", \"kdm\", \"xdm\", \"displaymanager\", \"console-kit-daemon\", \"upstart\", \"init\", \"systemd-logind\", \"pam_systemd\", \"login\", \"agetty\", \"mingetty\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\", \"gnome-terminal-server\", \"konsole\", \"xterm\", \"rxvt\", \"terminator\", \"kitty\", \"wezterm\", \"alacritty\", \"iTerm.app\", \"login\", \"bash\", \"zsh\", \"sh\", \"dash\", \"fish\", \"tcsh\", \"csh\", \"ksh\", \"rlogin\", \"telnet\", \"mosh\", \"screen\", \"tmux\", \"byobu\", \"nohup\", \"at\", \"batch\", \"cron\", \"anacron\", \"systemd-timer\", \"launchd\", \"launchctl\", \"xinit\", \"startx\", \"slim\", \"gdm\", \"lightdm\", \"sddm\", \"kdm\", \"xdm\", \"displaymanager\", \"console-kit-daemon\", \"upstart\", \"init\", \"systemd-logind\", \"pam_systemd\", \"login\", \"agetty\", \"mingetty\", \"systemd-ask-password\", \"systemd-tty-ask-password-agent\")] with runs=3",
+  "index": [
+    "logs-endpoint.events.*",
+    "winlogbeat-*",
+    "logs-system.*"
+  ]
+}

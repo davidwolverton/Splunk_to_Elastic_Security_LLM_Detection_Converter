@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the 'visudo' utility to modify the /etc/sudoers file on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This activity is significant because unauthorized changes to the /etc/sudoers file can grant elevated privileges to users, potentially allowing adversaries to execute commands as root. If confirmed malicious, this could lead to full system compromise, privilege escalation, and persistent unauthorized access, severely impacting the security posture of the affected host. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Visudo Utility Execution",
+  "note": "",
+  "references": ["https://askubuntu.com/questions/334318/sudoers-file-enable-nopasswd-for-user-all-commands"],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "08c41040-624c-11ec-a71f-acde48001122",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timestamp_override": "event.ingested",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"visudo\" and process.args : \"/etc/sudoers\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 3600
+    },
+    "group_by": ["process.entity_id"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "index": ["logs-*"],
+  "tiebreaker_field": "event.sequence",
+  "timestamp_field": "@timestamp"
+}

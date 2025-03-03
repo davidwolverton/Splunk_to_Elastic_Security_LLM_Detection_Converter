@@ -1,0 +1,100 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the curl command with specific switches (-O, -sO, -ksO, --output) commonly used to download remote scripts or binaries. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line arguments. This activity is significant as it may indicate an attempt to download and execute potentially malicious files, often used in initial stages of an attack. If confirmed malicious, this could lead to unauthorized code execution, enabling attackers to compromise the system further.",
+  "enabled": true,
+  "false_positives": [
+    "False positives will be present. Tune and then change type to TTP."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "meta": {
+    "version": "6",
+    "references": [
+      "https://gtfobins.github.io/gtfobins/curl/",
+      "https://curl.se/docs/manpage.html#-I",
+      "https://gtfobins.github.io/gtfobins/curl/",
+      "https://github.com/rapid7/metasploit-framework/search?q=curl"
+    ],
+    "analytic_story": [
+      "Ingress Tool Transfer",
+      "Linux Living Off The Land",
+      "XorDDos"
+    ],
+    "asset_type": [
+      "Endpoint"
+    ],
+    "mitre_attack_id": [
+      "T1105"
+    ],
+    "product": [
+      "Splunk Enterprise",
+      "Splunk Enterprise Security",
+      "Splunk Cloud"
+    ],
+    "security_domain": [
+      "endpoint"
+    ],
+    "type": "Anomaly",
+        "data_source": [
+      "Sysmon for Linux EventID 1"
+    ],
+    "date": "2024-12-19"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Ingress Tool Transfer with Curl",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://curl.se/docs/manpage.html#-I",
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://github.com/rapid7/metasploit-framework/search?q=curl"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_ingress_tool_transfer_with_curl",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Ingress Tool Transfer",
+    "Linux Living Off The Land",
+    "XorDDos",
+    "Endpoint",
+    "T1105",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command and Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where process.name == \"curl\" and process.args in (\"-O\", \"-sO\", \"-ksO\", \"--output\")]\n",
+    "index": [
+    "logs-endpoint.events.*"
+  ]
+}

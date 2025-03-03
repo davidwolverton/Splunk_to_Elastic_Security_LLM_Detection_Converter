@@ -1,0 +1,54 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the deletion of cron jobs on a Linux machine. It leverages filesystem event logs to identify when files within the \"/etc/cron.*\" directory are deleted. This activity is significant because attackers or malware may delete cron jobs to disable scheduled security tasks or evade detection mechanisms. If confirmed malicious, this action could allow an attacker to disrupt system operations, evade security measures, or facilitate further malicious activities such as data wiping, as seen with the acidrain malware. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-1h",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Deletion Of Cron Jobs",
+  "note": "This rule was converted with OpenAI GPT4-o.",
+  "risk_score": 49,
+  "risk_score_mapping": [],
+  "rule_id": "3b132a71-9335-4f33-9932-00bb4f6ac7e8",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "AcidRain", "Data Destruction", "AcidPour", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "version": 1,
+  "language": "eql",
+  "query": "file where file.path == \"/etc/cron.*\" and file.type == \"deleted\"",
+  "type": "eql",
+  "index": ["your-index-pattern"]
+}

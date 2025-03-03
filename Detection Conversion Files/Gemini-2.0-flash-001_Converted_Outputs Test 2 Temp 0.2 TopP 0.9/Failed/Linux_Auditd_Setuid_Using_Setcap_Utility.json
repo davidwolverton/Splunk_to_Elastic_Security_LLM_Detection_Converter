@@ -1,0 +1,114 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic detects the execution of the 'setcap' utility to enable the SUID bit on Linux systems. It leverages Linux Auditd data, focusing on process names and command-line arguments that indicate the use of 'setcap' with specific capabilities. This activity is significant because setting the SUID bit allows a user to temporarily gain root access, posing a substantial security risk. If confirmed malicious, an attacker could escalate privileges, execute arbitrary commands with elevated permissions, and potentially compromise the entire system.\nThis rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": null,
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "version": 5
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Setuid Using Setcap Utility",
+  "namespace": "default",
+  "note": null,
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.args",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "1474459a-302b-4255-8add-d82f96d14cd9",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1548.001",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.001",
+              "name": "Setuid and Setgid",
+              "reference": "https://attack.mitre.org/techniques/T1548/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"setcap\" and process.args : \"cap_setuid+ep\"]\n  [process where event.type == \"start\" and process.name == \"setcap\" and process.args : \"cap_setuid=ep\"]\n  [process where event.type == \"start\" and process.name == \"setcap\" and process.args : \"cap_net_bind_service+p\"]\n  [process where event.type == \"start\" and process.name == \"setcap\" and process.args : \"cap_net_raw+ep\"]\n  [process where event.type == \"start\" and process.name == \"setcap\" and process.args : \"cap_dac_read_search+ep\"]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.category:\"process\"",
+      "exists": false
+    },
+    {
+      "query": "event.dataset:\"auditd\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

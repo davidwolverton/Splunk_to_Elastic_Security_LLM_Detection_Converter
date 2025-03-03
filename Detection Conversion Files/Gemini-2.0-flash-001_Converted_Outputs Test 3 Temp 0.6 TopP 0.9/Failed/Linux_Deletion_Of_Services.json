@@ -1,0 +1,77 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of services on a Linux machine. It leverages filesystem event logs to identify when service files within system directories (e.g., /etc/systemd/, /lib/systemd/, /run/systemd/) are deleted. This activity is significant because attackers may delete or modify services to disable security features or evade defenses. If confirmed malicious, this behavior could indicate an attempt to impair system functionality or execute a destructive payload, potentially leading to system instability or data loss. Immediate investigation is required to determine the responsible process and user.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "1h",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Deletion Of Services",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/",
+    "https://unix.stackexchange.com/questions/224992/where-do-i-put-my-systemd-unit-file",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_deletion_of_services",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:AwfulShred",
+    "analytic_story:AcidRain",
+    "analytic_story:Data Destruction",
+    "analytic_story:AcidPour",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1070.004",
+    "mitre_attack_id:T1485",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485"
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"systemd\"]\n  [file where event.type == \"deletion\" and file.path : \"/etc/systemd/*\" or file.path : \"/lib/systemd/*\" or file.path : \"/run/systemd/*\" and file.name : \"*.service\"]",
+  "index": [
+    "filebeat-*",
+    "auditbeat-*",
+    "logs-endpoint.events.*"
+  ]
+}

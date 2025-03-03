@@ -1,0 +1,46 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Add User Account",
+  "description": "The following analytic detects the creation of new user accounts on Linux systems using commands like \"useradd\" or \"adduser.\" It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant as adversaries often create new user accounts to establish persistence on compromised hosts. If confirmed malicious, this could allow attackers to maintain access, escalate privileges, and further compromise the system, posing a severe security risk. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host", "endpoint"],
+  "risk_score": 50,
+  "severity": "high",
+  "interval": "5m",
+  "enabled": true,
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1136",
+          "name": "Create Account",
+          "reference": "https://attack.mitre.org/techniques/T1136/",
+          "subtechnique": [
+            {
+              "id": "T1136.001",
+              "name": "Local Account",
+              "reference": "https://attack.mitre.org/techniques/T1136/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "query": "process where event.type == \"start\" and process.name in (\"useradd\", \"adduser\")",
+  "index": ["auditd-*"],
+  "language": "eql",
+  "output_index": ".siem-signals-default",
+  "references": ["https://linuxize.com/post/how-to-create-users-in-linux-using-the-useradd-command/"],
+  "exceptions_list": [],
+  "from": "now-6m",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "throttle": "no_actions"
+}

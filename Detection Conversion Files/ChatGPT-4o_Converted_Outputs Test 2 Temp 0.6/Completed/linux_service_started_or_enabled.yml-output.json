@@ -1,0 +1,41 @@
+{
+  "name": "OpenAI GPT4-o Linux Service Started Or Enabled",
+  "description": "The following analytic detects the creation or enabling of services on Linux platforms using the systemctl or service tools. It leverages Endpoint Detection and Response (EDR) logs, focusing on process names, parent processes, and command-line executions. This activity is significant as adversaries may create or modify services to maintain persistence or execute malicious payloads. If confirmed malicious, this behavior could lead to persistent access, data theft, ransomware deployment, or other damaging outcomes. Monitoring and investigating such activities are crucial for maintaining the security and integrity of the environment. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Living Off The Land", "Scheduled Tasks", "Gomir"],
+  "index": ["logs-endpoint.*"],
+  "language": "eql",
+  "query": "process where event.action == \"executed\" and process.name in (\"systemctl\", \"service\") and (process.command_line in (\"* start *\", \"* enable *\")) and not process.os == \"Microsoft Windows\"",
+  "risk_score": 50,
+  "severity": "medium",
+  "threat": [{
+    "framework": "MITRE ATT&CK",
+    "tactic": {
+      "id": "TA0003",
+      "name": "Persistence",
+      "reference": "https://attack.mitre.org/tactics/TA0003/"
+    },
+    "technique": [{
+      "id": "T1543",
+      "name": "Create or Modify System Process",
+      "reference": "https://attack.mitre.org/techniques/T1543/",
+      "subtechnique": [{
+        "id": "T1543.003",
+        "name": "Windows Service",
+        "reference": "https://attack.mitre.org/techniques/T1543/003/"
+      }]
+    }]
+  }],
+  "references": ["https://attack.mitre.org/techniques/T1543/003/"],
+  "type": "eql",
+  "enabled": true,
+  "from": "now-360s",
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1,
+  "exceptions_list": [],
+  "building_block_type": "default",
+  "license": "Elastic License v2",
+  "note": "Detection rule created from Splunk query, converted with OpenAI GPT4-o.",
+  "throttle": "no_actions"
+}

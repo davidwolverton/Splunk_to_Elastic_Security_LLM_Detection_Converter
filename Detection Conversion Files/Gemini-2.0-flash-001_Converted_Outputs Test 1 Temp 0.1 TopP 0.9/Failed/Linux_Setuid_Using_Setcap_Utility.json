@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the 'setcap' utility to enable the SUID bit on Linux systems. It leverages Endpoint Detection and Response (EDR) data, focusing on process names and command-line arguments that indicate the use of 'setcap' with specific capabilities. This activity is significant because setting the SUID bit allows a user to temporarily gain root access, posing a substantial security risk. If confirmed malicious, an attacker could escalate privileges, execute arbitrary commands with elevated permissions, and potentially compromise the entire system. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Setuid Using Setcap Utility",
+  "note": "The following analytic detects the execution of the 'setcap' utility to enable the SUID bit on Linux systems. It leverages Endpoint Detection and Response (EDR) data, focusing on process names and command-line arguments that indicate the use of 'setcap' with specific capabilities. This activity is significant because setting the SUID bit allows a user to temporarily gain root access, posing a substantial security risk. If confirmed malicious, an attacker could escalate privileges, execute arbitrary commands with elevated permissions, and potentially compromise the entire system.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/"
+  ],
+  "risk_score": 49,
+  "rule_id": "linux_setuid_using_setcap_utility",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Endpoint",
+    "T1548.001",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.001",
+          "name": "Setuid and Setgid",
+          "reference": "https://attack.mitre.org/techniques/T1548/001/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"setcap\" and\n   (process.args in (\"cap_setuid=ep\", \"cap_setuid+ep\", \"cap_net_bind_service+p\", \"cap_net_raw+ep\", \"cap_dac_read_search+ep\") or process.command_line : \"*setcap *\" )]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

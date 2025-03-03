@@ -1,0 +1,63 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'cpulimit' command with specific flags ('-l', '-f') executed with 'sudo' privileges. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process command-line arguments and execution details. This activity is significant because if 'cpulimit' is granted sudo rights, a user can potentially execute system commands as root, leading to privilege escalation. If confirmed malicious, this could allow an attacker to gain root access, execute arbitrary commands, and fully compromise the affected system.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Cpulimit Privilege Escalation",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/cpulimit/",
+    "http://cpulimit.sourceforge.net/"
+  ],
+  "risk_score": 47,
+  "rule_id": "d4e40b7e-aad3-4a7d-aac8-550ea5222be5",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Asset Type: Endpoint",
+    "Tactic: Privilege Escalation",
+    "Tactic: Defense Evasion",
+    "Data Source: Sysmon for Linux",
+    "Data Source: Process Monitoring",
+    "Use Case: Threat Detection"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Abuse Elevation Control Mechanism: Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "query": """sequence by host.id, user.id
+    [process where event.type == "start" and process.name == "sudo" and process.args == "cpulimit" and process.args == "-l" and process.args == "-f"]
+    [process where event.type == "start" and process.name == "cpulimit" and process.args == "-l" and process.args == "-f"]""",
+  "language": "eql",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

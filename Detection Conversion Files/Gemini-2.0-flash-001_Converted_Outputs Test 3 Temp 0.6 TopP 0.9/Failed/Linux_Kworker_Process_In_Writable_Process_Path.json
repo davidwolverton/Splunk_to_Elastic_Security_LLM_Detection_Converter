@@ -1,0 +1,61 @@
+{
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of a kworker process with a command line in writable directories such as /home/, /var/log, and /tmp on a Linux machine. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and parent process paths. This activity is significant as kworker processes are typically kernel threads, and their presence in writable directories is unusual and indicative of potential malware, such as CyclopsBlink. If confirmed malicious, this could allow attackers to blend malicious processes with legitimate ones, leading to persistent access and further system compromise.",
+  "enabled": true,
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-60m",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "interval": "10m",
+  "license": "ASL 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux Kworker Process In Writable Process Path",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_kworker_process_in_writable_process_path",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Sandworm Tools",
+    "Cyclops Blink",
+    "Asset Type: Endpoint",
+    "Tactic: Defense Evasion",
+    "Technique: Masquerading"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where process.parent.name like \"kworker/*\" and process.parent.executable in (\"/home/*\", \"/tmp/*\", \"/var/log/*\") and process.name like \"iptables*\"]",
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "index_pattern": [
+    "logs-endpoint.events.*"
+  ],
+  "building_block_type": "default"
+}

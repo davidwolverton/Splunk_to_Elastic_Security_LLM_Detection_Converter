@@ -1,0 +1,73 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of SSL certificates on a Linux machine. It leverages filesystem event logs to identify when files with extensions .pem or .crt are deleted from the /etc/ssl/certs/ directory. This activity is significant because attackers may delete or modify SSL certificates to disable security features or evade defenses on a compromised system. If confirmed malicious, this behavior could indicate an attempt to disrupt secure communications, evade detection, or execute a destructive payload, potentially leading to significant security breaches and data loss.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "1h",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Deletion of SSL Certificate",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "risk_score": 49,
+  "rule_id": "linux_deletion_of_ssl_certificate",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AcidRain",
+    "AcidPour",
+    "Asset Type: Endpoint",
+    "Tactic: Defense Evasion",
+    "Tactic: Impact",
+    "Technique: File Deletion",
+    "Elastic",
+    "Endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"rm\" and process.args in (\"*.pem\", \"*.crt\") and process.args == \"/etc/ssl/certs/*\"]\n  [file where event.type == \"deletion\" and file.path == \"/etc/ssl/certs/*\" and file.extension in (\"pem\", \"crt\")]",
+  "index": [
+    "filebeat-*",
+    "auditbeat-*",
+    "logs-endpoint.events.*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

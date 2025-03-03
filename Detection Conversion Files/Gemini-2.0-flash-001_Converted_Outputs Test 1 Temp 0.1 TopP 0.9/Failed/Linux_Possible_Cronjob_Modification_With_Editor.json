@@ -1,0 +1,78 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects potential unauthorized modifications to Linux cronjobs using text editors like \"nano,\" \"vi,\" or \"vim.\" It identifies this activity by monitoring command-line executions that interact with cronjob configuration paths. This behavior is significant for a SOC as it may indicate attempts at privilege escalation or establishing persistent access. If confirmed malicious, the impact could be severe, allowing attackers to execute damaging actions such as data theft, system sabotage, or further network penetration.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Possible Cronjob Modification With Editor",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/003/"
+  ],
+  "risk_score": 47,
+  "rule_id": "dcc89bde-5f24-11ec-87ca-acde48001122",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:XorDDos",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Scheduled Tasks",
+    "analytic_story:Linux Persistence Techniques",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1053.003",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.003",
+              "name": "Cron",
+              "reference": "https://attack.mitre.org/techniques/T1053/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.id, user.id
+  [process where event.type == "start" and
+   (process.name in ("nano", "vim.basic") or
+    process.executable  : "*nano *" or process.executable : "*vi *" or process.executable : "*vim *") and
+   (process.args : "*/etc/cron*" or process.args : "*/var/spool/cron/*" or process.args : "*/etc/anacrontab*")]
+""",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

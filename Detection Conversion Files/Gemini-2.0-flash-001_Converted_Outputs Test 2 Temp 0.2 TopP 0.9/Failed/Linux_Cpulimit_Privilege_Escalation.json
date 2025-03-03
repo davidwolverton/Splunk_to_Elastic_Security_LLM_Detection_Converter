@@ -1,0 +1,91 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'cpulimit' command with specific flags ('-l', '-f') executed with 'sudo' privileges. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process command-line arguments and execution details. This activity is significant because if 'cpulimit' is granted sudo rights, a user can potentially execute system commands as root, leading to privilege escalation. If confirmed malicious, this could allow an attacker to gain root access, execute arbitrary commands, and fully compromise the affected system.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "7"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Cpulimit Privilege Escalation",
+  "namespace": "default",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/cpulimit/",
+    "http://cpulimit.sourceforge.net/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    }
+  ],
+  "risk_score": 47,
+  "rule_id": "d4e40b7e-aad3-4a7d-aac8-550ea5222be5",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, user.id\n  [process where event.type == \"start\" and process.name == \"sudo\" and process.args == \"/usr/bin/cpulimit\"]\n  [process where event.type == \"start\" and process.name == \"cpulimit\" and process.args in (\"-l\", \"-f\")]",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+  "data_view_id": "default"
+}

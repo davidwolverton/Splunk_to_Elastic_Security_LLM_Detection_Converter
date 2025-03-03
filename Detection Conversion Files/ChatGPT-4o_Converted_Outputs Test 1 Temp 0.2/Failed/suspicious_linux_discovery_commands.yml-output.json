@@ -1,0 +1,87 @@
+{
+  "actions": [],
+  "author": ["Bhavin Patel", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of suspicious bash commands commonly used in scripts like AutoSUID, LinEnum, and LinPeas for system discovery on a Linux host. It leverages Endpoint Detection and Response (EDR) data, specifically looking for a high number of distinct commands executed within a short time frame. This activity is significant as it often precedes privilege escalation or other malicious actions. If confirmed malicious, an attacker could gain detailed system information, identify vulnerabilities, and potentially escalate privileges, posing a severe threat to the environment. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Unless an administrator is using these commands to troubleshoot or audit a system, the execution of these commands should be monitored."],
+  "from": "now-5m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Suspicious Linux Discovery Commands",
+  "namespace": "",
+  "note": "",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/matrices/enterprise/linux/",
+    "https://attack.mitre.org/techniques/T1059/004/",
+    "https://github.com/IvanGlinkin/AutoSUID",
+    "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS",
+    "https://github.com/rebootuser/LinEnum"
+  ],
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "risk_score": 81,
+  "risk_score_mapping": [],
+  "rule_id": "0edd5112-56c9-11ec-b990-acde48001122",
+  "rule_name_override": "",
+  "setup": "",
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Post-Exploitation", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": [
+            {
+              "id": "T1059.004",
+              "name": "Unix Shell",
+              "reference": "https://attack.mitre.org/techniques/T1059/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 4,
+  "language": "eql",
+  "query": "process where event.action == \"exec\" and process.name in [\"bash\", \"sh\"] and process.args : (\"*AutoSUID*\", \"*LinEnum*\", \"*LinPeas*\") and length(process.args) > 40 and length(process.name) > 3",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 300
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "",
+  "timestamp_field": "@timestamp"
+}

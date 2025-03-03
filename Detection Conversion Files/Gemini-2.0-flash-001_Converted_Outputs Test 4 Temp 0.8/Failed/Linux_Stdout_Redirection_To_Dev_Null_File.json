@@ -1,0 +1,109 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects command-line activities that redirect stdout or stderr to the /dev/null file. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This behavior is significant as it can indicate attempts to hide command outputs, a technique observed in the CyclopsBlink malware to conceal modifications to iptables firewall settings. If confirmed malicious, this activity could allow an attacker to stealthily alter system configurations, potentially leading to unauthorized access or persistent control over the compromised machine.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "unknown"
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": null,
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "from": "1675933640000",
+    "updated_by": "elastic",
+    "updated_date": "2023-02-09T21:07:20.977Z"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Stdout Redirection To Dev Null File",
+  "namespace": null,
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.executable",
+    "process.pid",
+    "process.parent.pid",
+    "process.entity_id",
+    "host.hostname",
+    "user.name",
+    "process.parent.name"
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "de62b809-a04d-46b5-9a15-8298d330f0c8",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "Industroyer2",
+    "Cyclops Blink",
+    "Asset Type: Endpoint",
+    "MITRE ATT&CK",
+    "Tactic: Defense Evasion",
+    "Technique: Impair Defenses",
+    "Technique ID: T1562.004"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": [
+            {
+              "id": "T1562.004",
+              "name": "Disable or Modify System Firewall",
+              "reference": "https://attack.mitre.org/techniques/T1562/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, process.parent.pid, process.entity_id\n  [\n    process where event.type == \"start\" and process.args like \"*>&/dev/null*\"\n  ]\n",
+  "alert_suppression": {},
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+  ],
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

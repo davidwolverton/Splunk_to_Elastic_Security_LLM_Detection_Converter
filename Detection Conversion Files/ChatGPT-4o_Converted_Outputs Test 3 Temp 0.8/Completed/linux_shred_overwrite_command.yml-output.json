@@ -1,0 +1,40 @@
+{
+  "name": "OpenAI GPT4-o Linux Shred Overwrite Command",
+  "description": "The following analytic detects the execution of the 'shred' command on a Linux machine, which is used to overwrite files to make them unrecoverable. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line arguments. This activity is significant because the 'shred' command can be used in destructive attacks, such as those seen in the Industroyer2 malware targeting energy facilities. If confirmed malicious, this activity could lead to the permanent destruction of critical files, severely impacting system integrity and data availability. Converted with OpenAI GPT4-o.",
+  "author": ["OpenAI GPT4-o", "Teoderick Contreras, Splunk"],
+  "enabled": true,
+  "risk_score": 42,
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "Industroyer2", "AwfulShred", "Linux Privilege Escalation", "Data Destruction", "Linux Persistence Techniques"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"shred\" and process.args : (\"*-n*\", \"*-u*\", \"*-z*\", \"*-s*\")",
+  "index": ["logs-*"],
+  "from": "now-6h",
+  "interval": "5m",
+  "max_signals": 100,
+  "type": "eql",
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "license": "",
+  "note": "This rule detects the execution of potentially destructive shred commands on Linux systems using EDR data."
+}

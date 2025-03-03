@@ -1,0 +1,62 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the execution of Ruby commands with elevated\nprivileges on a Linux system. It identifies processes where Ruby is used with the\n`-e` flag to execute commands via `sudo`, leveraging Endpoint Detection and Response\n(EDR) telemetry. This activity is significant because it indicates a potential privilege\nescalation attempt, allowing a user to execute commands as root. If confirmed malicious,\nthis could lead to full system compromise, enabling an attacker to gain root access,\nexecute arbitrary commands, and maintain persistent control over the affected system.\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Ruby Privilege Escalation",
+  "note": "The following analytic detects the execution of Ruby commands with elevated\nprivileges on a Linux system. It identifies processes where Ruby is used with the\n`-e` flag to execute commands via `sudo`, leveraging Endpoint Detection and Response\n(EDR) telemetry. This activity is significant because it indicates a potential privilege\nescalation attempt, allowing a user to execute commands as root. If confirmed malicious,\nthis could lead to full system compromise, enabling an attacker to gain root access,\nexecute arbitrary commands, and maintain persistent control over the affected system.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/ruby/"
+  ],
+  "risk_score": 30,
+  "rule_id": "linux_ruby_privilege_escalation",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Anomaly"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [\n    process where event.type == \"start\" and process.name == \"sudo\"\n  ]\n  [\n    process where event.type == \"start\" and process.name == \"ruby\" and process.args contains \"-e\" and process.args contains \"exec\"\n  ]",
+  "type": "eql",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

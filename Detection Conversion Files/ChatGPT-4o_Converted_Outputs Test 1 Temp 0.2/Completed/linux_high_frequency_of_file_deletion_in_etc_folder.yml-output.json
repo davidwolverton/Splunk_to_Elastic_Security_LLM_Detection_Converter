@@ -1,0 +1,39 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects a high frequency of file deletions in the /etc/ folder on Linux systems. It leverages the Endpoint.Filesystem data model to identify instances where 200 or more files are deleted within an hour, grouped by process name and process ID. This behavior is significant as it may indicate the presence of wiper malware, such as AcidRain, which aims to delete critical system files. If confirmed malicious, this activity could lead to severe system instability, data loss, and potential disruption of services. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["linux package installer/uninstaller may cause this event. Please update your filter macro to remove false positives."],
+  "from": "now-1h",
+  "interval": "1h",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux High Frequency Of File Deletion In Etc Folder",
+  "risk_score": 49,
+  "risk_score_mapping": [],
+  "rule_id": "9d867448-2aff-4d07-876c-89409a752ff8",
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": ["AcidRain", "Data Destruction", "endpoint", "OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "process where event.action == \"deleted\" and file.path : \"/etc/*\" | stats count(file.path) as numOfDelFilePath by process.name, process.pid, file.path | where numOfDelFilePath >= 200",
+  "version": 6
+}

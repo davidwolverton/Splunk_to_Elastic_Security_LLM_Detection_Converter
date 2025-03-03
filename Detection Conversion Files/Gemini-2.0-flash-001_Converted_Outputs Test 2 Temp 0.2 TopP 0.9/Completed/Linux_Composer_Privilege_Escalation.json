@@ -1,0 +1,74 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the Composer tool with\nelevated privileges on a Linux system. It identifies instances where Composer is\nrun with the 'sudo' command, allowing the user to execute system commands as root.\nThis detection leverages data from Endpoint Detection and Response (EDR) agents,\nfocusing on process execution logs and command-line arguments. This activity is\nsignificant because it can indicate an attempt to escalate privileges, potentially\nleading to unauthorized root access. If confirmed malicious, an attacker could gain\nfull control over the system, execute arbitrary commands, and compromise sensitive\ndata.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "7"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Composer Privilege Escalation",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/composer/",
+    "https://getcomposer.org/doc/00-intro.md"
+  ],
+  "risk_score": 47,
+  "rule_id": "a3bddf71-6ba3-42ab-a6b2-396929b16d92",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where process.name == \"sudo\" and event.category == \"process\" and event.type == \"start\"]\n  [process where process.name == \"composer\" and process.args : \"run-script\" and event.category == \"process\" and event.type == \"start\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag",
+    "Splunk",
+    "0xC0FFEEEE",
+    "Github Community"
+  ],
+  "description": "The following analytic detects the use of the `curl` command with proxy-related arguments such as `-x`, `socks`, `--preproxy`, and `--proxy`. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process details. This activity is significant as it may indicate an adversary attempting to use a proxy to evade network monitoring and obscure their actions. If confirmed malicious, this behavior could allow attackers to bypass security controls, making it difficult to track their activities and potentially leading to unauthorized data access or exfiltration.\n\nConverted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present based on proxy usage internally. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Proxy Socks Curl",
+  "note": "An instance of $process.name$ was identified on endpoint $host.hostname$ by user $user.name$ utilizing a proxy. Review activity for further details.",
+  "references": [
+    "https://www.offensive-security.com/metasploit-unleashed/proxytunnels/",
+    "https://curl.se/docs/manpage.html",
+    "https://en.wikipedia.org/wiki/SOCKS",
+    "https://oxylabs.io/blog/curl-with-proxy",
+    "https://reqbin.com/req/c-ddxflki5/curl-proxy-server#:~:text=To%20use%20a%20proxy%20with,be%20URL%20decoded%20by%20Curl.",
+    "https://gtfobins.github.io/gtfobins/curl/"
+  ],
+  "risk_score": 56,
+  "rule_id": "linux_proxy_socks_curl",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Ingress Tool Transfer",
+    "Endpoint",
+    "T1090",
+    "T1095"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/"
+        },
+        {
+          "id": "T1095",
+          "name": "Non-Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1095/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.id, user.id\n  [process where event.type == \"start\" and process.name == \"curl\" and process.args : \"-x\" or process.args : \"socks4a://\" or process.args : \"socks5h://\" or process.args : \"socks4://\" or process.args : \"socks5://\" or process.args : \"--preproxy\" or process.args : \"--proxy\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "building_block_type": "default",
+  "threat_objects": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag",
+    "Splunk",
+    "0xC0FFEEEE",
+    "Github Community"
+  ]
+}

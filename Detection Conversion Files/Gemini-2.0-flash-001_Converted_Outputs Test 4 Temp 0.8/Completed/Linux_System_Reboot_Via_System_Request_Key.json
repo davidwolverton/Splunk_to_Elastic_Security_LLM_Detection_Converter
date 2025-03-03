@@ -1,0 +1,58 @@
+{
+  "actions": [],
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the SysReq hack to reboot\na Linux system host. It leverages Endpoint Detection and Response (EDR) data to\nidentify processes executing the command to pipe 'b' to /proc/sysrq-trigger. This\nactivity is significant as it is an uncommon method to reboot a system and was observed\nin the Awfulshred malware wiper. If confirmed malicious, this technique could indicate\nthe presence of suspicious processes and potential system compromise, leading to\nunauthorized reboots and disruption of services. Rule Converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "unknown"
+  ],
+  "from": "now-30m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux System Reboot Via System Request Key",
+  "note": "The detection is based on data that originates from Endpoint Detection\nand Response (EDR) agents. These agents are designed to provide security-related\ntelemetry from the endpoints where the agent is installed. To implement this search,\nyou must ingest logs that contain the process GUID, process name, and parent process.\nAdditionally, you must ingest complete command-line executions. These logs must\nbe processed using the appropriate Splunk Technology Add-ons that are specific to\nthe EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint`\ndata model. Use the Splunk Common Information Model (CIM) to normalize the field\nnames and speed up the data modeling process.",
+  "references": [
+    "https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html",
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "risk_score": 47,
+  "rule_id": "e1912b58-ed9c-422c-bbb0-2dbc70398345",
+  "severity": "high",
+  "tags": [
+    "AwfulShred",
+    "Data Destruction",
+    "Endpoint",
+    "T1529",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1529",
+          "name": "System Shutdown/Reboot",
+          "reference": "https://attack.mitre.org/techniques/T1529/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name in (\"dash\", \"sudo\", \"bash\") and process.args like \"echo b > /proc/sysrq-trigger*\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

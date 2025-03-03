@@ -1,0 +1,60 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the base64 decode command on Linux systems, which is often used to deobfuscate files. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions that include \"base64 -d\" or \"base64 --decode\". This activity is significant as it may indicate an attempt to hide malicious payloads or scripts. If confirmed malicious, an attacker could use this technique to execute hidden code, potentially leading to unauthorized access, data exfiltration, or further system compromise. Rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present and will require some tuning based on processes. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Obfuscated Files or Information Base64 Decode",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic integrations that are specific to the EDR product.",
+  "output_index": ".siem-signals-*",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1027/T1027.md#atomic-test-1---decode-base64-data-into-script",
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/",
+    "https://linux.die.net/man/1/base64"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_obfuscated_files_or_information_base64_decode",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1027"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [\n    process where process.executable : \"/usr/bin/base64\" and process.args : \"-d\" or process.args : \"--decode\"\n  ]\n",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ]
+}

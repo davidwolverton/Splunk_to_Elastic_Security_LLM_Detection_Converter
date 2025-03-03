@@ -1,0 +1,99 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the \"swapoff\" command, which disables the swapping of paging devices on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This activity is significant because disabling swap can be a tactic used by malware, such as Awfulshred, to evade detection and hinder forensic analysis. If confirmed malicious, this action could allow an attacker to manipulate system memory management, potentially leading to data corruption, system instability, or evasion of memory-based detection mechanisms.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "administrator may disable swapping of devices in a linux host. Filter is needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": null,
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "from": "now-60m",
+    "interval": "5m"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Hardware Addition Swapoff",
+  "namespace": "default",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.title",
+    "host.hostname"
+  ],
+  "response_actions": [],
+  "risk_score": 36,
+  "risk_score_mapping": [],
+  "rule_id": "5728bb16-1a0b-4b66-bce2-0074ac839770",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Data Destruction",
+    "AwfulShred",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1200",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 4,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.title : \"*swapoff*\" and process.title : \"*-a*\"]\n",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "auditd",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-*-*",
+    "linux-*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

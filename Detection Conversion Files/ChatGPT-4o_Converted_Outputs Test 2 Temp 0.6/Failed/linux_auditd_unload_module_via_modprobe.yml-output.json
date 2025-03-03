@@ -1,0 +1,63 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious use of the `modprobe` command to unload kernel modules, which may indicate an attempt to disable critical system components or evade detection. The `modprobe` utility manages kernel modules, and unauthorized unloading of modules can disrupt system security features, remove logging capabilities, or conceal malicious activities. By monitoring for unusual or unauthorized `modprobe` operations involving module unloading, this analytic helps identify potential tampering with kernel functionality, enabling security teams to investigate and address possible threats to system integrity. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd Unload Module Via Modprobe",
+  "note": "",
+  "outcome": "exactMatch",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "related_integrations": [],
+  "required_fields": [],
+  "risk_score": 50,
+  "rule_id": "linux_auditd_unload_module_via_modprobe",
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"modprobe\" and process.args : \"-r *\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 360
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["auditd-*"],
+  "tiebreaker_field": "_id",
+  "timestamp_field": "@timestamp"
+}

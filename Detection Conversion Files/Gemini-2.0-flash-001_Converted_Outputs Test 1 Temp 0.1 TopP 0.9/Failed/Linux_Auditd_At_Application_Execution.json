@@ -1,0 +1,94 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the \"At\" application in Linux, which can be used by attackers to create persistence entries on a compromised host. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and parent process names associated with \"at\" or \"atd\". This activity is significant because the \"At\" application can be exploited to maintain unauthorized access or deliver additional malicious payloads. If confirmed malicious, this behavior could lead to data theft, ransomware attacks, or other severe consequences. Immediate investigation is required to determine the legitimacy of the execution and mitigate potential risks. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "from": "1676908800000",
+    "savedObjectType": "detectionRule",
+    "updated_by": "elastic",
+    "version": "1"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd At Application Execution",
+  "namespace": "default",
+  "note": "### Important Information\n* This rule was converted from Splunk SPL to Elastic EQL using Google Gemini 2.0 Flash 001.\n* Please review the converted rule and ensure it aligns with your environment and data.\n* Additional tuning and adjustments may be required to optimize the rule for your specific use case.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/001/",
+    "https://www.linkedin.com/pulse/getting-attacker-ip-address-from-malicious-linux-job-craig-rowland/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.executable",
+    "user.id",
+    "process.parent.pid",
+    "process.pid",
+    "host.name"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_auditd_at_application_execution",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Scheduled Tasks",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1053.002"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.001",
+              "name": "At",
+              "reference": "https://attack.mitre.org/techniques/T1053/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name, user.id\n  [process where event.type == \"start\" and process.name in (\"at\", \"atd\") or process.executable in (\"/usr/bin/at\", \"/usr/bin/atd\")\n   and not user.id == \"0\"]\n",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ]
+}

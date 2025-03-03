@@ -1,0 +1,48 @@
+{
+  "actions": [],
+  "author": ["Gowthamaraj Rajendran", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the sqlite3 command with elevated privileges, which can be exploited for privilege escalation. It leverages Endpoint Detection and Response (EDR) telemetry to identify instances where sqlite3 is used in conjunction with shell commands and sudo. This activity is significant because it indicates a potential attempt to gain root access, which could lead to full system compromise. If confirmed malicious, an attacker could execute arbitrary commands as root, leading to unauthorized access, data exfiltration, or further lateral movement within the network. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["False positives may be present, filter as needed."],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Sqlite3 Privilege Escalation",
+  "risk_score": 30,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Living Off The Land", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"sqlite3\" and process.parent.name == \"shell\" and process.args : \"sudo\"",
+  "index": ["logs-*"]
+}

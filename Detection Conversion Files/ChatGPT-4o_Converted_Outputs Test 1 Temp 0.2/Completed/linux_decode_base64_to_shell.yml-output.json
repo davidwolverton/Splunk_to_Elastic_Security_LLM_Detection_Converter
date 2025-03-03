@@ -1,0 +1,45 @@
+{
+  "name": "OpenAI GPT4-o Linux Decode Base64 to Shell",
+  "description": "The following analytic detects the behavior of decoding base64-encoded data and passing it to a Linux shell. Additionally, it mitigates the potential damage and protects the organization's systems and data. The detection is important because it indicates the presence of malicious activity since Base64 encoding is commonly used to obfuscate malicious commands or payloads, and decoding it can be a step in running those commands. It suggests that an attacker is attempting to run malicious commands on a Linux system to gain unauthorized access, for data exfiltration, or perform other malicious actions. Converted with OpenAI GPT4-o.",
+  "author": ["Michael Haag", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 50,
+  "severity": "medium",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name : \"base64\" and process.args : (\"-d\", \"--decode\") and process.parent.name : (\"sh\", \"bash\", \"dash\", \"ksh\", \"zsh\")",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/"
+        },
+        {
+          "id": "T1059.004",
+          "name": "Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1027/T1027.md#atomic-test-1---decode-base64-data-into-script",
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/",
+    "https://linux.die.net/man/1/base64"
+  ],
+  "index": ["logs-*"],
+  "max_signals": 100,
+  "interval": "5m",
+  "enabled": true,
+  "from": "now-6m",
+  "to": "now",
+  "version": 1
+}

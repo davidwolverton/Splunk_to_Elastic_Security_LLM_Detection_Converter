@@ -1,0 +1,61 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the Linux 'xclip' command to copy data from the clipboard. It leverages Endpoint Detection and Response (EDR) telemetry, focusing on process names and command-line arguments related to clipboard operations. This activity is significant because adversaries can exploit clipboard data to capture sensitive information such as passwords or IP addresses. If confirmed malicious, this technique could lead to unauthorized data exfiltration, compromising sensitive information and potentially aiding further attacks within the environment.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present on Linux desktop as it may commonly be used by administrators or end users. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Clipboard Data Copy",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1115/",
+    "https://linux.die.net/man/1/xclip"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_clipboard_data_copy",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1115"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1115",
+          "name": "Clipboard Data",
+          "reference": "https://attack.mitre.org/techniques/T1115/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where event.type == \"start\" and process.name == \"xclip\" and process.args : (\"-o\", \"-sel\", \"-selection\", \"clip\", \"clipboard\")]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

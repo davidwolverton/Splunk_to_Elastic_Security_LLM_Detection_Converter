@@ -1,0 +1,116 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the creation of new user accounts on Linux systems using commands like \"useradd\" or \"adduser.\" It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant as adversaries often create new user accounts to establish persistence on compromised hosts. If confirmed malicious, this could allow attackers to maintain access, escalate privileges, and further compromise the system, posing a severe security risk.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": "5"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Add User Account",
+  "namespace": "default",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://linuxize.com/post/how-to-create-users-in-linux-using-the-useradd-command/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.title",
+      "type": "string"
+    },
+    {
+      "name": "host.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "aae66dc0-74b4-4807-b480-b35f8027abb4",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1136.001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1136",
+          "name": "Create Account",
+          "reference": "https://attack.mitre.org/techniques/T1136/",
+          "subtechnique": [
+            {
+              "id": "T1136.001",
+              "name": "Local Account",
+              "reference": "https://attack.mitre.org/techniques/T1136/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 5,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where process.title : \"*useradd*\" or process.title : \"*adduser*\"]\n  [process where event.type == \"start\"]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system*",
+    "endgame-*",
+    "logs-auditd.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

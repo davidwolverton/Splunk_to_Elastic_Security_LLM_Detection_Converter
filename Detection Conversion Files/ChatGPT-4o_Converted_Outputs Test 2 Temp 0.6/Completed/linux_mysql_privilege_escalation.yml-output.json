@@ -1,0 +1,38 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of MySQL commands with elevated privileges using sudo, which can lead to privilege escalation. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["False positives are present based on automated tooling or system administrative usage. Filter as needed."],
+  "from": "now-6m",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux MySQL Privilege Escalation",
+  "note": "Converted with OpenAI GPT4-o",
+  "references": ["https://gtfobins.github.io/gtfobins/mysql/"],
+  "risk_score": 50,
+  "rule_id": "linux_mysql_privilege_escalation",
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Living Off The Land"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name == \"mysql\" and process.command_line : \"*sudo*\" and process.command_line : \"*\\!*\" and process.command_line : \"*-e*\""
+}

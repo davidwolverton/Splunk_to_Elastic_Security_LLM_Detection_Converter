@@ -1,0 +1,67 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of 'curl' and 'wget' commands within a Linux environment. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names, user information, and command-line executions. This activity is significant as 'curl' and 'wget' are commonly used for downloading files, which can indicate potential ingress of malicious tools. If confirmed malicious, this activity could lead to unauthorized code execution, data exfiltration, or further compromise of the system. Monitoring and tuning this detection helps identify and differentiate between normal and potentially harmful usage.",
+  "enabled": true,
+  "false_positives": [
+    "False positives will be present. This query is meant to help tune other curl and wget analytics."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Ingress Tool Transfer Hunting",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://curl.se/docs/manpage.html#-I",
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://github.com/rapid7/metasploit-framework/search?q=curl"
+  ],
+  "risk_score": 47,
+  "rule_id": "52fd468b-cb6d-48f5-b16a-92f1c9bb10cf",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Ingress Tool Transfer",
+    "Linux Living Off The Land",
+    "XorDDos",
+    "Endpoint",
+    "T1105"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command and Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name : (\"curl\", \"wget\")]\n  [network where process.name : (\"curl\", \"wget\") and network.direction == \"outgoing\"]",
+  "index": [
+    "logs-endpoint.events.*",
+    "filebeat-*",
+    "logs-system.*"
+  ],
+  "data_view_id": "default"
+}

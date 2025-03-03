@@ -1,0 +1,65 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Unix Shell Configuration Modification",
+  "description": "The following analytic detects suspicious modifications to Unix shell configuration files, which may indicate an attempt to alter system behavior or gain unauthorized access. Unix shell configuration files, such as `.bashrc` or `.profile`, control user environment settings and command execution. Unauthorized changes to these files can be used to execute malicious commands, escalate privileges, or hide malicious activities. By monitoring for unusual or unauthorized modifications to shell configuration files, this analytic helps identify potential security threats, allowing security teams to respond quickly and mitigate risks. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "enabled": true,
+  "risk_score": 64,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546.004",
+          "name": "Unix Shell Configuration Modification",
+          "reference": "https://attack.mitre.org/techniques/T1546/004/"
+        }
+      ]
+    }
+  ],
+  "query": """
+    file where event.action == "modified" and file.path in (
+      "/etc/profile", "/etc/shells", "/etc/profile.d", "/etc/bash.bashrc", 
+      "/etc/bashrc", "/etc/zsh/zprofile", "/etc/zsh/zshrc", 
+      "/etc/zsh/zlogin", "/etc/zsh/zlogout", "/etc/csh.cshrc", 
+      "/etc/csh.login", "/root/.bashrc", "/root/.bash_profile", 
+      "/root/.profile", "/root/.zshrc", "/root/.zprofile", 
+      "/home/*/.bashrc", "/home/*/.zshrc", "/home/*/.bash_profile", 
+      "/home/*/.zprofile", "/home/*/.profile", "/home/*/.bash_login", 
+      "/home/*/.bash_logout", "/home/*/.zlogin", "/home/*/.zlogout"
+    )
+  """,
+  "type": "eql",
+  "language": "eql",
+  "index": ["filebeat-*"],
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "max_signals": 100,
+  "from": "now-6h",
+  "interval": "5m",
+  "actions": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "exceptions_list": [],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "throttle": "no_actions",
+  "investigation_fields": {
+    "field_names": ["file.path", "file.name", "host.name"]
+  },
+  "alert_suppression": {
+    "duration": {"unit": "s", "value": 600},
+    "group_by": ["file.path"],
+    "missing_fields_strategy": "doNotSuppress"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "actions": [],
+  "author": ["Gowthamaraj Rajendran", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the use of the Advanced Package Tool (APT) with elevated privileges via sudo on Linux systems. It leverages Endpoint Detection and Response (EDR) telemetry to identify processes where APT commands are executed with sudo rights. This activity is significant because it indicates a user can run system commands as root, potentially leading to unauthorized root shell access. If confirmed malicious, this could allow an attacker to escalate privileges, execute arbitrary commands, and gain full control over the affected system, posing a severe security risk. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["False positives may be present, filter as needed."],
+  "from": "now-360s",
+  "interval": "5m",
+  "name": "OpenAI GPT4-o: Linux APT Privilege Escalation",
+  "risk_score": 73,
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Living Off The Land", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"sudo\" and process.args : \"apt\" and process.args : \"APT::Update::Pre-Invoke::*\"",
+  "index": ["logs-*"]
+}

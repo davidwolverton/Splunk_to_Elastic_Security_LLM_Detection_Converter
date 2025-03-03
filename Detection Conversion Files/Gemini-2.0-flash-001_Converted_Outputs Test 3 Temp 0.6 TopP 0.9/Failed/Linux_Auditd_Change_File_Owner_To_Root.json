@@ -1,0 +1,120 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'chown' command to change a file owner to 'root' on a Linux system. It leverages Linux Auditd telemetry, specifically monitoring command-line executions and process details. This activity is significant as it may indicate an attempt to escalate privileges by adversaries, malware, or red teamers. If confirmed malicious, this action could allow an attacker to gain root-level access, leading to full control over the compromised host and potential persistence within the environment. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "now-60m",
+    "interval": "5m"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Change File Owner To Root",
+  "namespace": "default",
+  "note": null,
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://unix.stackexchange.com/questions/101073/how-to-change-permissions-from-root-user-to-all-users",
+    "https://askubuntu.com/questions/617850/changing-from-user-to-superuser"
+  ],
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_change_file_owner_to_root",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1222.002"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1222",
+          "name": "File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/",
+          "subtechnique": [
+            {
+              "id": "T1222.002",
+              "name": "Linux and Mac File and Directory Permissions Modification",
+              "reference": "https://attack.mitre.org/techniques/T1222/002/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"chown\" and process.args like \"*root*\"]\n  [file where file.owner == \"root\"]",
+  "type": "eql",
+    "alert_suppression": {
+        "duration": {
+            "unit": "m",
+            "value": 5
+        },
+        "group_by": [
+            "host.name",
+            "process.name"
+        ],
+        "missing_fields_strategy": "do_not_suppress"
+    },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+     {
+      "query": "event.category :\"process\"",
+      "exists": false
+    },
+    {
+      "query": "event.dataset :\"auditd\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

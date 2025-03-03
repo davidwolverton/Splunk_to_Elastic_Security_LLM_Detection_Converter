@@ -1,0 +1,87 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "alias_target_id": "string",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "building_block_type": "string",
+  "description": "The following analytic detects unauthorized file creation in known crontab directories on Unix-based systems. It leverages filesystem data to identify new files in directories such as /etc/cron* and /var/spool/cron/*. This activity is significant as it may indicate an attempt by threat actors or malware to establish persistence on a compromised host. If confirmed malicious, this could allow attackers to execute arbitrary code at scheduled intervals, potentially leading to further system compromise and unauthorized access to sensitive information. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can create file in crontab folders for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "string",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Add Files In Known Crontab Directories",
+  "namespace": "string",
+  "note": "Converted with OpenAI GPT4-o",
+  "outcome": "exactMatch",
+  "output_index": "string",
+  "references": [
+    "https://www.sandflysecurity.com/blog/detecting-cronrat-malware-on-linux-instantly/",
+    "https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/"
+  ],
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "risk_score": 42,
+  "risk_score_mapping": [],
+  "rule_id": "023f3452-5f27-11ec-bf00-acde48001122",
+  "rule_name_override": "string",
+  "setup": "string",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "XorDDos", "Linux Living Off The Land", "Linux Privilege Escalation", "Scheduled Tasks", "Linux Persistence Techniques"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.003",
+              "name": "Cron",
+              "reference": "https://attack.mitre.org/techniques/T1053/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "string",
+  "timeline_title": "string",
+  "timestamp_override": "string",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 6,
+  "language": "eql",
+  "query": "file where file.path : \"/etc/cron*\" or file.path : \"/var/spool/cron/*\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 300
+    },
+    "group_by": ["host.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "string",
+  "event_category_override": "string",
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "string",
+  "timestamp_field": "@timestamp"
+}

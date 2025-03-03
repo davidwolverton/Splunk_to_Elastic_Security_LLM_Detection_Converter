@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of init daemon scripts on a Linux machine. It leverages filesystem event logs to identify when files within the /etc/init.d/ directory are deleted. This activity is significant because init daemon scripts control the start and stop of critical services, and their deletion can indicate an attempt to impair security features or evade defenses. If confirmed malicious, this behavior could allow an attacker to disrupt essential services, execute destructive payloads, or persist undetected in the environment.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "1h",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Deletion Of Init Daemon Script",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted with Google Gemini 2.0 Flash 001.",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "risk_score": 49,
+  "rule_id": "729aab57-d26f-4156-b97f-ab8dda8f44b1",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:AcidRain",
+    "analytic_story:Data Destruction",
+    "analytic_story:AcidPour",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1070.004",
+    "mitre_attack_id:T1485",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"rm\"]\n  [file where event.type == \"deletion\" and file.path : \"/etc/init.d/*\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

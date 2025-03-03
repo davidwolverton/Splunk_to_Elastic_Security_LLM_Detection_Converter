@@ -1,0 +1,43 @@
+{
+  "name": "OpenAI GPT4-o Linux Deletion Of Init Daemon Script",
+  "description": "The following analytic detects the deletion of init daemon scripts on a Linux machine. It leverages filesystem event logs to identify when files within the /etc/init.d/ directory are deleted. This activity is significant because init daemon scripts control the start and stop of critical services, and their deletion can indicate an attempt to impair security features or evade defenses. If confirmed malicious, this behavior could allow an attacker to disrupt essential services, execute destructive payloads, or persist undetected in the environment. Rule converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 49,
+  "severity": "medium",
+  "type": "eql",
+  "language": "eql",
+  "query": "file where event.action == \"deleted\" and file.path : \"/etc/init.d/*\"",
+  "index": ["filebeat-*", "logs-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070.004",
+          "name": "File Deletion",
+          "reference": "https://attack.mitre.org/techniques/T1070/004/"
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "references": ["https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "actions": [],
+  "exceptions_list": [],
+  "from": "now-360s",
+  "to": "now",
+  "version": 1
+}

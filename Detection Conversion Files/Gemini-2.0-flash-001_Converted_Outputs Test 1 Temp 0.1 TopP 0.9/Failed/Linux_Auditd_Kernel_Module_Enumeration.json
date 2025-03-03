@@ -1,0 +1,113 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic identifies the use of the 'kmod' process to list kernel modules on a Linux system. This detection leverages data from Linux Auditd, focusing on process names and command-line executions. While listing kernel modules is not inherently malicious, it can be a precursor to loading unauthorized modules using 'insmod'. If confirmed malicious, this activity could allow an attacker to load kernel modules, potentially leading to privilege escalation, persistence, or other malicious actions within the system.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "now-60m",
+    "interval": "10m",
+    "version": 5
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Kernel Module Enumeration",
+  "namespace": "default",
+  "note": "The following analytic identifies the use of the 'kmod' process to list kernel modules on a Linux system. This detection leverages data from Linux Auditd, focusing on process names and command-line executions. While listing kernel modules is not inherently malicious, it can be a precursor to loading unauthorized modules using 'insmod'. If confirmed malicious, this activity could allow an attacker to load kernel modules, potentially leading to privilege escalation, persistence, or other malicious actions within the system.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://man7.org/linux/man-pages/man8/kmod.8.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "host.name",
+    "event.type",
+    "auditd.data.syscall",
+    "user.id",
+    "process.ppid",
+    "process.pid",
+    "process.start"
+  ],
+  "response_actions": [],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "d1b088de-c47a-4572-9339-bdcc26493b32",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Endpoint",
+    "Compromised Linux Host",
+    "XorDDos",
+    "Linux Rootkit",
+    "T1082",
+    "T1014"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/"
+        },
+        {
+          "id": "T1014",
+          "name": "Rootkit",
+          "reference": "https://attack.mitre.org/techniques/T1014/"
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 5,
+  "language": "eql",
+  "query": "sequence by host.name, user.id\n  [process where event.type == \"start\" and process.name == \"lsmod\"]\n  [process where event.type == \"start\" and process.name == \"kmod\" and process.args == \"list\"]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.module:\"auditd\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-*-*",
+    "metricbeat-*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

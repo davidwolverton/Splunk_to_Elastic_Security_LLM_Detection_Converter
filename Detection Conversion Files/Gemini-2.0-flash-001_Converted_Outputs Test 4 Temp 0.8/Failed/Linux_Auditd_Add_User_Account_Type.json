@@ -1,0 +1,84 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the suspicious add user account type.\n  This behavior is critical for a SOC to monitor because it may indicate attempts\n  to gain unauthorized access or maintain control over a system. Such actions could\n  be signs of malicious activity. If confirmed, this could lead to serious consequences,\n  including a compromised system, unauthorized access to sensitive data, or even a\n  wider breach affecting the entire network. Detecting and responding to these signs\n  early is essential to prevent potential security incidents.\n  This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application\n  for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "1"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Add User Account Type",
+  "note": "### What\nThe following analytic detects the suspicious add user account type.\nThis behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents.\n\n### Why\nDetecting suspicious add user account activity is crucial for identifying potential unauthorized access attempts, privilege escalation, or persistence mechanisms employed by threat actors. Early detection allows security teams to respond promptly, mitigating the risk of a full-scale compromise.\n",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_auditd_add_user_account_type",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1136.001",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1136",
+          "name": "Create Account",
+          "reference": "https://attack.mitre.org/techniques/T1136/",
+          "subtechnique": [
+            {
+              "id": "T1136.001",
+              "name": "Local Account",
+              "reference": "https://attack.mitre.org/techniques/T1136/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "linux_auditd_add_user_account_type_timeline",
+  "timeline_title": "Linux Auditd Add User Account Type Timeline",
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by audit.session, process.pid\n  [process where event.type == \"start\" and process.name == \"useradd\" or process.name == \"adduser\"]\n  [file where event.type == \"creation\" and file.path : \"/etc/passwd*\"]\n",
+  "type": "eql",
+  "data_view_id": "global",
+  "index": [
+    "auditbeat-*",
+    "logs-system.*"
+  ]
+}

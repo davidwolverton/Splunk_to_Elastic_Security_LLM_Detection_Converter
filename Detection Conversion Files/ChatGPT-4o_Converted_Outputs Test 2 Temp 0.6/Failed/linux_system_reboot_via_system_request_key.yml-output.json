@@ -1,0 +1,33 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the SysReq hack to reboot a Linux system host. It leverages Endpoint Detection and Response (EDR) data to identify processes executing the command to pipe 'b' to /proc/sysrq-trigger. This activity is significant as it is an uncommon method to reboot a system and was observed in the Awfulshred malware wiper. If confirmed malicious, this technique could indicate the presence of suspicious processes and potential system compromise, leading to unauthorized reboots and disruption of services. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["unknown"],
+  "from": "now-6m",
+  "index": ["filebeat-*", "logs-*"],
+  "interval": "5m",
+  "name": "OpenAI GPT4-o Linux System Reboot Via System Request Key",
+  "note": "Converted with OpenAI GPT4-o",
+  "risk_score": 50,
+  "rule_id": "e1912b58-ed9c-422c-bbb0-2dbc70398345",
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "endpoint", "AwfulShred", "Data Destruction", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud"],
+  "threat": [{
+    "framework": "MITRE ATT&CK",
+    "tactic": {
+      "id": "TA0040",
+      "name": "Impact",
+      "reference": "https://attack.mitre.org/tactics/TA0040/"
+    },
+    "technique": [{
+      "id": "T1529",
+      "name": "System Reboot/Shutdown",
+      "reference": "https://attack.mitre.org/techniques/T1529/"
+    }]
+  }],
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name in (\"dash\", \"sudo\", \"bash\") and process.command_line == \"* echo b > *\" and process.command_line == \"*/proc/sysrq-trigger\"",
+  "version": 1
+}

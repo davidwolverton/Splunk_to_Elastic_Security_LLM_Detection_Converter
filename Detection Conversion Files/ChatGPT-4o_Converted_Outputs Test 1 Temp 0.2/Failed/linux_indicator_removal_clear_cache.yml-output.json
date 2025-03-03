@@ -1,0 +1,42 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects processes that clear or free page cache on a Linux system. It leverages Endpoint Detection and Response (EDR) data, focusing on specific command-line executions involving the kernel system request `drop_caches`. This activity is significant as it may indicate an attempt to delete forensic evidence or the presence of wiper malware like Awfulshred. If confirmed malicious, this behavior could allow an attacker to cover their tracks, making it difficult to investigate other malicious activities or system compromises. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["unknown"],
+  "from": "now-360s",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Indicator Removal Clear Cache",
+  "query": "process where process.name in (\"dash\", \"sudo\", \"bash\") and process.command_line : \"* echo 3 > *\" and process.command_line : \"*/proc/sys/vm/drop_caches\"",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "linux-indicator-removal-clear-cache",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Data Destruction", "Endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

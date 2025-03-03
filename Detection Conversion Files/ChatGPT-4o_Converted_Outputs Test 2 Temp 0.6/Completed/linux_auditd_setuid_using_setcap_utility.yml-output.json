@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Setuid Using Setcap Utility",
+  "description": "The following analytic detects the execution of the 'setcap' utility to enable the SUID bit on Linux systems. It leverages Linux Auditd data, focusing on process names and command-line arguments that indicate the use of 'setcap' with specific capabilities. This activity is significant because setting the SUID bit allows a user to temporarily gain root access, posing a substantial security risk. If confirmed malicious, an attacker could escalate privileges, execute arbitrary commands with elevated permissions, and potentially compromise the entire system. Converted with OpenAI GPT4-o.",
+  "author": ["OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "risk_score": 81,
+  "severity": "high",
+  "query": "process where event.action == \"exec\" and process.args : (\"*setcap *\", \"*cap_setuid+ep*\", \"*cap_setuid=ep*\", \"*cap_net_bind_service+p*\", \"*cap_net_raw+ep*\", \"*cap_dac_read_search+ep*\")",
+  "language": "eql",
+  "type": "eql",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.001",
+              "name": "Setuid and Setgid",
+              "reference": "https://attack.mitre.org/techniques/T1548/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "max_signals": 100,
+  "references": ["https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/"],
+  "exceptions_list": [],
+  "actions": [],
+  "version": 1
+}

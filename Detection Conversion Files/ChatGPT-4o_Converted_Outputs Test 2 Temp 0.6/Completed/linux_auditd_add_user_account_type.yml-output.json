@@ -1,0 +1,39 @@
+{
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the suspicious add user account type. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Auditd Add User Account Type",
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1136",
+          "name": "Create Account",
+          "reference": "https://attack.mitre.org/techniques/T1136/"
+        },
+        {
+          "id": "T1136.001",
+          "name": "Local Account",
+          "reference": "https://attack.mitre.org/techniques/T1136/001/"
+        }
+      ]
+    }
+  ],
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "language": "eql",
+  "query": "process where event.action == \"add-user\" and process.name : \"auditd\" and process.args : \"ADD_USER\"",
+  "type": "eql",
+  "index": ["audit-*"],
+  "version": 1
+}

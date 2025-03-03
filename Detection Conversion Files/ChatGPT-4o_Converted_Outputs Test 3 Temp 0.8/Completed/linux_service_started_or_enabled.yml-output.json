@@ -1,0 +1,40 @@
+{
+  "name": "OpenAI GPT4-o Linux Service Started Or Enabled",
+  "description": "The following analytic detects the creation or enabling of services on Linux platforms using the systemctl or service tools. It leverages Endpoint Detection and Response (EDR) logs, focusing on process names, parent processes, and command-line executions. This activity is significant as adversaries may create or modify services to maintain persistence or execute malicious payloads. If confirmed malicious, this behavior could lead to persistent access, data theft, ransomware deployment, or other damaging outcomes. Monitoring and investigating such activities are crucial for maintaining the security and integrity of the environment. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "enabled": true,
+  "risk_score": 42,
+  "severity": "medium",
+  "tags": ["Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Living Off The Land", "Scheduled Tasks", "Gomir", "OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.006",
+              "name": "Systemd Timers",
+              "reference": "https://attack.mitre.org/techniques/T1053/006/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "interval": "5m",
+  "type": "eql",
+  "language": "eql",
+  "query": "process where (process.name == \"systemctl\" or process.name == \"service\" or wildcards(process.command_line, \"*systemctl *\", \"*service *\")) and wildcards(process.command_line, \"* start *\", \"* enable *\") and not (process.os == \"Microsoft Windows\")",
+  "index": ["logs-*"],
+  "max_signals": 100,
+  "references": ["https://attack.mitre.org/techniques/T1543/003/"]
+}

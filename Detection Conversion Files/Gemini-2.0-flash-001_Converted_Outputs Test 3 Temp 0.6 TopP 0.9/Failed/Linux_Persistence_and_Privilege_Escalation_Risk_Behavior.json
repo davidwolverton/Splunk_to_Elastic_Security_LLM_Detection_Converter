@@ -1,0 +1,78 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "description": "The following analytic identifies potential Linux persistence and privilege escalation activities.  It leverages risk scores and event counts from various Linux-related data sources, focusing on tactics associated with persistence and privilege escalation. This activity is significant for a SOC because it highlights behaviors that could allow an attacker to maintain access or gain elevated privileges on a Linux system. If confirmed malicious, this activity could enable an attacker to execute code with higher privileges, persist in the environment, and potentially access sensitive information, posing a severe security risk.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [],
+  "from": "now-24h",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "packetbeat-*",
+    "winlogbeat-*"
+  ],
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001 Linux Persistence and Privilege Escalation Risk Behavior",
+  "note": "The following analytic identifies potential Linux persistence and privilege escalation activities. It leverages risk scores and event counts from various Linux-related data sources, focusing on tactics associated with persistence and privilege escalation. This activity is significant for a SOC because it highlights behaviors that could allow an attacker to maintain access or gain elevated privileges on a Linux system. If confirmed malicious, this activity could enable an attacker to execute code with higher privileges, persist in the environment, and potentially access sensitive information, posing a severe security risk.",
+  "references": [
+    "https://attack.mitre.org/tactics/TA0004/"
+  ],
+  "risk_score": 75,
+  "rule_id": "linux_persistence_and_privilege_escalation_risk_behavior",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1548",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:audit"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.name
+    [process where event.type == "start" and process.name != ""]
+    [file where event.type == "change" or event.type == "creation"]
+    [network where event.type == "start" and destination.ip != ""]
+    """,
+  "data_view_id": "default"
+}

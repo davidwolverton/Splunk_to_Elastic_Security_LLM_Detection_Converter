@@ -1,0 +1,65 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the SysReq hack to reboot a Linux system host. It leverages Endpoint Detection and Response (EDR) data to identify processes executing the command to pipe 'b' to /proc/sysrq-trigger. This activity is significant as it is an uncommon method to reboot a system and was observed in the Awfulshred malware wiper. If confirmed malicious, this technique could indicate the presence of suspicious processes and potential system compromise, leading to unauthorized reboots and disruption of services.",
+  "enabled": true,
+  "false_positives": [
+    "unknown"
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux System Reboot Via System Request Key",
+  "note": "Google Gemini 2.0 Flash 001: Converted from Splunk SPL to Elastic EQL.",
+  "references": [
+    "https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html",
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "risk_score": 49,
+  "rule_id": "e1912b58-ed9c-422c-bbb0-2dbc70398345",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:AwfulShred",
+    "analytic_story:Data Destruction",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1529",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1529",
+          "name": "System Shutdown/Reboot",
+          "reference": "https://attack.mitre.org/techniques/T1529/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 4,
+  "language": "eql",
+  "query": """sequence by host.name
+  [process where event.type == "start" and process.name in ("dash", "sudo", "bash") and process.args like "* echo b > *" and process.args like "*/proc/sysrq-trigger"]""",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

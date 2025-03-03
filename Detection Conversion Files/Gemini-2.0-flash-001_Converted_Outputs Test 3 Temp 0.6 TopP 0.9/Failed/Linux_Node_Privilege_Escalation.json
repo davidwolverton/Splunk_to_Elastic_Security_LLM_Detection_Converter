@@ -1,0 +1,86 @@
+{
+  "actions": [],
+  "alias_purpose": "rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic identifies the execution of Node.js with elevated privileges using sudo, specifically when spawning child processes. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions that include specific Node.js commands. This activity is significant because running Node.js as a superuser without dropping privileges can allow unauthorized access to the file system and potential privilege escalation. If confirmed malicious, this could enable an attacker to maintain privileged access, execute arbitrary code, and compromise sensitive data within the environment.",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Node Privilege Escalation",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted from Splunk SPL to Elastic EQL using Google Gemini 2.0 Flash 001.",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/docker/",
+    "https://en.wikipedia.org/wiki/Node.js"
+  ],
+  "risk_score": 40,
+  "rule_id": "2e58a4ff-398f-42f4-8fd0-e01ebfe2a8ce",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and process.name == "sudo" and process.args == "node"]
+    [process where event.type == "start" and process.args == "-e" and process.args == "child_process.spawn" and process.args == "stdio"]""",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "exceptions_list": [],
+  "false_positives_query": null,
+  "filters": [],
+  "machine_learning_job_id": null,
+  "anomaly_threshold": null,
+  "building_block_item_id": null,
+  "building_block_type_id": null,
+  "threat_index": null,
+  "threat_query": null,
+  "threat_mapping": null,
+  "related_integrations": [],
+  "output_index": ".siem-signals-default",
+  "setup": null,
+  "response_actions": [],
+  "investigation_fields": {
+    "field_names": []
+  },
+  "alert_suppression": {
+    "enabled": false,
+    "terms": []
+  },
+  "max_signals_per_execution": null
+}

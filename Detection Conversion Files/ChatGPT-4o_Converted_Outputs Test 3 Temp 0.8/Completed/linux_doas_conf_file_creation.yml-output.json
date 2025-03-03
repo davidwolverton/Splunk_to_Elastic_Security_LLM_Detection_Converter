@@ -1,0 +1,53 @@
+{
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the creation of the doas.conf file on a Linux host. Converted with OpenAI GPT4-o. This file is used by the doas utility to allow standard users to perform tasks as root, similar to sudo. The detection leverages filesystem data from the Endpoint data model, focusing on the creation of the doas.conf file. This activity is significant because it can indicate an attempt to gain elevated privileges, potentially by an adversary. If confirmed malicious, this could allow an attacker to execute commands with root privileges, leading to full system compromise.",
+  "enabled": true,
+  "index": ["filebeat-*", "sysmon-*"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "meta": {
+    "from": "Splunk"
+  },
+  "name": "OpenAI GPT4-o Linux Doas Conf File Creation",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://wiki.gentoo.org/wiki/Doas",
+    "https://www.makeuseof.com/how-to-install-and-use-doas/"
+  ],
+  "risk_score": 50,
+  "rule_id": "f6343e86-6e09-11ec-9376-acde48001122",
+  "severity": "medium",
+  "tags": [
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "OpenAI GPT4-o"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 5,
+  "query": "file where file.path == '/etc/doas.conf' and event.action == 'creation'"
+}

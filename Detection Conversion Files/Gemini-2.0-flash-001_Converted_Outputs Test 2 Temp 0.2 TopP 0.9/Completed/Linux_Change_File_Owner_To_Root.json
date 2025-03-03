@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the 'chown' command to change a file owner to 'root' on a Linux system. It leverages Endpoint Detection and Response (EDR) telemetry, specifically monitoring command-line executions and process details. This activity is significant as it may indicate an attempt to escalate privileges by adversaries, malware, or red teamers. If confirmed malicious, this action could allow an attacker to gain root-level access, leading to full control over the compromised host and potential persistence within the environment. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "ASL 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Change File Owner To Root",
+  "note": "The following analytic detects the use of the 'chown' command to change a file owner to 'root' on a Linux system. It leverages Endpoint Detection and Response (EDR) telemetry, specifically monitoring command-line executions and process details. This activity is significant as it may indicate an attempt to escalate privileges by adversaries, malware, or red teamers. If confirmed malicious, this action could allow an attacker to gain root-level access, leading to full control over the compromised host and potential persistence within the environment.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://unix.stackexchange.com/questions/101073/how-to-change-permissions-from-root-user-to-all-users",
+    "https://askubuntu.com/questions/617850/changing-from-user-to-superuser"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_change_file_owner_to_root",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1222.002"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1222",
+          "name": "Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/"
+        },
+        {
+          "id": "T1222.002",
+          "name": "Linux and Mac File and Directory Permissions",
+          "reference": "https://attack.mitre.org/techniques/T1222/002/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.type == \"start\" and process.name == \"chown\" and process.args == \"root\"]\n  [file where event.type == \"change\" and file.owner == \"root\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

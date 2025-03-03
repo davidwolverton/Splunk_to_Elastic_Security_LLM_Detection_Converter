@@ -1,0 +1,79 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects command-line activities that redirect stdout or stderr to the /dev/null file. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This behavior is significant as it can indicate attempts to hide command outputs, a technique observed in the CyclopsBlink malware to conceal modifications to iptables firewall settings. If confirmed malicious, this activity could allow an attacker to stealthily alter system configurations, potentially leading to unauthorized access or persistent control over the compromised machine. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "unknown"
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "5"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Stdout Redirection To Dev Null File",
+  "namespace": "default",
+  "note": "The following analytic detects command-line activities that redirect stdout or stderr to the /dev/null file. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This behavior is significant as it can indicate attempts to hide command outputs, a technique observed in the CyclopsBlink malware to conceal modifications to iptables firewall settings. If confirmed malicious, this activity could allow an attacker to stealthily alter system configurations, potentially leading to unauthorized access or persistent control over the compromised machine.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_stdout_redirection_to_dev_null_file",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Cyclops Blink",
+    "Data Destruction",
+    "Industroyer2",
+    "Endpoint",
+    "T1562.004",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/"
+        },
+        {
+          "id": "T1562.004",
+          "name": "Disable or Modify System Firewall",
+          "reference": "https://attack.mitre.org/techniques/T1562/004/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "process where event.type == \"start\" and process.args like \"*&>/dev/null*\"",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

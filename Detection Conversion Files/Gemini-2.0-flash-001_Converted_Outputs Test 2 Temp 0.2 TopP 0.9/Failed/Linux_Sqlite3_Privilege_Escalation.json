@@ -1,0 +1,128 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the sqlite3 command with elevated privileges, which can be exploited for privilege escalation. It leverages Endpoint Detection and Response (EDR) telemetry to identify instances where sqlite3 is used in conjunction with shell commands and sudo. This activity is significant because it indicates a potential attempt to gain root access, which could lead to full system compromise. If confirmed malicious, an attacker could execute arbitrary commands as root, leading to unauthorized access, data exfiltration, or further lateral movement within the network. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "version": 7
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Sqlite3 Privilege Escalation",
+  "namespace": "default",
+  "note": null,
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/sqlite3/",
+    "https://manpages.ubuntu.com/manpages/trusty/en/man1/sqlite3.1.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    },
+    {
+      "name": "process.parent.name",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 30,
+  "risk_score_mapping": [],
+  "rule_id": "ab75dbb7-c3ba-4689-9c1b-8d2717bdcba1",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Living Off The Land",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1548.003",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and su",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 7,
+  "language": "eql",
+  "query": "sequence by host.hostname, user.name\n  [process where event.type == \"start\" and process.name == \"sudo\"]\n  [process where event.type == \"start\" and process.name == \"sqlite3\" and process.command_line : \"*.shell*\"]",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

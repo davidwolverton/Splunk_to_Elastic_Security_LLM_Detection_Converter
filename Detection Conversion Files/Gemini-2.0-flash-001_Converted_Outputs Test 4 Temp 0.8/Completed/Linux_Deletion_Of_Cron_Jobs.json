@@ -1,0 +1,76 @@
+{
+  "actions": [],
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of cron jobs on a Linux machine.\n  It leverages filesystem event logs to identify when files within the \"/etc/cron.*\"\n  directory are deleted. This activity is significant because attackers or malware\n  may delete cron jobs to disable scheduled security tasks or evade detection mechanisms.\n  If confirmed malicious, this action could allow an attacker to disrupt system operations,\n  evade security measures, or facilitate further malicious activities such as data\n  wiping, as seen with the acidrain malware.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Deletion Of Cron Jobs",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "risk_score": 49,
+  "rule_id": "linux_deletion_of_cron_jobs",
+  "severity": "high",
+  "tags": [
+    "AcidRain",
+    "Data Destruction",
+    "AcidPour",
+    "Endpoint",
+    "T1070.004",
+    "T1485",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name != \"cron\"]\n  [file where event.type == \"deletion\" and file.path : \"/etc/cron.*\"]",
+  "index": [
+    "filebeat-*",
+    "logs-endpoint.events.*"
+  ],
+  "risk_score_mapping": [],
+    "severity_mapping": [],
+  "filters": [],
+  "threat_objects": [],
+  "output_index": ".siem-signals-default"
+}

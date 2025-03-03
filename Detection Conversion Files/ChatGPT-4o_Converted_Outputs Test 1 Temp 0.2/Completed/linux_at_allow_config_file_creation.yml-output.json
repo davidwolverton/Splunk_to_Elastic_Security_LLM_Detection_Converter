@@ -1,0 +1,47 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the creation of the /etc/at.allow or /etc/at.deny configuration files in Linux. It leverages file creation events from the Endpoint datamodel to identify when these files are created. This activity is significant as these files control user permissions for the \"at\" scheduling application and can be abused by attackers to establish persistence. If confirmed malicious, this could allow unauthorized execution of malicious code, leading to potential data theft or further system compromise. Analysts should review the file path, creation time, and associated processes to assess the threat. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can create this file for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux At Allow Config File Creation",
+  "note": "Converted with OpenAI GPT4-o",
+  "outcome": "exactMatch",
+  "references": ["https://linuxize.com/post/at-command-in-linux/"],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "linux_at_allow_config_file_creation",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Linux Living Off The Land", "Scheduled Tasks"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053.003",
+          "name": "Scheduled Task/Job: Cron",
+          "reference": "https://attack.mitre.org/techniques/T1053/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "file where file.path in (\"/etc/at.allow\", \"/etc/at.deny\") and event.action == \"creation\"",
+  "index": ["filebeat-*", "logs-*"],
+  "timestamp_override": "event.ingested"
+}

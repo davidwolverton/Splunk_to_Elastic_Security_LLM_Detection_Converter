@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Doas Tool Execution",
+  "description": "The following analytic detects the execution of the 'doas' tool on a Linux host. This tool allows standard users to perform tasks with root privileges, similar to 'sudo'. The detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant as 'doas' can be exploited by adversaries to gain elevated privileges on a compromised host. If confirmed malicious, this could lead to unauthorized administrative access, potentially compromising the entire system. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "endpoint"],
+  "risk_score": 49,
+  "severity": "medium",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name == \"doas\"",
+  "language": "eql",
+  "index": ["logs-*"],
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-6m",
+  "max_signals": 100,
+  "references": [
+    "https://wiki.gentoo.org/wiki/Doas",
+    "https://www.makeuseof.com/how-to-install-and-use-doas/"
+  ],
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "version": 1
+}

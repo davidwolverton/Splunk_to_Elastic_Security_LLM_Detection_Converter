@@ -1,0 +1,41 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Data Destruction Command",
+  "description": "The following analytic detects the execution of a Unix shell command designed to wipe root directories on a Linux host. It leverages data from Linux Auditd, focusing on the 'rm' command with force recursive deletion and the '--no-preserve-root' option. This activity is significant as it indicates potential data destruction attempts, often associated with malware like Awfulshred. If confirmed malicious, this behavior could lead to severe data loss, system instability, and compromised integrity of the affected Linux host. Immediate investigation and response are crucial to mitigate potential damage. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "severity": "high",
+  "risk_score": 73,
+  "interval": "5m",
+  "enabled": true,
+  "language": "eql",
+  "query": "process where process.name == \"rm\" and process.args : \"*--no-preserve-root*\" and process.args : \"*-rf*\"",
+  "index": ["auditd-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "exceptions_list": [],
+  "false_positives": ["unknown"],
+  "max_signals": 100,
+  "version": 1,
+  "type": "eql",
+  "actions": [],
+  "building_block_type": "default"
+}

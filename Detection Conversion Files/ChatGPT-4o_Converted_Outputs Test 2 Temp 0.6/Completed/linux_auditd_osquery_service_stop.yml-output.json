@@ -1,0 +1,38 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious stopping of the `osquery` service, which may indicate an attempt to disable monitoring and evade detection. `Osquery` is a powerful tool used for querying system information and detecting anomalies, and stopping its service can be a sign that an attacker is trying to disrupt security monitoring or hide malicious activities. By monitoring for unusual or unauthorized stops of the `osquery` service, this analytic helps identify potential efforts to bypass security controls, enabling security teams to investigate and respond to possible threats effectively. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "index": ["linux_auditd"],
+  "interval": "5m",
+  "language": "eql",
+  "name": "OpenAI GPT4-o Linux Auditd Osquery Service Stop",
+  "output_index": ".siem-signals-default",
+  "query": "process where event.category == \"process\" and process.name == \"osqueryd\" and event.action == \"stop\"",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

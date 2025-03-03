@@ -1,0 +1,114 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the installation of a Linux kernel module using the modprobe utility. It leverages data from Linux Auditd, focusing on process names and command-line executions. This activity is significant because installing a kernel module can indicate an attempt to deploy a rootkit or other malicious kernel-level code, potentially leading to elevated privileges and bypassing security detections. If confirmed malicious, this could allow an attacker to gain persistent, high-level access to the system, compromising its integrity and security. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "now-60m",
+    "kibana.version": "8.11.0",
+    "timestampOverrideNote": "configured with timestamp_override",
+    "to": "now"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Install Kernel Module Using Modprobe Utility",
+  "namespace": "default",
+  "note": "### How to implement\nTo implement this detection, the process begins by ingesting auditd data, that consists of SYSCALL, TYPE, EXECVE and PROCTITLE events, which captures command-line executions and process details on Unix/Linux systems. These logs should be ingested and processed using Splunk Add-on for Unix and Linux (https://splunkbase.splunk.com/app/833), which is essential for correctly parsing and categorizing the data. The next step involves normalizing the field names  to match the field names set by the Splunk Common Information Model (CIM) to ensure consistency across different data sources and enhance the efficiency of data modeling. This approach enables effective monitoring and detection of linux endpoints where auditd is deployed",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules/",
+    "https://security.stackexchange.com/questions/175953/how-to-load-a-malicious-lkm-at-startup",
+    "https://0x00sec.org/t/kernel-rootkits-getting-your-hands-dirty/1485"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "event.type",
+    "process.args"
+  ],
+  "response_actions": [],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_install_kernel_module_using_modprobe_utility",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Rootkit",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1547.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1547.006",
+          "name": "Boot or Logon Autostart Execution: Kernel Modules",
+          "reference": "https://attack.mitre.org/techniques/T1547/006/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.pid\n  [process where event.type == \"start\" and process.name == \"modprobe\"]\n  [process where event.type == \"info\" and process.args : \"*.ko\"]",
+  "type": "eql",
+    "alert_suppression": {
+        "duration": {
+            "unit": "m",
+            "value": 5
+        },
+        "enabled": false,
+        "group_by": []
+    },
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+    {
+      "exists": false,
+      "field": "event.category"
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

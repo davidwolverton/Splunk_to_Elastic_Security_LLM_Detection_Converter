@@ -1,0 +1,50 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the deletion of services on a Linux machine. It leverages filesystem event logs to identify when service files within system directories (e.g., /etc/systemd/, /lib/systemd/, /run/systemd/) are deleted. This activity is significant because attackers may delete or modify services to disable security features or evade defenses. If confirmed malicious, this behavior could indicate an attempt to impair system functionality or execute a destructive payload, potentially leading to system instability or data loss. Immediate investigation is required to determine the responsible process and user. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-1h",
+  "interval": "1h",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Deletion Of Services",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/",
+    "https://unix.stackexchange.com/questions/224992/where-do-i-put-my-systemd-unit-file",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "b509bbd3-0331-4aaa-8e4a-d2affe100af6",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "AcidRain", "Data Destruction", "AcidPour", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070.004",
+          "name": "File Deletion",
+          "reference": "https://attack.mitre.org/techniques/T1070/004/"
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "language": "eql",
+  "query": "file where event.action == \"deletion\" and file.path regex~ \"^(/etc/systemd/|/lib/systemd/|/run/systemd/).+\\.service$\""
+}

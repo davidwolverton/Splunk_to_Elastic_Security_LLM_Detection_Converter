@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Clipboard Data Copy",
+  "description": "The following analytic detects the use of the Linux 'xclip' command to copy data from the clipboard. It leverages Endpoint Detection and Response (EDR) telemetry, focusing on process names and command-line arguments related to clipboard operations. This activity is significant because adversaries can exploit clipboard data to capture sensitive information such as passwords or IP addresses. If confirmed malicious, this technique could lead to unauthorized data exfiltration, compromising sensitive information and potentially aiding further attacks within the environment. Converted with OpenAI GPT4-o.",
+  "author": ["Michael Haag", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "low",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1115",
+          "name": "Clipboard Data",
+          "reference": "https://attack.mitre.org/techniques/T1115/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name == \"xclip\" and process.args : (\"*-o *\", \"*-sel *\", \"*-selection *\", \"*clip *\", \"*clipboard*\")",
+  "language": "eql",
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-6m",
+  "max_signals": 100,
+  "references": [
+    "https://attack.mitre.org/techniques/T1115/",
+    "https://linux.die.net/man/1/xclip"
+  ],
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives may be present on Linux desktop as it may commonly be used by administrators or end users. Filter as needed."
+  ],
+  "index": ["filebeat-*", "logs-*"],
+  "version": 1
+}

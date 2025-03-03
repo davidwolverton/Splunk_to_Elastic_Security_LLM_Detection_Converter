@@ -1,0 +1,76 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic identifies the execution of common Linux processes used for elevation control, such as `chmod`, `chown`, and `setuid`. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant because these processes are often abused by adversaries to gain persistence or escalate privileges on compromised hosts. If confirmed malicious, this behavior could allow attackers to modify file attributes, change file ownership, or set user IDs, potentially leading to unauthorized access and control over critical system resources.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "1"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Common Process For Elevation Control",
+  "namespace": "default",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1548/001/",
+    "https://github.com/Neo23x0/auditd/blob/master/audit.rules#L285-L297",
+    "https://github.com/bfuzzy1/auditd-attack/blob/master/auditd-attack/auditd-attack.rules#L269-L270",
+    "https://github.com/microsoft/MSTIC-Sysmon/blob/main/linux/configs/attack-based/privilege_escalation/T1548.001_ElevationControl_CommonProcesses.xml"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_common_process_for_elevation_control",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:China-Nexus Threat Activity",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Earth Estries",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1548.001",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.001",
+          "name": "Setuid and Setgid",
+          "reference": "https://attack.mitre.org/techniques/T1548/001/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where event.type == \"start\" and process.name in (\"chmod\", \"chown\", \"fchmod\", \"fchmodat\", \"fchown\", \"fchownat\", \"fremovexattr\", \"fsetxattr\", \"lchown\", \"lremovexattr\", \"lsetxattr\", \"removexattr\", \"setuid\", \"setgid\", \"setreuid\", \"setregid\", \"chattr\")]\n  [process where event.type == \"start\" and process.command_line : (\"*chmod *\", \"*chown *\", \"*fchmod *\", \"*fchmodat *\", \"*fchown *\", \"*fchownat *\", \"*fremovexattr *\", \"*fsetxattr *\", \"*lchown *\", \"*lremovexattr *\", \"*lsetxattr *\", \"*removexattr *\", \"*setuid *\", \"*setgid *\", \"*setreuid *\", \"*setregid *\", \"*setcap *\", \"*chattr *\")]",
+  "type": "eql",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

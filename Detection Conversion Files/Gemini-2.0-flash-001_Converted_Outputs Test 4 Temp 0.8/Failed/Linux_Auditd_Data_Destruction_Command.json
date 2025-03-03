@@ -1,0 +1,64 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of a Unix shell command designed to wipe root directories on a Linux host. It leverages data from Linux Auditd, focusing on the 'rm' command with force recursive deletion and the '--no-preserve-root' option. This activity is significant as it indicates potential data destruction attempts, often associated with malware like Awfulshred. If confirmed malicious, this behavior could lead to severe data loss, system instability, and compromised integrity of the affected Linux host. Immediate investigation and response are crucial to mitigate potential damage.",
+  "enabled": true,
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Data Destruction Command",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "risk_score": 90,
+  "rule_id": "4da5ce1a-f71b-4e71-bb73-c0a3c73f3c3c",
+  "severity": "critical",
+  "tags": [
+    "Data Destruction",
+    "AwfulShred",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1485",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.pid, host.hostname
+    [process where event.category == "process" and event.type == "start" and
+     process.name == "rm" and process.args contains "-rf" and process.args contains "--no-preserve-root"]
+  """,
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-*-*",
+    " Metricbeat-*"
+  ]
+}

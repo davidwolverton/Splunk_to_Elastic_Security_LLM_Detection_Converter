@@ -1,0 +1,44 @@
+{
+  "name": "OpenAI GPT4-o Linux apt-get Privilege Escalation",
+  "description": "The following analytic detects the execution of the 'apt-get' command with elevated privileges using 'sudo' on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because it indicates a user may be attempting to escalate privileges to root, which could lead to unauthorized system control. If confirmed malicious, an attacker could gain root access, allowing them to execute arbitrary commands, install or remove software, and potentially compromise the entire system. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "Gowthamaraj Rajendran, Splunk",
+    "OpenAI GPT4-o"
+  ],
+  "tags": [
+    "OpenAI GPT4-o",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name == \"apt-get\" and process.args : \"*APT::Update::Pre-Invoke::*\" and process.args : \"*sudo*\"",
+  "language": "eql",
+  "type": "eql",
+  "interval": "5m",
+  "max_signals": 100,
+  "actions": [],
+  "references": [
+    "https://gtfobins.github.io/gtfobins/apt-get/",
+    "https://phoenixnap.com/kb/how-to-use-apt-get-commands"
+  ],
+  "version": 1
+}

@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "description": "The following analytic detects a high frequency of file deletions in the /etc/ folder on Linux systems. It leverages the Endpoint.Filesystem data model to identify instances where 200 or more files are deleted within an hour, grouped by process name and process ID. This behavior is significant as it may indicate the presence of wiper malware, such as AcidRain, which aims to delete critical system files. If confirmed malicious, this activity could lead to severe system instability, data loss, and potential disruption of services. Converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "linux package installer/uninstaller may cause this event. Please update you filter macro to remove false positives."
+  ],
+  "from": "now-1h",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "interval": "1h",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001 Linux High Frequency Of File Deletion In Etc Folder",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "risk_score": 49,
+  "rule_id": "9d867448-2aff-4d07-876c-89409a752ff8",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AcidRain",
+    "Data Destruction",
+    "Endpoint",
+    "T1070.004",
+    "T1485"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 6,
+  "language": "eql",
+  "query": """sequence by process.entity_id, host.hostname
+    [file where event.type == "deletion" and file.path : "/etc/*"] with runs = 200
+""",
+  "output_index": ".siem-signals-default",
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

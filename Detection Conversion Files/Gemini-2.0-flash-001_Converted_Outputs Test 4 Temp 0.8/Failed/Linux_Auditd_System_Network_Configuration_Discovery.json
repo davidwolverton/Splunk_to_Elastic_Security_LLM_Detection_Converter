@@ -1,0 +1,105 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious system network configuration discovery activities, which may indicate an adversary's attempt to gather information about the network environment. Such actions typically involve commands or tools used to identify network interfaces, routing tables, and active connections. Detecting these activities is crucial, as they often precede more targeted attacks like lateral movement or data exfiltration. By identifying unusual or unauthorized network discovery efforts, this analytic helps security teams to swiftly detect and respond to potential reconnaissance operations, mitigating the risk of further compromise.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-15m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "version": 4
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd System Network Configuration Discovery",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [],
+  "response_actions": [],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_system_network_configuration_discovery",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1016",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1016",
+          "name": "System Network Configuration Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1016/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [\n    process where event.type == \"start\" and process.name in (\"arp\", \"ifconfig\", \"ip\", \"netstat\", \"firewall-cmd\", \"ufw\", \"iptables\", \"ss\", \"route\")\n  ]\n  [ process where event.type == \"end\" ] with in 15m\n",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": null,
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.dataset : \"auditd\"",
+      "exists": false
+    },
+    {
+      "query": "event.code : \"SYSCALL\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

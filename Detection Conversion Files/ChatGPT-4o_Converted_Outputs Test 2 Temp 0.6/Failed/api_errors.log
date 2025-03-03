@@ -1,0 +1,49 @@
+2025-03-02 22:43:27,191 - ERROR - RequestException: Error creating rule: 409 Client Error: Conflict for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:29,634 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:33,946 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:35,848 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:39,953 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:39,955 - ERROR - JSONDecodeError: Failed to parse JSON file 'Removed\linux_auditd_auditd_service_stop.yml-output.json'. Ensure it is correctly formatted.
+2025-03-02 22:43:42,036 - ERROR - RequestException: Error creating rule: 409 Client Error: Conflict for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:44,047 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:46,152 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:46,404 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:54,336 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:54,587 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:43:56,114 - ERROR - Unexpected error while loading JSON file Removed\linux_auditd_file_permission_modification_via_chmod.yml-output.json: 'utf-8' codec can't decode byte 0xe5 in position 58: invalid continuation byte
+2025-03-02 22:44:00,189 - ERROR - JSONDecodeError: Failed to parse JSON file 'Removed\linux_auditd_find_ssh_private_keys.yml-output.json'. Ensure it is correctly formatted.
+2025-03-02 22:44:02,489 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:02,737 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:04,546 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:06,726 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:12,808 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:14,846 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:16,908 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:18,954 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:31,266 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:31,267 - ERROR - JSONDecodeError: Failed to parse JSON file 'Removed\linux_auditd_unix_shell_configuration_modification.yml-output.json'. Ensure it is correctly formatted.
+2025-03-02 22:44:31,520 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:39,484 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:45,812 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:47,733 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:44:47,981 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:02,102 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:08,366 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:08,616 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:14,404 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:14,696 - ERROR - RequestException: Error creating rule: 409 Client Error: Conflict for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:22,722 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:22,971 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:26,746 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:34,977 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:37,019 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:44,974 - ERROR - JSONDecodeError: Failed to parse JSON file 'Removed\linux_ngrok_reverse_proxy_usage.yml-output.json'. Ensure it is correctly formatted.
+2025-03-02 22:45:49,442 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:49,690 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:57,555 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:45:59,619 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:46:03,751 - ERROR - RequestException: Error creating rule: 409 Client Error: Conflict for url: Removed/api/detection_engine/rules
+2025-03-02 22:46:20,146 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:46:28,350 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:46:28,601 - ERROR - RequestException: Error creating rule: 400 Client Error: Bad Request for url: Removed/api/detection_engine/rules
+2025-03-02 22:46:40,724 - ERROR - RequestException: Error creating rule: 409 Client Error: Conflict for url: Removed/api/detection_engine/rules

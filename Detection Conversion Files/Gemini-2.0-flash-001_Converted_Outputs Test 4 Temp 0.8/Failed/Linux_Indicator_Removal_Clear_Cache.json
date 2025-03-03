@@ -1,0 +1,67 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects processes that clear or free page cache\n  on a Linux system. It leverages Endpoint Detection and Response (EDR) data, focusing\n  on specific command-line executions involving the kernel system request `drop_caches`.\n  This activity is significant as it may indicate an attempt to delete forensic evidence\n  or the presence of wiper malware like Awfulshred. If confirmed malicious, this behavior\n  could allow an attacker to cover their tracks, making it difficult to investigate\n  other malicious activities or system compromises. Rule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Indicator Removal Clear Cache",
+  "note": "The following analytic detects processes that clear or free page cache\n  on a Linux system. It leverages Endpoint Detection and Response (EDR) data, focusing\n  on specific command-line executions involving the kernel system request `drop_caches`.\n  This activity is significant as it may indicate an attempt to delete forensic evidence\n  or the presence of wiper malware like Awfulshred. If confirmed malicious, this behavior\n  could allow an attacker to cover their tracks, making it difficult to investigate\n  other malicious activities or system compromises.",
+  "output_index": ".siem-signals-*",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "risk_score": 49,
+  "rule_id": "e0940505-0b73-4719-84e6-cb94c44a5245",
+  "severity": "low",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Destruction",
+    "AwfulShred",
+    "Endpoint",
+    "T1070",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 4,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and process.name in ("dash", "sudo", "bash") and process.args : "echo" and process.args : ">" and process.args : "/proc/sys/vm/drop_caches" and process.args : ("3", "2", "1")]
+    [file where event.type == "change" and file.path == "/proc/sys/vm/drop_caches"]""",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "OpenAI GPT4-o"
+  ],
+  "description": "The following analytic detects suspicious attempts to find private keys, which may indicate an attacker's effort to access sensitive cryptographic information. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "index": [
+    "linux_auditd"
+  ],
+  "language": "eql",
+  "name": "OpenAI GPT4-o Linux Auditd Private Keys and Certificate Enumeration",
+  "query": "process where process.name in (\"find\", \"grep\") and (process.args : \"*.pem*\" or process.args : \"*.cer*\" or process.args : \"*.crt*\" or process.args : \"*.pgp*\" or process.args : \"*.key*\" or process.args : \"*.gpg*\" or process.args : \"*.ppk*\" or process.args : \"*.p12*\" or process.args : \"*.pfx*\" or process.args : \"*.p7b*\")",
+  "risk_score": 64,
+  "severity": "medium",
+  "tags": [
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "OpenAI GPT4-o"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 3
+}

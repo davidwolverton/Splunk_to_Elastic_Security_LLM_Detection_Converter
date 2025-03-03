@@ -1,0 +1,106 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious access or modification of the\n  sshd_config file on Linux systems. It leverages data from Linux Auditd, focusing\n  on command-line executions involving processes like \"cat,\" \"nano,\" \"vim,\" and \"vi\"\n  accessing the sshd_config file. This activity is significant because unauthorized\n  changes to sshd_config can allow threat actors to redirect port connections or use\n  unauthorized keys, potentially compromising the system. If confirmed malicious,\n  this could lead to unauthorized access, privilege escalation, or persistent backdoor\n  access, posing a severe security risk.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this commandline\n  for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": null,
+  "license": null,
+  "max_signals": null,
+  "meta": {
+    "from": "now-60m",
+    "interval": "5m"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Possible Access Or Modification Of Sshd Config File",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted from Splunk SPL to Elastic EQL using Google Gemini 2.0 Flash 001.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.hackingarticles.in/ssh-penetration-testing-port-22/",
+    "https://attack.mitre.org/techniques/T1098/004/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "auditd.path",
+    "host.name"
+  ],
+  "response_actions": [],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "google_gemini_2_0_flash_001_linux_auditd_sshd_config_modification",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1098.004"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1098",
+          "name": "Account Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1098/",
+          "subtechnique": [
+            {
+              "id": "T1098.004",
+              "name": "SSH Authorized Keys",
+              "reference": "https://attack.mitre.org/techniques/T1098/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n [process where event.type == \"start\" and process.name in (\"cat\", \"nano\", \"vim\", \"vi\") and process.args == \"/etc/ssh/sshd_config\"]\n [file where event.type in (\"creation\", \"change\") and file.path == \"/etc/ssh/sshd_config\"]",
+  "type": "eql",
+  "alert_suppression": {},
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.dataset : \"auditd\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

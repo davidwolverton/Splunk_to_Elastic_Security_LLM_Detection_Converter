@@ -1,0 +1,62 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of PHP commands with elevated privileges on a Linux system. It identifies instances where PHP is used in conjunction with 'sudo' and 'system' commands, indicating an attempt to run system commands as the root user. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process command-line arguments. This activity is significant because it can indicate an attempt to escalate privileges, potentially leading to full root access. If confirmed malicious, this could allow an attacker to execute arbitrary commands with root privileges, compromising the entire system.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux PHP Privilege Escalation",
+  "note": "Google Gemini 2.0 Flash 001: Converted from Splunk SPL to Elastic EQL.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/php/",
+    "https://en.wikipedia.org/wiki/PHP"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_php_privilege_escalation",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and process.name == "php" and process.args : "*system*" and process.args : "*sudo*" ]
+  """,
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

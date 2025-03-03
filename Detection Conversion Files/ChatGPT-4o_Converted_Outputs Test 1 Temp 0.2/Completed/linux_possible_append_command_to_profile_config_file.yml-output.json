@@ -1,0 +1,46 @@
+{
+  "name": "OpenAI GPT4-o Linux Possible Append Command To Profile Config File",
+  "description": "The following analytic detects suspicious command-lines that modify user profile files to automatically execute scripts or executables upon system reboot. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions involving profile files like ~/.bashrc and /etc/profile. This activity is significant as it indicates potential persistence mechanisms used by adversaries to maintain access to compromised hosts. If confirmed malicious, this could allow attackers to execute arbitrary code upon reboot, leading to persistent control over the system and potential further exploitation. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "endpoint"],
+  "risk_score": 49,
+  "severity": "medium",
+  "index": ["logs-*"],
+  "language": "eql",
+  "query": "process where process.name == \"echo\" and process.command_line : (\"*~/.bashrc\", \"*~/.bash_profile\", \"*/etc/profile\", \"~/.bash_login\", \"*~/.profile\", \"~/.bash_logout\")",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": [
+            {
+              "id": "T1546.004",
+              "name": "Unix Shell Configuration Modification",
+              "reference": "https://attack.mitre.org/techniques/T1546/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://unix.stackexchange.com/questions/129143/what-is-the-purpose-of-bashrc-and-how-does-it-work",
+    "https://attack.mitre.org/techniques/T1546/004/"
+  ],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1,
+  "type": "eql",
+  "from": "now-6m",
+  "to": "now"
+}

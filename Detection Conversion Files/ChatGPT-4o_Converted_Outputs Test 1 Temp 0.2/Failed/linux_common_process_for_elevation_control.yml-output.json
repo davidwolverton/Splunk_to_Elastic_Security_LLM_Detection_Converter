@@ -1,0 +1,75 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic identifies the execution of common Linux processes used for elevation control, such as `chmod`, `chown`, and `setuid`. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant because these processes are often abused by adversaries to gain persistence or escalate privileges on compromised hosts. If confirmed malicious, this behavior could allow attackers to modify file attributes, change file ownership, or set user IDs, potentially leading to unauthorized access and control over critical system resources. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Common Process For Elevation Control",
+  "note": "",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1548/001/",
+    "https://github.com/Neo23x0/auditd/blob/master/audit.rules#L285-L297",
+    "https://github.com/bfuzzy1/auditd-attack/blob/master/auditd-attack/auditd-attack.rules#L269-L270",
+    "https://github.com/microsoft/MSTIC-Sysmon/blob/main/linux/configs/attack-based/privilege_escalation/T1548.001_ElevationControl_CommonProcesses.xml"
+  ],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "linux_common_process_for_elevation_control",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Persistence Techniques", "Linux Privilege Escalation", "Linux Living Off The Land", "Earth Estries"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.001",
+              "name": "Setuid and Setgid",
+              "reference": "https://attack.mitre.org/techniques/T1548/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name in (\"chmod\", \"chown\", \"fchmod\", \"fchmodat\", \"fchown\", \"fchownat\", \"fremovexattr\", \"fsetxattr\", \"lchown\", \"lremovexattr\", \"lsetxattr\", \"removexattr\", \"setuid\", \"setgid\", \"setreuid\", \"setregid\", \"chattr\") or process.command_line regex~ \"(chmod|chown|fchmod|fchmodat|fchown|fchownat|fremovexattr|fsetxattr|lchown|lremovexattr|lsetxattr|removexattr|setuid|setgid|setreuid|setregid|setcap|chattr)\"",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 300
+    },
+    "group_by": ["process.entity_id"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "",
+  "timestamp_field": "@timestamp"
+}

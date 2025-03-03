@@ -1,0 +1,47 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Sudo Or Su Execution",
+  "description": "The following analytic detects the execution of the \"sudo\" or \"su\" command on a Linux operating system. It leverages data from Linux Auditd, focusing on process names and parent process names. This activity is significant because \"sudo\" and \"su\" commands are commonly used by adversaries to elevate privileges, potentially leading to unauthorized access or control over the system. If confirmed malicious, this activity could allow attackers to execute commands with root privileges, leading to severe security breaches, data exfiltration, or further system compromise. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "risk_score": 42,
+  "severity": "medium",
+  "interval": "5m",
+  "enabled": true,
+  "from": "now-6m",
+  "index": ["linux_auditd"],
+  "language": "eql",
+  "query": "process where proctitle == \"*sudo *\" or proctitle == \"*su *\"",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": ["https://attack.mitre.org/techniques/T1548/003/"],
+  "max_signals": 100,
+  "version": 1,
+  "type": "eql",
+  "actions": [],
+  "exceptions_list": [],
+  "building_block_type": "default",
+  "license": "Elastic License v2",
+  "note": "Converted with OpenAI GPT4-o"
+}

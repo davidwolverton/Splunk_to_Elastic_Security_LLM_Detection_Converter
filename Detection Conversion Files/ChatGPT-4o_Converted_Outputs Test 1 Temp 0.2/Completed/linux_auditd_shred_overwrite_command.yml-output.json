@@ -1,0 +1,40 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Shred Overwrite Command",
+  "description": "The following analytic detects the execution of the 'shred' command on a Linux machine, which is used to overwrite files to make them unrecoverable. It leverages data from Linux Auditd, focusing on process names and command-line arguments. This activity is significant because the 'shred' command can be used in destructive attacks, such as those seen in the Industroyer2 malware targeting energy facilities. If confirmed malicious, this activity could lead to the permanent destruction of critical files, severely impacting system integrity and data availability. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Linux Privilege Escalation", "Data Destruction", "Linux Persistence Techniques", "Industroyer2", "Compromised Linux Host"],
+  "risk_score": 81,
+  "severity": "high",
+  "index": ["linux_auditd"],
+  "language": "eql",
+  "query": "process where process.name == \"shred\" and process.args : (\"*-n*\", \"*-z*\", \"*-u*\", \"*-s*\")",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "enabled": true,
+  "exceptions_list": [],
+  "max_signals": 100,
+  "interval": "5m",
+  "from": "now-6m",
+  "to": "now",
+  "type": "eql",
+  "version": 1
+}

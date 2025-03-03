@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Dd File Overwrite",
+  "description": "The following analytic detects the use of the 'dd' command to overwrite files on a Linux system. It leverages data from Linux Auditd telemetry, focusing on process execution logs that include command-line details. This activity is significant because adversaries often use the 'dd' command to destroy or irreversibly overwrite files, disrupting system availability and services. If confirmed malicious, this behavior could lead to data destruction, making recovery difficult and potentially causing significant operational disruptions. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Industroyer2", "Data Destruction", "Compromised Linux Host", "Endpoint"],
+  "risk_score": 81,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name == \"dd\" and process.args : \"*of=*\" and process.args : \"*if=/dev/zero*\"",
+  "language": "eql",
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-5m",
+  "max_signals": 100,
+  "references": [
+    "https://gtfobins.github.io/gtfobins/dd/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1485/T1485.md"
+  ],
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "output_index": ".siem-signals-default",
+  "version": 1
+}

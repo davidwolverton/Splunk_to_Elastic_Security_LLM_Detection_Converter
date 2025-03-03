@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Preload Hijack Via Preload File",
+  "description": "The following analytic detects suspicious preload hijacking via the `preload` file, which may indicate an attacker's attempt to intercept or manipulate library loading processes. The `preload` file can be used to force the loading of specific libraries before others, potentially allowing malicious code to execute or alter application behavior. By monitoring for unusual or unauthorized modifications to the `preload` file, this analytic helps identify attempts to hijack preload mechanisms, enabling security teams to investigate and address potential threats to system integrity and security. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "risk_score": 81,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574.006",
+          "name": "Hijack Execution Flow: LD_PRELOAD",
+          "reference": "https://attack.mitre.org/techniques/T1574/006/"
+        }
+      ]
+    }
+  ],
+  "query": "process where event.action == \"PATH\" and file.path : \"/etc/ld.so.preload*\"",
+  "language": "eql",
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-5m",
+  "index": ["auditd-*"],
+  "max_signals": 100,
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "actions": [],
+  "version": 1
+}

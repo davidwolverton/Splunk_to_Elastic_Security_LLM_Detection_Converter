@@ -1,0 +1,52 @@
+{
+  "actions": [],
+  "author": [
+    "Teoderick Contreras",
+    "OpenAI GPT4-o"
+  ],
+  "description": "The following analytic detects the use of the 'chown' command to change a file owner to 'root' on a Linux system. It leverages Endpoint Detection and Response (EDR) telemetry, specifically monitoring command-line executions and process details. This activity is significant as it may indicate an attempt to escalate privileges by adversaries, malware, or red teamers. If confirmed malicious, this action could allow an attacker to gain root-level access, leading to full control over the compromised host and potential persistence within the environment. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-6m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Change File Owner To Root",
+  "references": [
+    "https://unix.stackexchange.com/questions/101073/how-to-change-permissions-from-root-user-to-all-users",
+    "https://askubuntu.com/questions/617850/changing-from-user-to-superuser"
+  ],
+  "risk_score": 64,
+  "severity": "medium",
+  "tags": [
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "OpenAI GPT4-o"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1222.002",
+          "name": "File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/002/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "query": "process where process.name == \"chown\" and process.args : \"* root *\"",
+  "index": [
+    "logs-*"
+  ],
+  "version": 1
+}

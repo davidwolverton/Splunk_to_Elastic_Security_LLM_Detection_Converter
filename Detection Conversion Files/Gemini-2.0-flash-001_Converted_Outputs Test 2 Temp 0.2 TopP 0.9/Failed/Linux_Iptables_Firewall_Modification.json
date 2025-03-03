@@ -1,0 +1,89 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious command-line activity that modifies the iptables firewall settings on a Linux machine. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on specific command patterns that alter firewall rules to accept traffic on certain TCP ports. This activity is significant as it can indicate malware, such as CyclopsBlink, modifying firewall settings to allow communication with a Command and Control (C2) server. If confirmed malicious, this could enable attackers to maintain persistent access and exfiltrate data, posing a severe security risk.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator may do this commandline for auditing and testing purposes. In this scenario filter is needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "9"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Iptables Firewall Modification",
+  "namespace": "default",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.command_line",
+    "host.hostname",
+    "user.name"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_iptables_firewall_modification",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:China-Nexus Threat Activity",
+    "analytic_story:Backdoor Pingpong",
+    "analytic_story:Cyclops Blink",
+    "analytic_story:Sandworm Tools",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1562.004",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": [
+            {
+              "id": "T1562.004",
+              "name": "Disable or Modify System Firewall",
+              "reference": "https://attack.mitre.org/techniques/T1562/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and process.name == "iptables" and process.args in ("-A", "-I") and process.args : "*--dport*" and process.args : "*ACCEPT*" and process.args : "*>/dev/null*" and process.args : "*tcp*" and not process.parent.name in ("sh", "bash", "zsh", "dash")]
+    [process where event.type == "end"]""",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

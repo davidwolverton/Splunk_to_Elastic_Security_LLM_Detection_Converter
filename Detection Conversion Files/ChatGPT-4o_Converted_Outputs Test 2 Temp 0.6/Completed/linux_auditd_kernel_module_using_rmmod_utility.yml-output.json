@@ -1,0 +1,46 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Kernel Module Using Rmmod Utility",
+  "description": "The following analytic detects suspicious use of the `rmmod` utility for kernel module removal, which may indicate an attacker attempt to unload critical or security-related kernel modules. The `rmmod` command is used to remove modules from the Linux kernel, and unauthorized use can be a tactic to disable security features, conceal malicious activities, or disrupt system operations. By monitoring for unusual or unauthorized `rmmod` activity, this analytic helps identify potential tampering with kernel modules, enabling security teams to take proactive measures to protect system integrity and security. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 72,
+  "severity": "high",
+  "index": ["linux_auditd"],
+  "query": "process where event.action == \"SYSCALL\" and process.name == \"rmmod\"",
+  "language": "eql",
+  "type": "eql",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": [
+            {
+              "id": "T1547.006",
+              "name": "Kernel Modules and Extensions",
+              "reference": "https://attack.mitre.org/techniques/T1547/006/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "enabled": true,
+  "from": "now-60m",
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1,
+  "exceptions_list": [],
+  "throttle": "no_actions"
+}

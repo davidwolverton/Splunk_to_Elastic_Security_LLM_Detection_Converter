@@ -1,0 +1,41 @@
+{
+  "name": "OpenAI GPT4-o Linux Make Privilege Escalation",
+  "description": "The following analytic detects the use of the 'make' command with elevated privileges to execute system commands as root, potentially leading to a root shell. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions that include 'make', '--eval', and 'sudo'. This activity is significant because it indicates a possible privilege escalation attempt, allowing a user to gain root access. If confirmed malicious, an attacker could achieve full control over the system, execute arbitrary commands, and compromise the entire environment. Converted with OpenAI GPT4-o.",
+  "author": ["Gowthamaraj Rajendran", "OpenAI GPT4-o"],
+  "enabled": true,
+  "risk_score": 50,
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Living Off The Land"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://gtfobins.github.io/gtfobins/make/",
+    "https://www.javatpoint.com/linux-make-command"
+  ],
+  "query": "process where process.name == 'make' and process.args : '--eval' and process.parent.name : 'sudo'",
+  "language": "eql",
+  "index": ["your-index-pattern"],
+  "type": "eql",
+  "version": 1,
+  "max_signals": 100,
+  "interval": "5m",
+  "from": "now-6m",
+  "to": "now",
+  "exceptions_list": [],
+  "false_positives": ["False positives may be present, filter as needed."]
+}

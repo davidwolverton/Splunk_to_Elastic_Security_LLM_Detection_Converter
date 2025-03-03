@@ -1,0 +1,75 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of a Unix shell command designed to wipe root directories on a Linux host. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on the 'rm' command with force recursive deletion and the '--no-preserve-root' option. This activity is significant as it indicates potential data destruction attempts, often associated with malware like Awfulshred. If confirmed malicious, this behavior could lead to severe data loss, system instability, and compromised integrity of the affected Linux host. Immediate investigation and response are crucial to mitigate potential damage. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["unknown"],
+  "from": "now-6h",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": ["process.name", "process.command_line", "process.pid", "process.parent.name", "process.parent.pid", "host.name", "user.name"]
+  },
+  "license": "",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Data Destruction Command",
+  "outcome": "exactMatch",
+  "references": [
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {"name": "process.name", "type": "string"},
+    {"name": "process.command_line", "type": "string"},
+    {"name": "process.pid", "type": "string"},
+    {"name": "process.parent.name", "type": "string"},
+    {"name": "process.parent.pid", "type": "string"},
+    {"name": "host.name", "type": "string"},
+    {"name": "user.name", "type": "string"}
+  ],
+  "risk_score": 90,
+  "risk_score_mapping": [],
+  "rule_id": "b11d3979-b2f7-411b-bb1a-bd00e642173b",
+  "severity": "critical",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Data Destruction", "Endpoint", "T1485"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timestamp_override": "event.ingested",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 5,
+  "language": "eql",
+  "query": "process where process.name == \"rm\" and process.command_line : (\"* -rf*\", \"* -fr*\", \"* --no-preserve-root*\")",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 3600
+    },
+    "group_by": ["host.name", "user.name"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "process.entity_id",
+  "timestamp_field": "@timestamp"
+}

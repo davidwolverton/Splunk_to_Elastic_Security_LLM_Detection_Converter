@@ -1,0 +1,39 @@
+{
+  "name": "OpenAI GPT4-o Linux Deleting Critical Directory Using RM Command",
+  "description": "The following analytic detects the deletion of critical directories on a Linux machine using the `rm` command with argument rf. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions targeting directories like /boot, /var/log, /etc, and /dev. This activity is significant because deleting these directories can severely disrupt system operations and is often associated with destructive campaigns like Industroyer2. If confirmed malicious, this action could lead to system instability, data loss, and potential downtime, making it crucial for immediate investigation and response. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "endpoint", "Industroyer2", "Data Destruction", "AwfulShred"],
+  "risk_score": 64,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "language": "eql",
+  "query": "process where process.name == \"rm\" and process.args : \"*-rf*\" and process.args : (\"*/boot/*\", \"*/var/log/*\", \"*/etc/*\", \"*/dev/*\")",
+  "index": ["logs-*"],
+  "type": "eql",
+  "enabled": true,
+  "exceptions_list": [],
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "from": "now-10m",
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1
+}

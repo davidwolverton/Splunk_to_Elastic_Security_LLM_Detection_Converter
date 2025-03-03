@@ -1,0 +1,64 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the execution of Emacs with elevated privileges using the `sudo` command and the `--eval` option. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line arguments. This activity is significant because it indicates a potential privilege escalation attempt, where a user could gain root access by running Emacs with elevated permissions. If confirmed malicious, this could allow an attacker to execute arbitrary commands as root, leading to full system compromise and unauthorized access to sensitive information.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001 Linux Emacs Privilege Escalation",
+  "note": "Investigate the process execution details to determine the legitimacy of Emacs being run with sudo and the --eval option.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/emacs/",
+    "https://en.wikipedia.org/wiki/Emacs"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_emacs_privilege_escalation",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Abuse Elevation Control Mechanism: Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where process.name == "sudo" and event.type == "start"]
+    [process where process.name == "emacs" and process.args contains "--eval" and event.type == "start"]""",
+  "index": [
+    "logs-endpoint.events.*",
+    "endgame-*"
+  ],
+    "data_view_id": "global"
+}

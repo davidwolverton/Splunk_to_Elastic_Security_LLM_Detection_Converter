@@ -1,0 +1,47 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Doas Tool Execution",
+  "description": "The following analytic detects the execution of the 'doas' tool on a Linux host. This tool allows standard users to perform tasks with root privileges, similar to 'sudo'. The detection leverages data from Linux Auditd, focusing on process names and command-line executions. This activity is significant as 'doas' can be exploited by adversaries to gain elevated privileges on a compromised host. If confirmed malicious, this could lead to unauthorized administrative access, potentially compromising the entire system. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 49,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudo Caching",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "interval": "5m",
+  "from": "now-360s",
+  "enabled": true,
+  "index": ["auditd-*"],
+  "language": "eql",
+  "query": "auditd where event.type == \"SYSCALL\" and process.name == \"doas\" | stats count(), min(@timestamp) as firstTime, max(@timestamp) as lastTime by process.name, process.executable, event.action, user.id, process.parent.pid, process.pid, event.outcome, host.name",
+  "type": "eql",
+  "references": [
+    "https://wiki.gentoo.org/wiki/Doas",
+    "https://www.makeuseof.com/how-to-install-and-use-doas/"
+  ],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "max_signals": 100
+}

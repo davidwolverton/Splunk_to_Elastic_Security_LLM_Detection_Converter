@@ -1,0 +1,47 @@
+{
+  "name": "OpenAI GPT4-o Linux Kworker Process In Writable Process Path",
+  "description": "The following analytic detects the execution of a kworker process with a command line in writable directories such as /home/, /var/log, and /tmp on a Linux machine. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and parent process paths. This activity is significant as kworker processes are typically kernel threads, and their presence in writable directories is unusual and indicative of potential malware, such as CyclopsBlink. If confirmed malicious, this could allow attackers to blend malicious processes with legitimate ones, leading to persistent access and further system compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "severity": "low",
+  "risk_score": 42,
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Sandworm Tools", "Cyclops Blink", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud"],
+  "interval": "5m",
+  "from": "now-6m",
+  "query": "process where event.category == \"process\" and process.parent.name : \"kworker/*\" and process.parent.executable : (\"/home/*\", \"/tmp/*\", \"/var/log/*\") and process.name : \"iptables\"",
+  "index": ["filebeat-*", "logs-*", "sysmon-*"],
+  "language": "eql",
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "type": "eql",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": [
+            {
+              "id": "T1036.004",
+              "name": "Masquerade Task or Service",
+              "reference": "https://attack.mitre.org/techniques/T1036/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "version": 42,
+  "exceptions_list": [],
+  "max_signals": 100,
+  "output_index": ".siem-signals-default"
+}

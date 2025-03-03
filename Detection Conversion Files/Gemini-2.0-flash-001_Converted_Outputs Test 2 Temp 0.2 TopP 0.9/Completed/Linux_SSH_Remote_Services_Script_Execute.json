@@ -1,0 +1,63 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of SSH to move laterally and execute a script or file on a remote host. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on specific SSH command-line parameters and URLs. This activity is significant as it may indicate an attacker attempting to execute remote commands or scripts, potentially leading to unauthorized access or control over additional systems. If confirmed malicious, this could result in lateral movement, privilege escalation, or the execution of malicious payloads, compromising the security of the network.",
+  "enabled": true,
+  "false_positives": [
+    "This is not a common command to be executed. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux SSH Remote Services Script Execute",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://redcanary.com/blog/lateral-movement-with-secure-shell/"
+  ],
+  "risk_score": 56,
+  "rule_id": "aa1748dd-4a5c-457a-9cf6-ca7b4eb711b3",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1021.004",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021.004",
+          "name": "Remote Services: SSH",
+          "reference": "https://attack.mitre.org/techniques/T1021/004/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where event.type == \"start\" and process.name == \"ssh\" and process.args : \"-oStrictHostKeyChecking*\" and process.args : \"-oConnectTimeout*\" and process.args : \"-oBatchMode*\" and process.args : (\"http:*\", \"https:*\")]\n  [process where event.type == \"end\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "default",
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

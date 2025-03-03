@@ -1,0 +1,40 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic identifies the use of the 'kmod' process to list kernel modules on a Linux system. This detection leverages data from Linux Auditd, focusing on process names and command-line executions. While listing kernel modules is not inherently malicious, it can be a precursor to loading unauthorized modules using 'insmod'. If confirmed malicious, this activity could allow an attacker to load kernel modules, potentially leading to privilege escalation, persistence, or other malicious actions within the system. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["False positives are present based on automated tooling or system administrative usage. Filter as needed."],
+  "from": "now-6h",
+  "interval": "5m",
+  "name": "OpenAI GPT4-o - Linux Auditd Kernel Module Enumeration",
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Compromised Linux Host", "XorDDos", "Linux Rootkit", "Endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/"
+        },
+        {
+          "id": "T1014",
+          "name": "Rootkit",
+          "reference": "https://attack.mitre.org/techniques/T1014/"
+        }
+      ]
+    }
+  ],
+  "type": "query",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"lsmod\" and process.args : \"kmod\"",
+  "index": ["auditd-logs-*"]
+}

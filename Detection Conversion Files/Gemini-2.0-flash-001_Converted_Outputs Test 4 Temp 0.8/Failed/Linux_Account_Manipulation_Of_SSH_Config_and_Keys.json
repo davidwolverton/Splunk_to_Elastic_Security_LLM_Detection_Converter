@@ -1,0 +1,81 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of SSH keys on a Linux machine. It leverages filesystem event logs to identify when files within \"/etc/ssh/*\" or \"~/.ssh/*\" are deleted. This activity is significant because attackers may delete or modify SSH keys to evade security measures or as part of a destructive payload, similar to the AcidRain malware. If confirmed malicious, this behavior could lead to impaired security features, hindered forensic investigations, or further unauthorized access, necessitating immediate investigation to identify the responsible process and user.  Rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command.  Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": 6
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Account Manipulation Of SSH Config and Keys",
+  "note": "SSH Config and keys are deleted on host.name by Process GUID - process.guid",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "risk_score": 49,
+  "risk_score_mapping": [],
+  "rule_id": "linux_account_manipulation_of_ssh_config_and_keys",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AcidRain",
+    "Endpoint",
+    "T1070.004",
+    "T1485",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n    [\n      file where event.action == \"deleted\" and file.path : (\"/etc/ssh/*\", \"/home/*/.ssh/*\")\n    ]\n",
+  "index": [
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "auditbeat-*",
+    "logs-system.*"
+  ],
+  "data_view_id": "default"
+}

@@ -1,0 +1,52 @@
+{
+  "author": [
+    "OpenAI GPT4-o"
+  ],
+  "description": "The following analytic detects the execution of the \"At\" application in Linux, which can be used by attackers to create persistence entries on a compromised host. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and parent process names associated with \"at\" or \"atd\". This activity is significant because the \"At\" application can be exploited to maintain unauthorized access or deliver additional malicious payloads. If confirmed malicious, this behavior could lead to data theft, ransomware attacks, or other severe consequences. Immediate investigation is required to determine the legitimacy of the execution and mitigate potential risks. Rule converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-360s",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux At Application Execution",
+  "risk_score": 73,
+  "severity": "high",
+  "tags": [
+    "OpenAI GPT4-o",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Scheduled Tasks"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053.001",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/001/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "query": "process where process.name in (\"at\", \"atd\") or process.parent.name in (\"at\", \"atd\")",
+  "language": "eql",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/001/",
+    "https://www.linkedin.com/pulse/getting-attacker-ip-address-from-malicious-linux-job-craig-rowland/"
+  ],
+  "index": [
+    "auditbeat-*",
+    "sysmon-*"
+  ],
+  "version": 1
+}

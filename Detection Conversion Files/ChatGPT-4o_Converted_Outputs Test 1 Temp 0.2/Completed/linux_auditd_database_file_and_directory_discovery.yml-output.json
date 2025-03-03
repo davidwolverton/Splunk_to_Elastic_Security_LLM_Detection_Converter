@@ -1,0 +1,44 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Database File And Directory Discovery",
+  "description": "The following analytic detects suspicious database file and directory discovery activities, which may signal an attacker attempt to locate and assess critical database assets on a compromised system. This behavior is often a precursor to data theft, unauthorized access, or privilege escalation, as attackers seek to identify valuable information stored in databases. By monitoring for unusual or unauthorized attempts to locate database files and directories, this analytic aids in early detection of potential reconnaissance or data breach efforts, enabling security teams to respond swiftly and mitigate the risk of further compromise. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "medium",
+  "interval": "5m",
+  "enabled": true,
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/"
+        }
+      ]
+    }
+  ],
+  "language": "eql",
+  "query": "process where event.action == \"exec\" and process.args : (\"*find*\", \"*grep*\") and process.args : (\"*.db*\", \"*.sql*\", \"*.sqlite*\", \"*.mdb*\", \"*.accdb*\", \"*.mdf*\", \"*.ndf*\", \"*.ldf*\", \"*.frm*\", \"*.myd*\", \"*.myi*\", \"*.dbf*\", \"*.db2*\", \"*.dbc*\", \"*.fpt*\", \"*.ora*\")",
+  "index": ["auditd-*"],
+  "type": "eql",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "exceptions_list": [],
+  "actions": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-5m",
+  "to": "now",
+  "version": 1
+}

@@ -1,0 +1,37 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "description": "The following analytic identifies potential enumeration of local network configuration on Linux systems. It detects this activity by monitoring processes such as \"arp,\" \"ifconfig,\" \"ip,\" \"netstat,\" \"firewall-cmd,\" \"ufw,\" \"iptables,\" \"ss,\" and \"route\" within a 30-minute window. This behavior is significant as it often indicates reconnaissance efforts by adversaries to gather network information for subsequent attacks. If confirmed malicious, this activity could enable attackers to map the network, identify vulnerabilities, and plan further exploitation or lateral movement within the environment. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-30m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux System Network Discovery",
+  "query": "process where process.name in (\"arp\", \"ifconfig\", \"ip\", \"netstat\", \"firewall-cmd\", \"ufw\", \"iptables\", \"ss\", \"route\") and length(unique(process.name)) >= 4",
+  "references": ["https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1016/T1016.md"],
+  "risk_score": 42,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Data Destruction", "Network Discovery", "Industroyer2", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1016",
+          "name": "System Network Configuration Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1016/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "index": ["logs-*"],
+  "version": 1
+}

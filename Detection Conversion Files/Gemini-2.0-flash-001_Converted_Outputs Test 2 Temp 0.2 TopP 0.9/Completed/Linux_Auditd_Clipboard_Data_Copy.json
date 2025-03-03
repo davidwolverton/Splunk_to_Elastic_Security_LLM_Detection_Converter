@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the use of the Linux 'xclip' command to copy data from the clipboard. It leverages Linux Auditd telemetry, focusing on process names and command-line arguments related to clipboard operations. This activity is significant because adversaries can exploit clipboard data to capture sensitive information such as passwords or IP addresses. If confirmed malicious, this technique could lead to unauthorized data exfiltration, compromising sensitive information and potentially aiding further attacks within the environment.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present on Linux desktop as it may commonly be used by administrators or end users. Filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Clipboard Data Copy",
+  "note": "Monitor for clipboard data copy using xclip",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1115/",
+    "https://linux.die.net/man/1/xclip"
+  ],
+  "risk_score": 47,
+  "rule_id": "9ddfe470-c4d0-4e60-8668-7337bd699edd",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1115",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1115",
+          "name": "Clipboard Data",
+          "reference": "https://attack.mitre.org/techniques/T1115/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.category == \"process\" and event.type == \"start\" and process.name == \"xclip\" and process.args in (\"-o\", \"-selection\", \"-sel\")]\n  [process where event.category == \"process\" and event.type == \"start\" and process.name == \"xclip\" and process.args in (\"clipboard\")]",
+  "index": [
+    "auditbeat-*",
+    "logs-system.auditd-*",
+    "endgame-*"
+  ]
+}

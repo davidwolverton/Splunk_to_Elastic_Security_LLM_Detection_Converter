@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Ingress Tool Transfer Hunting",
+  "description": "The following analytic detects the use of 'curl' and 'wget' commands within a Linux environment. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names, user information, and command-line executions. This activity is significant as 'curl' and 'wget' are commonly used for downloading files, which can indicate potential ingress of malicious tools. If confirmed malicious, this activity could lead to unauthorized code execution, data exfiltration, or further compromise of the system. Monitoring and tuning this detection helps identify and differentiate between normal and potentially harmful usage. Converted with OpenAI GPT4-o.",
+  "author": ["Michael Haag, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "medium",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command and Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name in (\"curl\", \"wget\")",
+  "language": "eql",
+  "index": ["your-index-pattern"],
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-6m",
+  "max_signals": 100,
+  "references": [
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://curl.se/docs/manpage.html#-I",
+    "https://gtfobins.github.io/gtfobins/curl/",
+    "https://github.com/rapid7/metasploit-framework/search?q=curl"
+  ],
+  "exceptions_list": [],
+  "actions": [],
+  "false_positives": ["False positives will be present. This query is meant to help tune other curl and wget analytics."]
+}

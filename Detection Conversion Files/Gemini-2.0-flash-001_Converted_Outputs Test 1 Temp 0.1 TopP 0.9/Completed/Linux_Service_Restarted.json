@@ -1,0 +1,72 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the restarting or re-enabling of services on Linux systems using the `systemctl` or `service` commands. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and command-line execution logs. This activity is significant as adversaries may use it to maintain persistence or execute unauthorized actions. If confirmed malicious, this behavior could lead to repeated execution of malicious payloads, unauthorized access, or data destruction. Security analysts should investigate these events to mitigate risks and prevent further compromise.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Service Restarted",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL.",
+  "references": [
+    "https://attack.mitre.org/techniques/T1543/003/"
+  ],
+  "risk_score": 25,
+  "rule_id": "084275ba-61b8-11ec-8d64-acde48001122",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AwfulShred",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Data Destruction",
+    "Linux Persistence Techniques",
+    "Scheduled Tasks",
+    "Gomir",
+    "Endpoint",
+    "T1053.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/"
+        },
+        {
+          "id": "T1543.003",
+          "name": "Linux and Mac System Service",
+          "reference": "https://attack.mitre.org/techniques/T1543/003/"
+        },
+        {
+          "id": "T1053.006",
+          "name": "Scheduled Task/Job: Systemd Timers",
+          "reference": "https://attack.mitre.org/techniques/T1053/006/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 5,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name in (\"systemctl\", \"service\") and process.args in (\"restart\", \"reload\", \"reenable\")]\n  [process where event.type == \"start\" and process.name in (\"systemctl\", \"service\") and process.args in (\"restart\", \"reload\", \"reenable\")]",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "global"
+}

@@ -1,0 +1,65 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the Composer tool with elevated privileges on a Linux system. It identifies instances where Composer is run with the 'sudo' command, allowing the user to execute system commands as root. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs and command-line arguments. This activity is significant because it can indicate an attempt to escalate privileges, potentially leading to unauthorized root access. If confirmed malicious, an attacker could gain full control over the system, execute arbitrary commands, and compromise sensitive data.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-9m",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Composer Privilege Escalation",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/composer/",
+    "https://getcomposer.org/doc/00-intro.md"
+  ],
+  "risk_score": 73,
+  "rule_id": "google_gemini_2.0_flash_001_linux_composer_privilege_escalation",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name, user.name\n  [process where event.type == \"start\" and process.name == \"sudo\" and process.args == \"composer\"] \n  [process where event.type == \"start\" and process.name == \"composer\" and process.args == \"run-script\"]",
+  "data_view_id": "global"
+}

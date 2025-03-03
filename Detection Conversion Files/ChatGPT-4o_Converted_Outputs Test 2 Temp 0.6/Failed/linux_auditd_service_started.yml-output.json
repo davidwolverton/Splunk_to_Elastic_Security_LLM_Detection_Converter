@@ -1,0 +1,56 @@
+{
+  "actions": [],
+  "author": [
+    "Teoderick Contreras",
+    "OpenAI GPT4-o"
+  ],
+  "description": "The following analytic detects the suspicious service started. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-5m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "name": "OpenAI GPT4-o Linux Auditd Service Started",
+  "risk_score": 40,
+  "severity": "medium",
+  "tags": [
+    "OpenAI GPT4-o",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1569.002",
+          "name": "Service Execution",
+          "reference": "https://attack.mitre.org/techniques/T1569/002/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "version": 1,
+  "language": "eql",
+  "query": "process where event.action == \"executed\" and process.name : (\"systemctl\", \"service\") and process.args : (\"start\", \"enable\")",
+  "type": "eql",
+  "index": ["auditd-*"],
+  "max_signals": 100,
+  "throttle": "no_actions"
+}

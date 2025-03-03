@@ -1,0 +1,80 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the deletion of cron jobs on a Linux machine.\n  It leverages filesystem event logs to identify when files within the \"/etc/cron.*\"\n  directory are deleted. This activity is significant because attackers or malware\n  may delete cron jobs to disable scheduled security tasks or evade detection mechanisms.\n  If confirmed malicious, this action could allow an attacker to disrupt system operations,\n  evade security measures, or facilitate further malicious activities such as data\n  wiping, as seen with the acidrain malware.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "1h",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Deletion Of Cron Jobs",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-*",
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"
+  ],
+  "risk_score": 49,
+  "rule_id": "linux_deletion_of_cron_jobs",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "AcidRain",
+    "Data Destruction",
+    "AcidPour",
+    "Endpoint",
+    "T1070.004",
+    "T1485"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """
+sequence by host.hostname, process.pid
+  [process where event.type == "start" and process.name == "rm" and process.args in ("/etc/cron.daily/*", "/etc/cron.hourly/*", "/etc/cron.monthly/*", "/etc/cron.weekly/*", "/etc/crontab")]
+  [file where event.type == "deletion" and file.path in ("/etc/cron.daily/*", "/etc/cron.hourly/*", "/etc/cron.monthly/*", "/etc/cron.weekly/*", "/etc/crontab")]
+""",
+  "index": [
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "auditbeat-*",
+    "logs-system.*"
+  ]
+}

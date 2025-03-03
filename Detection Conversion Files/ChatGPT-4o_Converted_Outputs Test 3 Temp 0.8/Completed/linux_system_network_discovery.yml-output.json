@@ -1,0 +1,43 @@
+{
+  "name": "OpenAI GPT4-o Linux System Network Discovery",
+  "description": "The following rule identifies potential enumeration of local network configuration on Linux systems. It detects this activity by monitoring processes such as \"arp,\" \"ifconfig,\" \"ip,\" \"netstat,\" \"firewall-cmd,\" \"ufw,\" \"iptables,\" \"ss,\" and \"route\" within a 30-minute window. This behavior is significant as it often indicates reconnaissance efforts by adversaries to gather network information for subsequent attacks. If confirmed malicious, this activity could enable attackers to map the network, identify vulnerabilities, and plan further exploitation or lateral movement within the environment. Converted with OpenAI GPT4-o.",
+  "author": [
+    "OpenAI GPT4-o"
+  ],
+  "tags": [
+    "OpenAI GPT4-o"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1016",
+          "name": "System Network Configuration Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1016/"
+        }
+      ]
+    }
+  ],
+  "severity": "medium",
+  "risk_score": 50,
+  "language": "eql",
+  "rule_id": "f3c6e2f5-b7e6-4d5c-bb95-662f2e8c9176",
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "query": "process where process.name in (\"arp\", \"ifconfig\", \"ip\", \"netstat\", \"firewall-cmd\", \"ufw\", \"iptables\", \"ss\", \"route\") and event.action == \"start\" and process.parent.name != null | stats count(unique(process.name)) as process_name_count by process.executable, process.parent.executable, user.id, host.name | filter process_name_count >= 4",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1016/T1016.md"
+  ],
+  "index": [
+    "logs-*"
+  ],
+  "type": "eql",
+  "actions": []
+}

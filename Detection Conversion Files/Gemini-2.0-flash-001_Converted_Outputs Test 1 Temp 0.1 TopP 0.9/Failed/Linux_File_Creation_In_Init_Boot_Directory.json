@@ -1,0 +1,101 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the creation of files in Linux init boot directories, which are used for automatic execution upon system startup. It leverages file system logs to identify new files in directories such as /etc/init.d/ and /etc/rc.d/. This activity is significant as it is a common persistence technique used by adversaries, malware authors, and red teamers. If confirmed malicious, this could allow an attacker to maintain persistence on the compromised host, potentially leading to further exploitation and unauthorized control over the system.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can create file in this folders for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux File Creation In Init Boot Directory",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.intezer.com/blog/research/kaiji-new-chinese-linux-malware-turning-to-golang/"
+  ],
+  "risk_score": 49,
+  "rule_id": "97d9cfb2-61ad-11ec-bb2d-acde48001122",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:China-Nexus Threat Activity",
+    "analytic_story:Backdoor Pingpong",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:XorDDos",
+    "analytic_story:Linux Privilege Escalation",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1037.004",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1037.004",
+          "name": "Boot or Logon Initialization Scripts: Rc.common",
+          "reference": "https://attack.mitre.org/techniques/T1037/004/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 8,
+  "language": "eql",
+  "query": """sequence by host.hostname
+  [process where event.type == "start" and process.name == "touch" and process.args in ("/etc/init.d/*", "/etc/rc.d/*", "/sbin/init.d/*", "/etc/rc.local*")]
+  [file where event.type == "creation" and file.path in ("/etc/init.d/*", "/etc/rc.d/*", "/sbin/init.d/*", "/etc/rc.local*")]""",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "filters": [],
+  "exceptions_list": [],
+  "false_positives_query": null,
+  "machine_learning_job_id": null,
+  "output_index": ".siem-signals-default",
+  "rule_name_override": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "tiebreaker_field": null,
+  "data_view_id": null,
+  "event_category_override": null,
+  "investigation_fields": {
+    "field_names": []
+  },
+  "max_signals": 100,
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": []
+  },
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "file.path",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    }
+  ]
+}

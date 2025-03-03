@@ -1,0 +1,59 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious modifications to Unix shell configuration files, which may indicate an attempt to alter system behavior or gain unauthorized access. Unix shell configuration files, such as `.bashrc` or `.profile`, control user environment settings and command execution. Unauthorized changes to these files can be used to execute malicious commands, escalate privileges, or hide malicious activities. By monitoring for unusual or unauthorized modifications to shell configuration files, this analytic helps identify potential security threats, allowing security teams to respond quickly and mitigate risks.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Unix Shell Configuration Modification",
+  "note": "This rule was converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_auditd_unix_shell_config_modification",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1546.004"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546.004",
+          "name": "Event Triggered Execution: Unix Shell Configuration Modification",
+          "reference": "https://attack.mitre.org/techniques/T1546/004/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by audit.session\n  [process where event.category == \"process\" and event.type == \"start\" and\n   process.name == \"auditd\" and process.args == \"-c\"]\n  [file where event.type == \"change\" and file.path in (\"/etc/profile\", \"/etc/shells\", \"/etc/profile.d\", \"/etc/bash.bashrc\", \"/etc/bashrc\", \"/etc/zsh/zprofile\", \"/etc/zsh/zshrc\", \"/etc/zsh/zlogin\", \"/etc/zsh/zlogout\", \"/etc/csh.cshrc\", \"/etc/csh.login\", \"/root/.bashrc\", \"/root/.bash_profile\", \"/root/.profile\", \"/root/.zshrc\", \"/root/.zprofile\", \"/home/*/.bashrc\", \"/home/*/.zshrc\", \"/home/*/.bash_profile\", \"/home/*/.zprofile\", \"/home/*/.profile\", \"/home/*/.bash_login\", \"/home/*/.bash_logout\", \"/home/*/.zlogin\", \"/home/*/.zlogout\")]",
+  "index": [
+    "auditbeat-*"
+  ]
+}

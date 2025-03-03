@@ -1,0 +1,105 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the creation or enabling of services on\nLinux platforms using the systemctl or service tools. It leverages Endpoint Detection\nand Response (EDR) logs, focusing on process names, parent processes, and command-line\nexecutions. This activity is significant as adversaries may create or modify services\nto maintain persistence or execute malicious payloads. If confirmed malicious, this\nbehavior could lead to persistent access, data theft, ransomware deployment, or\nother damaging outcomes. Monitoring and investigating such activities are crucial\nfor maintaining the security and integrity of the environment.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "6"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Service Started Or Enabled",
+  "namespace": "default",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL to Elastic EQL.",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1543/003/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.command_line",
+    "host.hostname",
+    "user.name",
+    "process.parent.name",
+    "process.pid",
+    "process.parent.pid",
+    "process.entity_id"
+  ],
+  "risk_score": 42,
+  "risk_score_mapping": [],
+  "rule_id": "e0428212-61b7-11ec-88a3-acde48001122",
+  "severity": "low",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Scheduled Tasks",
+    "Gomir",
+    "Endpoint",
+    "T1053.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543.003",
+          "name": "Create or Modify System Process: Linux Service",
+          "reference": "https://attack.mitre.org/techniques/T1543/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "string",
+  "timeline_title": "string",
+  "timestamp_override": "event.created",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 6,
+  "language": "eql",
+  "query": "sequence by host.hostname, user.name\n  [process where process.name in (\"systemctl\", \"service\") and process.command_line : (\"* start *\", \"* enable *\") and not (process.os.family == \"windows\")]\n",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [
+      "host.hostname",
+      "user.name",
+      "process.name",
+      "process.command_line"
+    ],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "string",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": "event.id",
+  "timestamp_field": "@timestamp"
+}

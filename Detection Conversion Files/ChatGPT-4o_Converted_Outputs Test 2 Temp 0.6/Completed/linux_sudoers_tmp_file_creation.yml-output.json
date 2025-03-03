@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Sudoers Tmp File Creation",
+  "description": "The following analytic detects the creation of the 'sudoers.tmp' file, which occurs when editing the /etc/sudoers file using visudo or another editor on a Linux platform. This detection leverages filesystem data to identify the presence of 'sudoers.tmp' files. Monitoring this activity is crucial as adversaries may exploit it to gain elevated privileges on a compromised host. If confirmed malicious, this activity could allow attackers to modify sudoers configurations, potentially granting them unauthorized access to execute commands as other users, including root, thereby compromising the system's security. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "China-Nexus Threat Activity", "Linux Persistence Techniques", "Linux Privilege Escalation", "Earth Estries", "Endpoint"],
+  "risk_score": 72,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "query": "file where file.path : \"*sudoers.tmp*\"",
+  "language": "eql",
+  "index": ["filebeat-*"],
+  "type": "eql",
+  "enabled": true,
+  "exceptions_list": [],
+  "from": "now-6h",
+  "interval": "5m",
+  "max_signals": 100,
+  "references": ["https://forum.ubuntuusers.de/topic/sudo-visudo-gibt-etc-sudoers-tmp/"],
+  "version": 1,
+  "throttle": "no_actions"
+}

@@ -1,0 +1,45 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "building_block_type": "default",
+  "description": "The following analytic detects suspicious stopping of the `osquery` service, which may indicate an attempt to disable monitoring and evade detection. `Osquery` is a powerful tool used for querying system information and detecting anomalies, and stopping its service can be a sign that an attacker is trying to disrupt security monitoring or hide malicious activities. By monitoring for unusual or unauthorized stops of the `osquery` service, this analytic helps identify potential efforts to bypass security controls, enabling security teams to investigate and respond to possible threats effectively. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-360m",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Auditd Osquery Service Stop",
+  "outcome": "exactMatch",
+  "references": ["https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_osquery_service_stop",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host", "OpenAI GPT4-o"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "version": 1,
+  "language": "eql",
+  "query": "process where event.action == \"stopped\" and process.name == \"osqueryd\" and process.executable == \"/usr/bin/osqueryd\"",
+  "type": "eql"
+}

@@ -1,0 +1,62 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the addition of NOPASSWD entries to the\n/etc/sudoers file on Linux systems. It leverages Endpoint Detection and Response\n(EDR) telemetry to identify command lines containing \"NOPASSWD:\". This activity\nis significant because it allows users to execute commands with elevated privileges\nwithout requiring a password, which can be exploited by adversaries to maintain\npersistent, privileged access. If confirmed malicious, this could lead to unauthorized\nprivilege escalation, persistent access, and potential compromise of sensitive data\nand system integrity. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux NOPASSWD Entry In Sudoers File",
+  "note": "The following analytic detects the addition of NOPASSWD entries to the\n/etc/sudoers file on Linux systems. It leverages Endpoint Detection and Response\n(EDR) telemetry to identify command lines containing \"NOPASSWD:\". This activity\nis significant because it allows users to execute commands with elevated privileges\nwithout requiring a password, which can be exploited by adversaries to maintain\npersistent, privileged access. If confirmed malicious, this could lead to unauthorized\nprivilege escalation, persistent access, and potential compromise of sensitive data\nand system integrity.",
+  "references": [
+    "https://askubuntu.com/questions/334318/sudoers-file-enable-nopasswd-for-user-all-commands",
+    "https://help.ubuntu.com/community/Sudoers"
+  ],
+  "risk_score": 47,
+  "rule_id": "ab1e0d52-624a-11ec-8e0b-acde48001122",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "China-Nexus Threat Activity",
+    "Linux Persistence Techniques",
+    "Linux Privilege Escalation",
+    "Earth Estries",
+    "Asset Type: Endpoint",
+    "Product: Splunk Enterprise",
+    "Product: Splunk Enterprise Security",
+    "Product: Splunk Cloud",
+    "Security Domain: Endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Abuse Elevation Control Mechanism: Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where process.name == \"sudo\" and process.args == \"NOPASSWD:\"]\n  [file where file.path == \"/etc/sudoers\" and file.change_type == \"created\"]",
+  "data_view_id": "global"
+}

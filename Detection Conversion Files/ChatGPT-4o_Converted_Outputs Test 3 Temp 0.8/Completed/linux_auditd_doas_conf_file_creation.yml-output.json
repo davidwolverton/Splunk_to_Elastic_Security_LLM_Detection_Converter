@@ -1,0 +1,38 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the creation of the doas.conf file on a Linux host. This file is used by the doas utility to allow standard users to perform tasks as root, similar to sudo. The detection leverages Linux Auditd data, focusing on the creation of the doas.conf file. This activity is significant because it can indicate an attempt to gain elevated privileges, potentially by an adversary. If confirmed malicious, this could allow an attacker to execute commands with root commands with root privileges, leading to full system compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-360s",
+  "index": ["linux_auditd"],
+  "interval": "5m",
+  "language": "eql",
+  "name": "OpenAI GPT4-o Linux Auditd Doas Conf File Creation",
+  "note": "Converted with OpenAI GPT4-o.",
+  "query": "file where file.path == \"/etc/doas.conf\" and file.type == \"PATH\" | stats count(), min(@timestamp) as firstTime, max(@timestamp) as lastTime by file.path, file.type, host.hostname",
+  "references": ["https://wiki.gentoo.org/wiki/Doas", "https://www.makeuseof.com/how-to-install-and-use-doas/"],
+  "risk_score": 50,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

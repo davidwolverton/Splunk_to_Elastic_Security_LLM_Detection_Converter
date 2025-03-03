@@ -1,0 +1,93 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the curl command with specific switches (-F, --form, --upload-file, -T, -d, --data, --data-raw, -I, --head) to upload AWS credentials or configuration files to a remote destination. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process details. This activity is significant as it may indicate an attempt to exfiltrate sensitive AWS credentials, a technique known to be used by the TeamTNT group. If confirmed malicious, this could lead to unauthorized access and potential compromise of AWS resources.",
+  "enabled": true,
+  "false_positives": [
+    "Filtering may be required. In addition to AWS credentials, add other important files and monitor. The inverse would be to look for _all_ -F behavior and tune from there."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Curl Upload File",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://curl.se/docs/manpage.html",
+    "https://www.cadosecurity.com/team-tnt-the-first-crypto-mining-worm-to-steal-aws-credentials/",
+    "https://gtfobins.github.io/gtfobins/curl/"
+  ],
+  "risk_score": 64,
+  "rule_id": "linux_curl_upload_file",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Data Exfiltration",
+    "Ingress Tool Transfer",
+    "Asset Type: Endpoint",
+    "Product: Elastic Security",
+    "Tactic: Collection",
+    "Tactic: Command and Control",
+    "Technique: Data Compressed",
+    "Technique: Ingress Tool Transfer"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1560",
+          "name": "Data Compressed",
+          "reference": "https://attack.mitre.org/techniques/T1560/"
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command and Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n [process where event.type == \"start\" and process.name == \"curl\" and\n  process.args in (\"-F\", \"--form\", \"--upload-file\", \"-T\", \"-d\", \"--data\", \"--data-raw\", \"-I\", \"--head\") and\n  process.args : \"*.aws/credentials\" or process.args : \"*.aws/config\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "risk_score_mapping": [
+    {
+      "field": "user.name",
+      "operator": "exists",
+      "risk_score": 64,
+      "value": "*"
+    },
+    {
+      "field": "host.hostname",
+      "operator": "exists",
+      "risk_score": 64,
+      "value": "*"
+    }
+  ],
+  "severity_mapping": []
+}

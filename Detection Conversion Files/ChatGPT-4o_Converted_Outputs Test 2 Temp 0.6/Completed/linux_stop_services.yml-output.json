@@ -1,0 +1,40 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "description": "The following analytic detects attempts to stop or clear a service on Linux systems. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on processes like \"systemctl,\" \"service,\" and \"svcadm\" executing stop commands. This activity is significant as adversaries often terminate security or critical services to disable defenses or disrupt operations, as seen in malware like Industroyer2. If confirmed malicious, this could lead to the disabling of security mechanisms, allowing attackers to persist, escalate privileges, or deploy destructive payloads, severely impacting system integrity and availability. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "index": ["sysmon-linux-*"],
+  "interval": "5m",
+  "language": "eql",
+  "name": "OpenAI GPT4-o Linux Stop Services",
+  "note": "Detection based on data from EDR agents providing security-related telemetry from endpoints.",
+  "query": "process where process.name in (\"systemctl\", \"service\", \"svcadm\") and process.command_line : \"*stop*\"",
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "risk_score": 49,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Data Destruction", "Industroyer2", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

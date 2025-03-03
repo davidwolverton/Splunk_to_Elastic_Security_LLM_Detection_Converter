@@ -1,0 +1,70 @@
+{
+  "actions": [],
+  "author": ["Michael Haag", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the use of SSH to move laterally and execute a script or file on a remote host. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on specific SSH command-line parameters and URLs. This activity is significant as it may indicate an attacker attempting to execute remote commands or scripts, potentially leading to unauthorized access or control over additional systems. If confirmed malicious, this could result in lateral movement, privilege escalation, or the execution of malicious payloads, compromising the security of the network. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["This is not a common command to be executed. Filter as needed."],
+  "from": "now-6m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux SSH Remote Services Script Execute",
+  "note": "",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": ["https://redcanary.com/blog/lateral-movement-with-secure-shell/"],
+  "related_integrations": [],
+  "required_fields": [],
+  "risk_score": 56,
+  "risk_score_mapping": [],
+  "rule_id": "linux-ssh-remote-services-script-execute",
+  "rule_name_override": "",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021.004",
+          "name": "SSH",
+          "reference": "https://attack.mitre.org/techniques/T1021/004/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "",
+  "timestamp_override_fallback_disabled": true,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "process where process.name == \"ssh\" and process.args : (\"*oStrictHostKeyChecking*\", \"*oConnectTimeout*\", \"*oBatchMode*\") and process.args : (\"*http:*\", \"*https:*\")",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 3600
+    },
+    "group_by": ["process.name", "process.args"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "",
+  "filters": [],
+  "index": ["logs-*"],
+  "tiebreaker_field": "",
+  "timestamp_field": "@timestamp"
+}

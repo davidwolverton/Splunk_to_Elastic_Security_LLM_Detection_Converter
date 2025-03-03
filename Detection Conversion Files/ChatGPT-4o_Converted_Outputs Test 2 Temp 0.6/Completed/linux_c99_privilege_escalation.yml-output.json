@@ -1,0 +1,37 @@
+{
+  "name": "OpenAI GPT4-o Linux c99 Privilege Escalation",
+  "description": "The following analytic detects the execution of the c99 utility with sudo privileges, which can lead to privilege escalation on Linux systems. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs that include command-line details. This activity is significant because it indicates a potential misuse of the c99 utility to gain root access, which is critical for maintaining system security. If confirmed malicious, this could allow an attacker to execute commands as root, potentially compromising the entire system and accessing sensitive information. Converted with OpenAI GPT4-o.",
+  "author": ["Gowthamaraj Rajendran, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "severity": "high",
+  "risk_score": 70,
+  "interval": "5m",
+  "enabled": true,
+  "actions": [],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name == \"c99\" and process.parent.name == \"sudo\" and process.args : \"-wrapper\"",
+  "language": "eql",
+  "type": "eql",
+  "index": ["logs-*"],
+  "max_signals": 100,
+  "references": [
+    "https://gtfobins.github.io/gtfobins/c99/",
+    "https://pubs.opengroup.org/onlinepubs/009604499/utilities/c99.html"
+  ]
+}

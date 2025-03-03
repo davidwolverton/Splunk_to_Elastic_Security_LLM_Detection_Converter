@@ -1,0 +1,72 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the 'visudo' utility to modify the /etc/sudoers file on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This activity is significant because unauthorized changes to the /etc/sudoers file can grant elevated privileges to users, potentially allowing adversaries to execute commands as root. If confirmed malicious, this could lead to full system compromise, privilege escalation, and persistent unauthorized access, severely impacting the security posture of the affected host.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "meta": {
+    "version": "5"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Visudo Utility Execution",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted from Splunk SPL to Elastic EQL using Google Gemini 2.0 Flash 001.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://askubuntu.com/questions/334318/sudoers-file-enable-nopasswd-for-user-all-commands"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_visudo_utility_execution",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1548.003",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.category == \"process\" and process.name == \"visudo\"]\n  [file where event.category == \"file\" and file.path == \"/etc/sudoers\" and event.type == \"change\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

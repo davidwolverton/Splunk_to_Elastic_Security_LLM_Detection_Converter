@@ -1,0 +1,69 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious system network configuration discovery activities, which may indicate an adversary's attempt to gather information about the network environment. Such actions typically involve commands or tools used to identify network interfaces, routing tables, and active connections. Detecting these activities is crucial, as they often precede more targeted attacks like lateral movement or data exfiltration. By identifying unusual or unauthorized network discovery efforts, this analytic helps security teams to swiftly detect and respond to potential reconnaissance operations, mitigating the risk of further compromise. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-24h",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd System Network Configuration Discovery",
+  "note": "This rule detects suspicious system network configuration discovery activities based on auditd logs.",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_auditd_system_network_configuration_discovery",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1016",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1016",
+          "name": "System Network Configuration Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1016/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.pid
+    [process where event.type == "start" and process.name in ("arp", "ifconfig", "ip", "netstat", "firewall-cmd", "ufw", "iptables", "ss", "route") and auditd.result == "success"]
+    [process where event.type == "end"]
+    """,
+  "index": [
+    "auditbeat-*"
+  ],
+  "data_view_id": "global",
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

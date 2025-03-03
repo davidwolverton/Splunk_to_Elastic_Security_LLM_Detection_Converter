@@ -1,0 +1,38 @@
+{
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following detection rule identifies the execution of common Linux processes used for elevation control, such as `chmod`, `chown`, and `setuid`. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant because these processes are often abused by adversaries to gain persistence or escalate privileges on compromised hosts. If confirmed malicious, this behavior could allow attackers to modify file attributes, change file ownership, or set user IDs, potentially leading to unauthorized access and control over critical system resources. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "index": ["auditbeat-*", "logs-endpoint.*"],
+  "interval": "5m",
+  "name": "OpenAI GPT4-o Linux Common Process For Elevation Control",
+  "query": "process where process.name in (\"chmod\", \"chown\", \"fchmod\", \"fchmodat\", \"fchown\", \"fchownat\", \"fremovexattr\", \"fsetxattr\", \"lchown\", \"lremovexattr\", \"lsetxattr\", \"removexattr\", \"setuid\", \"setgid\", \"setreuid\", \"setregid\", \"chattr\") or wildcards(process.command_line, [\"*chmod *\", \"*chown *\", \"*fchmod *\", \"*fchmodat *\", \"*fchown *\", \"*fchownat *\", \"*fremovexattr *\", \"*fsetxattr *\", \"*lchown *\", \"*lremovexattr *\", \"*lsetxattr *\", \"*removexattr *\", \"*setuid *\", \"*setgid *\", \"*setreuid *\", \"*setregid *\", \"*setcap *\", \"*chattr *\"])",
+  "risk_score": 42,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux", "Elevation Control"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.001",
+              "name": "Setuid and Setgid",
+              "reference": "https://attack.mitre.org/techniques/T1548/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

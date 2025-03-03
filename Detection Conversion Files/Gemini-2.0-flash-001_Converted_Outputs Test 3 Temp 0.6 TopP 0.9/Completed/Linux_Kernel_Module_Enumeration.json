@@ -1,0 +1,62 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic identifies the use of the 'kmod' process to list kernel modules on a Linux system. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. While listing kernel modules is not inherently malicious, it can be a precursor to loading unauthorized modules using 'insmod'. If confirmed malicious, this activity could allow an attacker to load kernel modules, potentially leading to privilege escalation, persistence, or other malicious actions within the system.",
+  "enabled": true,
+  "false_positives": [
+    "False positives are present based on automated tooling or system administrative usage. Filter as needed."
+  ],
+  "from": "now-60m",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Kernel Module Enumeration",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://man7.org/linux/man-pages/man8/kmod.8.html"
+  ],
+  "risk_score": 30,
+  "rule_id": "6df99886-0e04-4c11-8b88-325747419278",
+  "severity": "low",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "XorDDos",
+    "Linux Rootkit",
+    "Endpoint",
+    "T1082",
+    "T1014"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/"
+        },
+        {
+          "id": "T1014",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1014/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"kmod\" and process.args in (\"lsmod\", \"list\")]",
+  "data_view_id": "default"
+}

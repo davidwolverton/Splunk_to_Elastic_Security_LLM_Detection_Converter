@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of the \"At\" application\nin Linux, which can be used by attackers to create persistence entries on a compromised\nhost. This detection leverages data from Endpoint Detection and Response (EDR) agents,\nfocusing on process names and parent process names associated with \"at\" or \"atd\".\nThis activity is significant because the \"At\" application can be exploited to maintain\nunauthorized access or deliver additional malicious payloads. If confirmed malicious,\nthis behavior could lead to data theft, ransomware attacks, or other severe consequences.\nImmediate investigation is required to determine the legitimacy of the execution\nand mitigate potential risks.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd At Application Execution",
+  "note": "Google Gemini 2.0 Flash 001: Rule converted from Splunk SPL.",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/001/",
+    "https://www.linkedin.com/pulse/getting-attacker-ip-address-from-malicious-linux-job-craig-rowland/"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_auditd_at_application_execution",
+  "severity": "low",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Scheduled Tasks",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Linux Living Off The Land",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1053.002"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/"
+        },
+        {
+          "id": "T1053.002",
+          "name": "Scheduled Task/Job: At",
+          "reference": "https://attack.mitre.org/techniques/T1053/002/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name in (\"at\", \"atd\")]\n  [process where event.type == \"start\" and process.executable == \"/usr/bin/at\" or process.executable == \"/usr/bin/atd\"]\n  [process where event.type == \"start\" and not user.id == \"daemon\"]\n",
+  "index": [
+    "auditbeat-*",
+    "logs-system.auditd-*",
+    "linux-auditd-*",
+    "endgame-*"
+  ]
+}

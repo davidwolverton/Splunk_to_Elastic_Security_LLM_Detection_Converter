@@ -1,0 +1,51 @@
+{
+  "actions": [],
+  "author": ["Bhavin Patel", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of suspicious bash commands commonly used in scripts like AutoSUID, LinEnum, and LinPeas for system discovery on a Linux host. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["Unless an administrator is using these commands to troubleshoot or audit a system, the execution of these commands should be monitored."],
+  "from": "now-5m",
+  "index": ["logs-*"],
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Suspicious Linux Discovery Commands",
+  "query": "sequence by user, host with maxspan=5m [process where process.name : \"*\" and event.category : \"process\" and process.command_line : \"*\" and user : \"*\" and host : \"*\"]",
+  "references": [
+    "https://attack.mitre.org/matrices/enterprise/linux/",
+    "https://attack.mitre.org/techniques/T1059/004/",
+    "https://github.com/IvanGlinkin/AutoSUID",
+    "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS",
+    "https://github.com/rebootuser/LinEnum"
+  ],
+  "risk_score": 73,
+  "rule_id": "0edd5112-56c9-11ec-b990-acde48001122",
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "Linux Post-Exploitation", "Endpoint", "T1059.004"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": [
+            {
+              "id": "T1059.004",
+              "name": "Unix Shell",
+              "reference": "https://attack.mitre.org/techniques/T1059/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1
+}

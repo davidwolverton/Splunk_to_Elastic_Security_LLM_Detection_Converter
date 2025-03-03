@@ -1,0 +1,70 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious access or modification of the\nsshd_config file on Linux systems. It leverages data from Endpoint Detection and\nResponse (EDR) agents, focusing on command-line executions involving processes like\n\"cat,\" \"nano,\" \"vim,\" and \"vi\" accessing the sshd_config file. This activity is\nsignificant because unauthorized changes to sshd_config can allow threat actors\nto redirect port connections or use unauthorized keys, potentially compromising\nthe system. If confirmed malicious, this could lead to unauthorized access, privilege\nescalation, or persistent backdoor access, posing a severe security risk. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Possible Access Or Modification Of sshd Config File",
+  "note": "The detection is based on data that originates from Endpoint Detection\n  and Response (EDR) agents. These agents are designed to provide security-related\n  telemetry from the endpoints where the agent is installed. To implement this search,\n  you must ingest logs that contain the process GUID, process name, and parent process.\n  Additionally, you must ingest complete command-line executions. These logs must\n  be processed using the appropriate Splunk Technology Add-ons that are specific to\n  the EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint`\n  data model. Use the Splunk Common Information Model (CIM) to normalize the field\n  names and speed up the data modeling process.",
+  "references": [
+    "https://www.hackingarticles.in/ssh-penetration-testing-port-22/",
+    "https://attack.mitre.org/techniques/T1098/004/"
+  ],
+  "risk_score": 47,
+  "rule_id": "linux_possible_access_or_modification_of_sshd_config_file",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Linux Living Off The Land",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1098.004",
+    "product:Elastic Security",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1098",
+          "name": "Account Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1098/",
+          "subtechnique": [
+            {
+              "id": "T1098.004",
+              "name": "SSH Authorized Keys",
+              "reference": "https://attack.mitre.org/techniques/T1098/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name in (\"cat\", \"nano\", \"vim\", \"vi\") and process.args == \"/etc/ssh/sshd_config\"]\n  [file where event.type in (\"creation\", \"change\") and file.path == \"/etc/ssh/sshd_config\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

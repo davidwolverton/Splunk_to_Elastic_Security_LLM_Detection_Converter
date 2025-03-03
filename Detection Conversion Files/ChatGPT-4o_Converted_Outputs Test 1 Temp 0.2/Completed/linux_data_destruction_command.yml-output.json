@@ -1,0 +1,39 @@
+{
+  "name": "OpenAI GPT4-o Linux Data Destruction Command",
+  "description": "The following analytic detects the execution of a Unix shell command designed to wipe root directories on a Linux host. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on the 'rm' command with force recursive deletion and the '--no-preserve-root' option. This activity is significant as it indicates potential data destruction attempts, often associated with malware like Awfulshred. If confirmed malicious, this behavior could lead to severe data loss, system instability, and compromised integrity of the affected Linux host. Immediate investigation and response are crucial to mitigate potential damage. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Data Destruction", "Endpoint"],
+  "risk_score": 90,
+  "severity": "high",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name == \"rm\" and process.command_line : (\"* -rf*\", \"* -fr*\") and process.command_line : \"* --no-preserve-root\"",
+  "language": "eql",
+  "index": ["logs-*"],
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-6m",
+  "max_signals": 100,
+  "references": [
+    "https://cert.gov.ua/article/3718487",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "exceptions_list": [],
+  "version": 1
+}

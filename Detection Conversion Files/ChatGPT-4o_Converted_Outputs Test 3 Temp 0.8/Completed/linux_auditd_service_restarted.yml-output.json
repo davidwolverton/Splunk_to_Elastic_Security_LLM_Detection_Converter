@@ -1,0 +1,45 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Service Restarted",
+  "description": "The following analytic detects the restarting or re-enabling of services on Linux systems using the `systemctl` or `service` commands. It leverages data from Linux Auditd, focusing on process and command-line execution logs. This activity is significant as adversaries may use it to maintain persistence or execute unauthorized actions. If confirmed malicious, this behavior could lead to repeated execution of malicious payloads, unauthorized access, or data destruction. Security analysts should investigate these events to mitigate risks and prevent further compromise. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 50,
+  "severity": "medium",
+  "index": ["linux_auditd"],
+  "language": "eql",
+  "query": "process where event.action == \"exec\" and process.args : (\"*systemctl *\", \"*service *\") and process.args : (\"*restart*\", \"*reenable*\", \"*reload*\")",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": [
+            {
+              "id": "T1543.003",
+              "name": "Windows Service",
+              "reference": "https://attack.mitre.org/techniques/T1543/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": ["https://attack.mitre.org/techniques/T1543/003/"],
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "version": 1,
+  "exceptions_list": [],
+  "actions": [],
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

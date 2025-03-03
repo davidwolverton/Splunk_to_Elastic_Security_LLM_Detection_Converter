@@ -1,0 +1,47 @@
+{
+  "name": "OpenAI GPT4-o Linux Cpulimit Privilege Escalation",
+  "description": "The following analytic detects the use of the 'cpulimit' command with specific flags ('-l', '-f') executed with 'sudo' privileges. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process command-line arguments and execution details. This activity is significant because if 'cpulimit' is granted sudo rights, a user can potentially execute system commands as root, leading to privilege escalation. If confirmed malicious, this could allow an attacker to gain root access, execute arbitrary commands, and fully compromise the affected system. Converted with OpenAI GPT4-o.",
+  "author": ["Gowthamaraj Rajendran", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 50,
+  "severity": "high",
+  "index": ["logs-endpoint-*"],
+  "language": "eql",
+  "query": "process where process.name == \"cpulimit\" and process.args in (\"-l\", \"-f\") and process.args == \"sudo\"",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://gtfobins.github.io/gtfobins/cpulimit/",
+    "http://cpulimit.sourceforge.net/"
+  ],
+  "type": "eql",
+  "version": 1,
+  "enabled": true,
+  "exceptions_list": [],
+  "max_signals": 100,
+  "interval": "5m",
+  "from": "now-360s",
+  "to": "now",
+  "actions": [],
+  "building_block_type": "default",
+  "false_positives": ["False positives may be present, filter as needed."],
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Splunk Technology Add-ons that are specific to the EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint` data model. Use the Splunk Common Information Model (CIM) to normalize the field names and speed up the data modeling process.",
+  "setup": "Ingest EDR logs and map to ECS fields",
+  "risk_score_mapping": [],
+  "severity_mapping": []
+}

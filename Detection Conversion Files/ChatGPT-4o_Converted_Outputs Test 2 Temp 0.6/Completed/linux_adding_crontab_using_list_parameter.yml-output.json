@@ -1,0 +1,45 @@
+{
+  "name": "OpenAI GPT4-o Linux Adding Crontab Using List Parameter",
+  "description": "The following analytic detects suspicious modifications to cron jobs on Linux systems using the crontab command with list parameters. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. This activity is significant as it may indicate an attempt to establish persistence or execute malicious code on a schedule. If confirmed malicious, the impact could include unauthorized code execution, data destruction, or other damaging outcomes. Further investigation should analyze the added cron job, its associated command, and any related processes. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "enabled": true,
+  "risk_score": 50,
+  "severity": "medium",
+  "query": "process where process.name == 'crontab' and process.command_line == '* -l*'",
+  "language": "eql",
+  "index": ["process-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.003",
+              "name": "Cron",
+              "reference": "https://attack.mitre.org/techniques/T1053/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "exceptions_list": [],
+  "version": 1,
+  "interval": "5m",
+  "max_signals": 100,
+  "type": "eql"
+}

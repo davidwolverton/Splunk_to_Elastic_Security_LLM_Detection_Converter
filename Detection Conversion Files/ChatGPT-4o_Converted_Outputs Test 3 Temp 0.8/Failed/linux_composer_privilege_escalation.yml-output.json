@@ -1,0 +1,42 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of the Composer tool with elevated privileges on a Linux system. It identifies instances where Composer is run with the 'sudo' command, allowing the user to execute system commands as root. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs and command-line arguments. This activity is significant because it can indicate an attempt to escalate privileges, potentially leading to unauthorized root access. If confirmed malicious, an attacker could gain full control over the system, execute arbitrary commands, and compromise sensitive data. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["False positives may be present, filter as needed."],
+  "from": "now-6m",
+  "interval": "5m",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Composer Privilege Escalation",
+  "query": """
+    process where process.name : "*composer*" and process.name : "*run-script*" and process.name : "*sudo*"
+  """,
+  "references": [
+    "https://gtfobins.github.io/gtfobins/composer/",
+    "https://getcomposer.org/doc/00-intro.md"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_composer_privilege_escalation",
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Living Off The Land"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1
+}

@@ -1,0 +1,115 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": null,
+  "description": "The following analytic detects the creation of the doas.conf file on\na Linux host. This file is used by the doas utility to allow standard users to perform\ntasks as root, similar to sudo. The detection leverages Linux Auditd data, focusing\non the creation of the doas.conf file. This activity is significant because it can\nindicate an attempt to gain elevated privileges, potentially by an adversary. If\nconfirmed malicious, this could allow an attacker to execute commands with root\ncommands with root privileges, leading to full system compromise.\n\nConverted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "now-60m",
+    "interval": "5m"
+  },
+  "name": "Google Gemini 2.0 Flash 001 Linux Auditd Doas Conf File Creation",
+  "namespace": "default",
+  "note": "The following analytic detects the creation of the doas.conf file on\na Linux host. This file is used by the doas utility to allow standard users to perform\ntasks as root, similar to sudo. The detection leverages Linux Auditd data, focusing\non the creation of the doas.conf file. This activity is significant because it can\nindicate an attempt to gain elevated privileges, potentially by an adversary. If\nconfirmed malicious, this could allow an attacker to execute commands with root\ncommands with root privileges, leading to full system compromise.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://wiki.gentoo.org/wiki/Doas",
+    "https://www.makeuseof.com/how-to-install-and-use-doas/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "auditd.path",
+    "host.hostname"
+  ],
+  "response_actions": [],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_doas_conf_file_creation",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1548.003",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/"
+        },
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Doas",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n  [process where event.category == \"process\" and event.type == \"start\" and process.name == \"auditd\"]\n  [file where event.type == \"creation\" and file.path == \"/etc/doas.conf\" ]",
+  "type": "eql",
+    "alert_suppression": {
+        "duration": {
+            "unit": "s",
+            "value": 60
+        },
+        "group_by": [
+            "host.hostname"
+        ],
+        "missing_fields_strategy": "doNotSuppress"
+    },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [
+    {
+      "query": "event.dataset : \"auditd\"",
+      "exists": false
+    }
+  ],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

@@ -1,0 +1,46 @@
+{
+  "name": "OpenAI GPT4-o Linux Kernel Module Enumeration",
+  "description": "The following analytic identifies the use of the 'kmod' process to list kernel modules on a Linux system. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process names and command-line executions. While listing kernel modules is not inherently malicious, it can be a precursor to loading unauthorized modules using 'insmod'. If confirmed malicious, this activity could allow an attacker to load kernel modules, potentially leading to privilege escalation, persistence, or other malicious actions within the system. Converted with OpenAI GPT4-o.",
+  "author": ["Michael Haag", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 42,
+  "severity": "low",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/"
+        },
+        {
+          "id": "T1014",
+          "name": "Rootkit",
+          "reference": "https://attack.mitre.org/techniques/T1014/"
+        }
+      ]
+    }
+  ],
+  "query": "process where process.name == \"kmod\" and process.command_line regex \".*lsmod.*|.*list.*\"",
+  "language": "eql",
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-6m",
+  "max_signals": 100,
+  "references": ["https://man7.org/linux/man-pages/man8/kmod.8.html"],
+  "index": ["logs-*"],
+  "actions": [],
+  "exceptions_list": [],
+  "false_positives": ["False positives are present based on automated tooling or system administrative usage. Filter as needed."],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "throttle": "no_actions",
+  "version": 1
+}

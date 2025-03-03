@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of a kworker process with a command line in writable directories such as /home/, /var/log, and /tmp on a Linux machine. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and parent process paths. This activity is significant as kworker processes are typically kernel threads, and their presence in writable directories is unusual and indicative of potential malware, such as CyclopsBlink. If confirmed malicious, this could allow attackers to blend malicious processes with legitimate ones, leading to persistent access and further system compromise.",
+  "enabled": true,
+  "false_positives": [
+    "unknown"
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Kworker Process In Writable Process Path",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "risk_score": 73,
+  "rule_id": "1cefb270-74a5-4e27-aa0c-2b6fa7c5b4ed",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Sandworm Tools",
+    "Cyclops Blink",
+    "Asset Type: Endpoint",
+    "MITRE ATT&CK: Defense Evasion",
+    "MITRE ATT&CK: T1036.004 - Masquerading: Masquerade Task or Service"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": [
+            {
+              "id": "T1036.004",
+              "name": "Masquerade Task or Service",
+              "reference": "https://attack.mitre.org/techniques/T1036/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "query": "sequence by process.entity_id\n  [process where process.parent.name like \"kworker/*\" and process.parent.executable in (\"/home/*\", \"/tmp/*\", \"/var/log/*\") and event.category == \"process\" and event.type == \"start\"]\n  [process where process.name like \"iptables\" and event.category == \"process\" and event.type == \"start\"]",
+  "language": "eql",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "actions": [],
+  "description": "The following analytic detects the suspicious disable or modify system firewall. This behavior is critical for a SOC to monitor because it may indicate attempts to gain unauthorized access or maintain control over a system. Such actions could be signs of malicious activity. If confirmed, this could lead to serious consequences, including a compromised system, unauthorized access to sensitive data, or even a wider breach affecting the entire network. Detecting and responding to these signs early is essential to prevent potential security incidents. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-6m",
+  "interval": "5m",
+  "language": "eql",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "author": [
+      "Teoderick Contreras, Splunk",
+      "OpenAI GPT4-o"
+    ]
+  },
+  "name": "OpenAI GPT4-o Linux Auditd Disable Or Modify System Firewall",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 64,
+  "risk_score_mapping": [],
+  "rule_id": "07052556-d4b5-4bae-89aa-cbdc1bb11250",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "OpenAI GPT4-o",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562.004",
+          "name": "Disable or Modify System Firewall",
+          "reference": "https://attack.mitre.org/techniques/T1562/004/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 5,
+  "query": "process where event.type == \"end\" and process.name in (\"firewalld\", \"ufw\") and process.parent.name == \"systemd\""
+}

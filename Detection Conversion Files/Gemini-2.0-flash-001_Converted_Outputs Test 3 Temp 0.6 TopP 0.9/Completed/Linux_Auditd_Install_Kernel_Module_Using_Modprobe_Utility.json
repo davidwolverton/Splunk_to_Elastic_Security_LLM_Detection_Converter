@@ -1,0 +1,68 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the installation of a Linux kernel module using the modprobe utility. It leverages data from Linux Auditd, focusing on process names and command-line executions. This activity is significant because installing a kernel module can indicate an attempt to deploy a rootkit or other malicious kernel-level code, potentially leading to elevated privileges and bypassing security detections. If confirmed malicious, this could allow an attacker to gain persistent, high-level access to the system, compromising its integrity and security.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Install Kernel Module Using Modprobe Utility",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted with Google Gemini 2.0 Flash 001.",
+  "references": [
+    "https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules/",
+    "https://security.stackexchange.com/questions/175953/how-to-load-a-malicious-lkm-at-startup",
+    "https://0x00sec.org/t/kernel-rootkits-getting-your-hands-dirty/1485"
+  ],
+  "risk_score": 47,
+  "rule_id": "95165985-ace5-4d42-9c42-93a89a5af901",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Rootkit",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1547.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Persistence Through Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/"
+        },
+        {
+          "id": "T1547.006",
+          "name": "Kernel Modules and Extensions",
+          "reference": "https://attack.mitre.org/techniques/T1547/006/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.type == \"start\" and process.name == \"modprobe\"]\n  [process where event.type == \"start\" and process.name != \"modprobe\"]",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-system.auditd-*",
+    "logs-endpoint.events.*"
+  ]
+}

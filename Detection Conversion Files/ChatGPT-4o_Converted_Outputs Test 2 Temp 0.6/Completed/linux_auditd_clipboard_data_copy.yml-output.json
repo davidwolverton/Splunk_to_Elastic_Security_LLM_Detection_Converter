@@ -1,0 +1,50 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Clipboard Data Copy",
+  "description": "The following analytic detects the use of the Linux 'xclip' command to copy data from the clipboard. It leverages Linux Auditd telemetry, focusing on process names and command-line arguments related to clipboard operations. This activity is significant because adversaries can exploit clipboard data to capture sensitive information such as passwords or IP addresses. If confirmed malicious, this technique could lead to unauthorized data exfiltration, compromising sensitive information and potentially aiding further attacks within the environment. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Compromised Linux Host", "Endpoint"],
+  "risk_score": 16,
+  "severity": "medium",
+  "index": ["linux_auditd"],
+  "language": "eql",
+  "query": "process where process.name == \"xclip\" or process.command_line == \"*xclip*\" and process.command_line == \"*-o*\" or process.command_line == \"*-selection *\" or process.command_line == \"*-sel *\"",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1115",
+          "name": "Clipboard Data",
+          "reference": "https://attack.mitre.org/techniques/T1115/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://attack.mitre.org/techniques/T1115/",
+    "https://linux.die.net/man/1/xclip"
+  ],
+  "type": "eql",
+  "enabled": true,
+  "interval": "5m",
+  "from": "now-30m",
+  "to": "now",
+  "max_signals": 100,
+  "version": 1,
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives may be present on Linux desktop as it may commonly be used by administrators or end users. Filter as needed."
+  ],
+  "actions": [],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "response_actions": [],
+  "investigation_fields": {
+    "field_names": ["process.name", "process.command_line", "host.name"]
+  }
+}

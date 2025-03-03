@@ -1,0 +1,48 @@
+{
+  "name": "OpenAI GPT4-o Linux High Frequency Of File Deletion In Boot Folder",
+  "description": "The following analytic detects a high frequency of file deletions in the /boot/ folder on Linux systems. It leverages filesystem event logs to identify when 200 or more files are deleted within an hour by the same process. This behavior is significant as it may indicate the presence of wiper malware, such as Industroyer2, which targets critical system directories. If confirmed malicious, this activity could lead to system instability or failure, hindering the boot process and potentially causing a complete system compromise. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "enabled": true,
+  "risk_score": 80,
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "Data Destruction", "Industroyer2", "AcidPour", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "interval": "1h",
+  "max_signals": 100,
+  "query": "process where event.action == \"deleted\" and file.path : \"/boot/*\" | histogram by process.entity_id, file.path with interval=1h | filter count(file.path) >= 200",
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "version": 6,
+  "language": "eql",
+  "index": ["file-*"]
+}

@@ -1,0 +1,62 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious preload hijacking via the  `preload`\nfile, which may indicate an attacker's attempt to intercept or manipulate library\nloading processes. The `preload` file can be used to force the loading of specific\nlibraries before others, potentially allowing malicious code to execute or alter\napplication behavior. By monitoring for unusual or unauthorized modifications to\nthe `preload` file, this analytic helps identify attempts to hijack preload mechanisms,\nenabling security teams to investigate and address potential threats to system integrity\nand security.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Preload Hijack Via Preload File",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "risk_score": 50,
+  "rule_id": "linux_auditd_preload_hijack_via_preload_file",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Living Off The Land",
+    "Linux Privilege Escalation",
+    "Linux Persistence Techniques",
+    "Compromised Linux Host",
+    "Endpoint",
+    "T1574.006"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574.006",
+          "name": "Hijack Execution Flow: LD_PRELOAD",
+          "reference": "https://attack.mitre.org/techniques/T1574/006/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by process.pid
+    [process where event.type == "start" and process.name == "auditd" and file.path == "/etc/ld.so.preload" and event.action == "opened"]
+    [file where event.type == "change" and file.path == "/etc/ld.so.preload"]""",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*",
+    "endgame-*"
+  ]
+}

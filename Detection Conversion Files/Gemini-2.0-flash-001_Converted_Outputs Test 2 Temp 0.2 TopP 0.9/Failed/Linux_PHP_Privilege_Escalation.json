@@ -1,0 +1,77 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of PHP commands with elevated privileges on a Linux system. It identifies instances where PHP is used in conjunction with 'sudo' and 'system' commands, indicating an attempt to run system commands as the root user. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on process command-line arguments. This activity is significant because it can indicate an attempt to escalate privileges, potentially leading to full root access. If confirmed malicious, this could allow an attacker to execute arbitrary commands with root privileges, compromising the entire system.",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "name": "Google Gemini 2.0 Flash 001: Linux PHP Privilege Escalation",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/php/",
+    "https://en.wikipedia.org/wiki/PHP"
+  ],
+  "risk_score": 30,
+  "rule_id": "4fc4c031-e5be-4cc0-8cf9-49f9f507bcb5",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Abuse Elevation Control Mechanism: Sudo and Su",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 7,
+  "language": "eql",
+  "query": """sequence by process.entity_id
+    [process where event.type == "start" and process.name == "php" and process.args : "*sudo*" and process.args : "*system*" and process.args : "*-r*"]
+    """,
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "data_view_id": "default",
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "building_block_type": "default",
+  "threat_objects": [
+    {
+      "field": "process.parent.name",
+      "type": "parent_process_name"
+    },
+    {
+      "field": "process.name",
+      "type": "process_name"
+    }
+  ]
+}

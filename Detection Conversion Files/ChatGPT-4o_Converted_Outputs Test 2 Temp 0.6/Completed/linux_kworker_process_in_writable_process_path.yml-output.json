@@ -1,0 +1,40 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects the execution of a kworker process with a command line in writable directories such as /home/, /var/log, and /tmp on a Linux machine. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and parent process paths. This activity is significant as kworker processes are typically kernel threads, and their presence in writable directories is unusual and indicative of potential malware, such as CyclopsBlink. If confirmed malicious, this could allow attackers to blend malicious processes with legitimate ones, leading to persistent access and further system compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["unknown"],
+  "from": "now-6m",
+  "index": ["apm-*", "logs-*", "traces-*"],
+  "interval": "5m",
+  "language": "eql",
+  "name": "OpenAI GPT4-o Linux Kworker Process In Writable Process Path",
+  "note": "Converted with OpenAI GPT4-o",
+  "risk_score": 42,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Sandworm Tools", "Cyclops Blink", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036.004",
+          "name": "Masquerading: Masquerade Task or Service",
+          "reference": "https://attack.mitre.org/techniques/T1036/004/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "query": "process where process.parent.name == \"kworker\" and process.parent.executable in (\"/home/*\", \"/tmp/*\", \"/var/log/*\") and process.name == \"iptables\"",
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "version": 1
+}

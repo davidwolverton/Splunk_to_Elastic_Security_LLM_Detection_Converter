@@ -1,0 +1,126 @@
+{
+  "actions": [],
+  "alias_purpose": null,
+  "alias_target_id": null,
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": null,
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects potential tampering with cronjob files on a Linux system by identifying 'echo' commands that append code to existing cronjob files. It leverages logs from Linux Auditd, focusing on process names, parent processes, and command-line executions. This activity is significant because adversaries often use it for persistence or privilege escalation. If confirmed malicious, this could allow attackers to execute unauthorized code automatically, leading to system compromises and unauthorized data access, thereby impacting business operations and data integrity. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": [
+    "False positives may arise from legitimate actions by administrators or network operators who may use these commands for automation purposes. Therefore, it's recommended to adjust filter macros to eliminate such false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": null,
+  "max_signals": 100,
+  "meta": {
+    "from": "now-60m",
+    "interval": "5m"
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd Possible Append Cronjob Entry On Existing Cronjob File",
+  "namespace": "default",
+  "note": "The following analytic detects potential tampering with cronjob files on a Linux system by identifying 'echo' commands that append code to existing cronjob files. It leverages logs from Linux Auditd, focusing on process names, parent processes, and command-line executions. This activity is significant because adversaries often use it for persistence or privilege escalation. If confirmed malicious, this could allow attackers to execute unauthorized code automatically, leading to system compromises and unauthorized data access, thereby impacting business operations and data integrity.",
+  "outcome": null,
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1053/003/",
+    "https://blog.aquasec.com/threat-alert-kinsing-malware-container-vulnerability",
+    "https://www.intezer.com/blog/research/kaiji-new-chinese-linux-malware-turning-to-golang/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "auditd.log.path",
+      "type": "string"
+    },
+    {
+      "name": "host.name",
+      "type": "string"
+    }
+  ],
+  "response_actions": [],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "google_gemini_2.0_flash_001_linux_auditd_possible_append_cronjob_entry_on_existing_cronjob_file",
+  "rule_name_override": null,
+  "setup": null,
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:XorDDos",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Compromised Linux Host",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Scheduled Tasks",
+    "analytic_story:Linux Persistence Techniques",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1053.003",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": [
+            {
+              "id": "T1053.003",
+              "name": "Cron",
+              "reference": "https://attack.mitre.org/techniques/T1053/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": null,
+  "timeline_id": null,
+  "timeline_title": null,
+  "timestamp_override": null,
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.name
+  [file where event.type == "start" and file.path : ("/etc/cron*", "/var/spool/cron/*", "/etc/anacrontab*")]
+  [process where event.type == "start" and process.name == "echo" and process.args contains ">>" and process.args : ("/etc/cron*", "/var/spool/cron/*", "/etc/anacrontab*")]""",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "m",
+      "value": 5
+    },
+    "group_by": [],
+    "missing_fields_strategy": "do_not_suppress"
+  },
+  "data_view_id": "default",
+  "event_category_override": null,
+  "filters": [],
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ],
+  "tiebreaker_field": null,
+  "timestamp_field": null
+}

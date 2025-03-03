@@ -1,0 +1,42 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Whoami User Discovery",
+  "description": "The following analytic detects the suspicious use of the whoami command, which may indicate an attacker trying to gather information about the current user account on a compromised system. The whoami command is commonly used to verify user privileges and identity, especially during initial stages of an attack to assess the level of access. By monitoring for unusual or unauthorized executions of whoami, this analytic helps in identifying potential reconnaissance activities, enabling security teams to take action before the attacker escalates privileges or conducts further malicious operations. Converted with OpenAI GPT4-o.",
+  "risk_score": 42,
+  "severity": "low",
+  "author": ["OpenAI GPT4-o", "Teoderick Contreras", "Splunk"],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/"
+        }
+      ]
+    }
+  ],
+  "query": "process where event.category == \"process\" and process.name == \"whoami\"",
+  "language": "eql",
+  "type": "eql",
+  "enabled": true,
+  "from": "now-6h",
+  "interval": "5m",
+  "max_signals": 100,
+  "index": ["audit-*"],
+  "exceptions_list": [],
+  "building_block_type": "default",
+  "license": "Elastic License v2",
+  "version": 1,
+  "throttle": "no_actions"
+}

@@ -1,0 +1,48 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects a high frequency of file deletions in the /boot/ folder on Linux systems. It leverages filesystem event logs to identify when 200 or more files are deleted within an hour by the same process. This behavior is significant as it may indicate the presence of wiper malware, such as Industroyer2, which targets critical system directories. If confirmed malicious, this activity could lead to system instability or failure, hindering the boot process and potentially causing a complete system compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "false_positives": ["linux package installer/uninstaller may cause this event. Please update your filter macro to remove false positives."],
+  "from": "now-1h",
+  "interval": "1h",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux High Frequency Of File Deletion In Boot Folder",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/",
+    "https://cert.gov.ua/article/39518"
+  ],
+  "risk_score": 80,
+  "risk_score_mapping": [],
+  "rule_id": "e27fbc5d-0445-4c4a-bc39-87f060d5c602",
+  "severity": "high",
+  "tags": ["endpoint", "OpenAI GPT4-o", "Data Destruction", "Industroyer2", "AcidPour", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        },
+        {
+          "id": "T1070.004",
+          "name": "Indicator Removal on Host: File Deletion",
+          "reference": "https://attack.mitre.org/techniques/T1070/004/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timestamp_override": "event.ingested",
+  "version": 42,
+  "language": "eql",
+  "query": "sequence by process.entity_id with maxspan=1h [file where event.action == \"deletion\" and file.path : \"/boot/*\" and event.category == \"file\" | stats count(file.path) as numOfDelFilePath by process.entity_id] where numOfDelFilePath >= 200"
+}

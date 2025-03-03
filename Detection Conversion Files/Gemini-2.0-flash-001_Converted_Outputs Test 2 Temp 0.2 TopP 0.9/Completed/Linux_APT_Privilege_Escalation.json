@@ -1,0 +1,60 @@
+{
+  "actions": [],
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Gowthamaraj Rajendran, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the use of the Advanced Package Tool (APT) with elevated privileges via sudo on Linux systems. It leverages Endpoint Detection and Response (EDR) telemetry to identify processes where APT commands are executed with sudo rights. This activity is significant because it indicates a user can run system commands as root, potentially leading to unauthorized root shell access. If confirmed malicious, this could allow an attacker to escalate privileges, execute arbitrary commands, and gain full control over the affected system, posing a severe security risk.\nConverted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "False positives may be present, filter as needed."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001 Linux APT Privilege Escalation",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Agent integrations that are specific to the EDR product. The logs must also be mapped to the Elastic Common Schema (ECS).",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/apt/",
+    "https://www.digitalocean.com/community/tutorials/what-is-apt"
+  ],
+  "risk_score": 47,
+  "rule_id": "4d5a05fa-77d9-4fd0-af9c-05704f9f9a88",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Endpoint",
+    "T1548.003"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname, user.name\n  [process where event.type == \"start\" and process.name == \"sudo\" and event.category == \"process\" and\n   process.args in (\"apt\", \"apt-get\", \"aptitude\")\n  ]\n  [process where event.type == \"start\" and process.name in (\"apt\", \"apt-get\", \"aptitude\") and event.category == \"process\" and\n   process.args : \"APT::Update::Pre-Invoke::\"\n  ]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

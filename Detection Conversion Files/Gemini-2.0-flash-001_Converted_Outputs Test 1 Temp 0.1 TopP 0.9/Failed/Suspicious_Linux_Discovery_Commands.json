@@ -1,0 +1,73 @@
+{
+  "actions": [],
+  "alias_purpose": "detection_rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Bhavin Patel, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of suspicious bash commands commonly used in scripts like AutoSUID, LinEnum, and LinPeas for system discovery on a Linux host. It leverages Endpoint Detection and Response (EDR) data, specifically looking for a high number of distinct commands executed within a short time frame. This activity is significant as it often precedes privilege escalation or other malicious actions. If confirmed malicious, an attacker could gain detailed system information, identify vulnerabilities, and potentially escalate privileges, posing a severe threat to the environment.",
+  "enabled": true,
+  "false_positives": [
+    "Unless an administrator is using these commands to troubleshoot or audit a system, the execution of these commands should be monitored."
+  ],
+  "from": "now-5m",
+  "interval": "5m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Suspicious Linux Discovery Commands",
+  "note": "Google Gemini 2.0 Flash 001: This rule was converted from Splunk SPL to Elastic EQL using Google Gemini 2.0 Flash 001.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/matrices/enterprise/linux/",
+    "https://attack.mitre.org/techniques/T1059/004/",
+    "https://github.com/IvanGlinkin/AutoSUID",
+    "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS",
+    "https://github.com/rebootuser/LinEnum"
+  ],
+  "risk_score": 47,
+  "rule_id": "suspicious_linux_discovery_commands",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Post-Exploitation",
+    "Endpoint",
+    "T1059.004"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/"
+        },
+        {
+          "id": "T1059.004",
+          "name": "Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.hostname, user.name
+    [process where event.type == "start" and process.name in ("bash", "sh", "zsh") and process.args != null]
+    [process where event.type == "start" and process.name in ("find", "locate", "which", "whereis", "id", "whoami", "uname", "ls", "cat", "env", "history", "ps", "netstat", "ss", "ip", "ifconfig", "arp", "route", "df", "mount", "sudo", "su", "chmod", "chown", "grep", "awk", "sed", "cut", "xargs", "wc", "sort", "uniq", "head", "tail", "tee", "curl", "wget", "nc", "nmap", "python", "python3", "perl", "ruby", "php") and process.parent.name in ("bash", "sh", "zsh")]
+    within 5m""",
+  "index": [
+    "logs-endpoint.events.*",
+    "winlogbeat-*",
+    "logs-system.*"
+  ],
+  "data_view_id": "global"
+}

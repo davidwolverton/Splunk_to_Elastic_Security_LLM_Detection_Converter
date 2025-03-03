@@ -1,0 +1,43 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious file and directory discovery activities, which may indicate an attacker's effort to locate sensitive documents and files on a compromised system. This behavior often precedes data exfiltration, as adversaries seek to identify valuable or confidential information for theft. By identifying unusual or unauthorized attempts to browse or enumerate files and directories, this analytic helps security teams detect potential reconnaissance or preparatory actions by an attacker, enabling timely intervention to prevent data breaches or unauthorized access. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6h",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Auditd File And Directory Discovery",
+  "note": "This rule was converted with OpenAI GPT4-o.",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "risk_score": 25,
+  "risk_score_mapping": [],
+  "rule_id": "openai-gpt4o-linux-auditd-file-and-directory-discovery",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host", "endpoint"],
+  "threat": [{
+    "framework": "MITRE ATT&CK",
+    "tactic": {
+      "id": "TA0007",
+      "name": "Discovery",
+      "reference": "https://attack.mitre.org/tactics/TA0007/"
+    },
+    "technique": [{
+      "id": "T1083",
+      "name": "File and Directory Discovery",
+      "reference": "https://attack.mitre.org/techniques/T1083/"
+    }]
+  }],
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "process where event.action == \"exec\" and process.args : (\"*grep*\", \"*find*\") and process.args : (\"*.tif*\", \"*.tiff*\", \"*.gif*\", \"*.jpeg*\", \"*.jpg*\", \"*.jif*\", \"*.jfif*\", \"*.jp2*\", \"*.jpx*\", \"*.j2k*\", \"*.j2c*\", \"*.fpx*\", \"*.pcd*\", \"*.png*\", \"*.flv*\", \"*.pdf*\", \"*.mp4*\", \"*.mp3*\", \"*.gifv*\", \"*.avi*\", \"*.mov*\", \"*.mpeg*\", \"*.wav*\", \"*.doc*\", \"*.docx*\", \"*.xls*\", \"*.xlsx*\", \"*.svg*\")"
+}

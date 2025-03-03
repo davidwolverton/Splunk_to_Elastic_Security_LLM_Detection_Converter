@@ -1,0 +1,44 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd Hardware Addition Swapoff",
+  "description": "The following analytic detects the execution of the \"swapoff\" command, which disables the swapping of paging devices on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process execution logs. This activity is significant because disabling swap can be a tactic used by malware, such as Awfulshred, to evade detection and hinder forensic analysis. If confirmed malicious, this action could allow an attacker to manipulate system memory management, potentially leading to data corruption, system instability, or evasion of memory-based detection mechanisms. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Data Destruction", "AwfulShred", "Compromised Linux Host", "Endpoint", "Splunk Enterprise", "Splunk Enterprise Security", "Splunk Cloud", "endpoint"],
+  "risk_score": 36,
+  "severity": "medium",
+  "interval": "5m",
+  "enabled": true,
+  "max_signals": 100,
+  "language": "eql",
+  "query": "process where process.name == \"swapoff\" and process.args : \"*-a*\"",
+  "index": ["auditbeat-*"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1200",
+          "name": "Hardware Additions",
+          "reference": "https://attack.mitre.org/techniques/T1200/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/"
+  ],
+  "exceptions_list": [],
+  "false_positives": [
+    "administrator may disable swapping of devices in a linux host. Filter is needed."
+  ],
+  "meta": {
+    "creation_date": "2025-02-20"
+  },
+  "version": 1,
+  "type": "eql",
+  "note": "This rule was converted with OpenAI GPT4-o."
+}

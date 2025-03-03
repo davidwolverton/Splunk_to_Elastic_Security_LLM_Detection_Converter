@@ -1,0 +1,39 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "description": "The following analytic detects suspicious command-line activity that modifies the iptables firewall settings on a Linux machine. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on specific command patterns that alter firewall rules to accept traffic on certain TCP ports. This activity is significant as it can indicate malware, such as CyclopsBlink, modifying firewall settings to allow communication with a Command and Control (C2) server. If confirmed malicious, this could enable attackers to maintain persistent access and exfiltrate data, posing a severe security risk. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["administrator may do this commandline for auditing and testing purposes. In this scenario filter is needed."],
+  "from": "now-360s",
+  "interval": "5m",
+  "name": "OpenAI GPT4-o Linux Iptables Firewall Modification",
+  "query": "process where process.name == \"iptables\" and process.args : \"* --dport *\" and process.args : \"* ACCEPT*\" and process.args : \"*&gt;/dev/null*\" and process.args : \"* tcp *\" and not process.parent.executable in (\"/bin/*\", \"/lib/*\", \"/usr/bin/*\", \"/sbin/*\") | unique process.args | where unique_port_count >= 3",
+  "risk_score": 75,
+  "references": [
+    "https://www.ncsc.gov.uk/files/Cyclops-Blink-Malware-Analysis-Report.pdf",
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html"
+  ],
+  "severity": "high",
+  "tags": ["OpenAI GPT4-o", "China-Nexus Threat Activity", "Backdoor Pingpong", "Cyclops Blink", "Sandworm Tools"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562.004",
+          "name": "Disable or Modify System Firewall",
+          "reference": "https://attack.mitre.org/techniques/T1562/004/"
+        }
+      ]
+    }
+  ],
+  "type": "eql",
+  "language": "eql",
+  "version": 1
+}

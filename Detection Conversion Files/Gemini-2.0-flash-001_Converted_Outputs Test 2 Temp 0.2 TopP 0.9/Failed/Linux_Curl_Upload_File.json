@@ -1,0 +1,106 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Michael Haag, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the use of the curl command with specific switches (-F, --form, --upload-file, -T, -d, --data, --data-raw, -I, --head) to upload AWS credentials or configuration files to a remote destination. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process details. This activity is significant as it may indicate an attempt to exfiltrate sensitive AWS credentials, a technique known to be used by the TeamTNT group. If confirmed malicious, this could lead to unauthorized access and potential compromise of AWS resources. This rule was converted with Google Gemini 2.0 Flash 001.",
+  "enabled": true,
+  "false_positives": [
+    "Filtering may be required. In addition to AWS credentials, add other important files and monitor. The inverse would be to look for _all_ -F behavior and tune from there."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": 1
+  },
+  "name": "Google Gemini 2.0 Flash 001: Linux Curl Upload File",
+  "namespace": "default",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Splunk Technology Add-ons that are specific to the EDR product. The logs must also be mapped to the `Processes` node of the `Endpoint` data model. Use the Splunk Common Information Model (CIM) to normalize the field names and speed up the data modeling process.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://curl.se/docs/manpage.html",
+    "https://www.cadosecurity.com/team-tnt-the-first-crypto-mining-worm-to-steal-aws-credentials/",
+    "https://gtfobins.github.io/gtfobins/curl/"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    {
+      "name": "process.name",
+      "type": "string"
+    },
+    {
+      "name": "process.command_line",
+      "type": "string"
+    },
+    {
+      "name": "file.path",
+      "type": "string"
+    },
+    {
+      "name": "user.name",
+      "type": "string"
+    },
+    {
+      "name": "host.hostname",
+      "type": "string"
+    }
+  ],
+  "risk_score": 47,
+  "rule_id": "c1de2d9a-0c02-4bb4-a49a-510c6e9cf2bf",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Data Exfiltration",
+    "analytic_story:Ingress Tool Transfer",
+    "asset_type:Endpoint",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "reference": "https://attack.mitre.org/techniques/T1041/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by process.entity_id\n  [process where event.type == \"start\" and process.name == \"curl\" and process.args in (\"-F\", \"--form\", \"--upload-file\", \"-T\", \"-d\", \"--data\", \"--data-raw\", \"-I\", \"--head\") and process.args : \"*.aws/credentials\" or process.args : \"*.aws/config\"]\n",
+  "index": [
+    "logs-endpoint.events.*"
+  ],
+  "tiebreaker_field": "event.id",
+  "timestamp_field": "@timestamp"
+}

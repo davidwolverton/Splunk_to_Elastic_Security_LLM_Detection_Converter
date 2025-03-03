@@ -1,0 +1,51 @@
+{
+  "name": "OpenAI GPT4-o Linux RPM Privilege Escalation",
+  "description": "The following analytic detects the execution of the RPM Package Manager with elevated privileges, specifically when it is used to run system commands as root via the `--eval` and `lua:os.execute` options. This detection leverages data from Endpoint Detection and Response (EDR) agents, focusing on command-line executions and process metadata. This activity is significant because it indicates a potential privilege escalation attempt, allowing a user to gain root access. If confirmed malicious, this could lead to full system compromise, unauthorized access to sensitive data, and further exploitation of the environment. Converted with OpenAI GPT4-o.",
+  "author": ["Gowthamaraj Rajendran", "Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Privilege Escalation", "Linux Living Off The Land", "Endpoint"],
+  "severity": "high",
+  "risk_score": 75,
+  "index": ["your-index-name"],
+  "language": "eql",
+  "query": "process where process.name == \"rpm\" and process.args : \"--eval\" and process.args : \"lua:os.execute\" and process.args : \"sudo\"",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548.003",
+          "name": "Sudo and Sudo Caching",
+          "reference": "https://attack.mitre.org/techniques/T1548/003/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://gtfobins.github.io/gtfobins/rpm/",
+    "https://en.wikipedia.org/wiki/RPM_Package_Manager"
+  ],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "actions": [],
+  "exceptions_list": [],
+  "type": "eql",
+  "version": 1,
+  "building_block_type": "default",
+  "license": "",
+  "false_positives": ["False positives are present based on automated tooling or system administrative usage. Filter as needed."],
+  "risk_score_mapping": [],
+  "severity_mapping": [],
+  "throttle": "no_actions",
+  "timestamp_override": "event.ingested",
+  "timestamp_override_fallback_disabled": false,
+  "event_category_override": "",
+  "data_view_id": "default",
+  "tiebreaker_field": "_doc",
+  "timestamp_field": "@timestamp"
+}

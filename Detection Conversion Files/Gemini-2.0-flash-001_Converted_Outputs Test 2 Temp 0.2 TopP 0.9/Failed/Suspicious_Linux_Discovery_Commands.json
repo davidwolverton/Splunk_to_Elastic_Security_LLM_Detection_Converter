@@ -1,0 +1,83 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Bhavin Patel, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects the execution of suspicious bash commands commonly used in scripts like AutoSUID, LinEnum, and LinPeas for system discovery on a Linux host. It leverages Endpoint Detection and Response (EDR) data, specifically looking for a high number of distinct commands executed within a short time frame. This activity is significant as it often precedes privilege escalation or other malicious actions. If confirmed malicious, an attacker could gain detailed system information, identify vulnerabilities, and potentially escalate privileges, posing a severe threat to the environment.",
+  "enabled": true,
+  "false_positives": [
+    "Unless an administrator is using these commands to troubleshoot or audit a system, the execution of these commands should be monitored."
+  ],
+  "from": "now-5m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Suspicious Linux Discovery Commands",
+  "note": "Converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/matrices/enterprise/linux/",
+    "https://attack.mitre.org/techniques/T1059/004/",
+    "https://github.com/IvanGlinkin/AutoSUID",
+    "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS",
+    "https://github.com/rebootuser/LinEnum"
+  ],
+  "risk_score": 47,
+  "rule_id": "suspicious_linux_discovery_commands",
+  "severity": "high",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Linux Post-Exploitation",
+    "Endpoint",
+    "T1059.004",
+    "Splunk Enterprise",
+    "Splunk Enterprise Security",
+    "Splunk Cloud",
+    "endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/"
+        },
+        {
+          "id": "T1059.004",
+          "name": "Unix Shell",
+          "reference": "https://attack.mitre.org/techniques/T1059/004/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.hostname, user.name
+    [process where event.category == "process" and event.type == "start" and
+     process.name in ("bash", "sh", "zsh", "ksh", "tcsh", "csh") and
+      process.args in (SELECT process.args from process where event.category == "process" and event.type == "start" and
+      process.name in ("bash", "sh", "zsh", "ksh", "tcsh", "csh") and
+      process.args : ("uname -a", "uname -m", "uname -r", "cat /etc/os-release", "cat /etc/issue", "lsb_release -a", "hostname", "hostnamectl", "ip addr", "ifconfig", "netstat -antup", "ss -antup", "ps aux", "whoami", "id", "groups", "find / -perm -4000 -o -perm -2000 2>/dev/null", "find / -writable -type d 2>/dev/null", "find / -user root -perm -4000 2>/dev/null", "find / -group root -perm -2000 2>/dev/null", "find / -uid 0 -perm -4000 2>/dev/null", "find / -gid 0 -perm -2000 2>/dev/null", "find / -perm -u=s -type f 2>/dev/null", "find / -perm -g=s -type f 2>/dev/null", "find / -uid 0 -type f -perm -4000 2>/dev/null", "find / -gid 0 -type f -perm -2000 2>/dev/null"))]
+    [process where event.category == "process" and event.type == "start"]
+    within 5m""",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system*",
+    "winlogbeat-*"
+  ],
+  "data_view_id": "default"
+}

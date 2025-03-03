@@ -1,0 +1,85 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "alias_target_id": "linux-account-manipulation-of-ssh-config-and-keys",
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "building_block_type": "default",
+  "description": "The following analytic detects the deletion of SSH keys on a Linux machine. It leverages filesystem event logs to identify when files within \"/etc/ssh/*\" or \"~/.ssh/*\" are deleted. This activity is significant because attackers may delete or modify SSH keys to evade security measures or as part of a destructive payload, similar to the AcidRain malware. If confirmed malicious, this behavior could lead to impaired security features, hindered forensic investigations, or further unauthorized access, necessitating immediate investigation to identify the responsible process and user. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can execute this command. Please update the filter macros to remove false positives."],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": ["file.name", "file.path", "destination.address", "process.entity_id"]
+  },
+  "license": "Elastic License",
+  "max_signals": 100,
+  "meta": {},
+  "name": "OpenAI GPT4-o Linux Account Manipulation Of SSH Config and Keys",
+  "namespace": "default",
+  "note": "Converted with OpenAI GPT4-o",
+  "outcome": "exactMatch",
+  "output_index": ".siem-signals-default",
+  "references": ["https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/"],
+  "related_integrations": [],
+  "required_fields": [{
+    "name": "event.action",
+    "type": "keyword"
+  }],
+  "response_actions": [],
+  "risk_score": 50,
+  "risk_score_mapping": [],
+  "rule_id": "linux-account-manipulation-ssh-config-keys",
+  "rule_name_override": "",
+  "setup": "",
+  "severity": "medium",
+  "severity_mapping": [],
+  "tags": ["endpoint", "OpenAI GPT4-o", "AcidRain"],
+  "threat": [{
+    "framework": "MITRE ATT&CK",
+    "tactic": {
+      "id": "TA0005",
+      "name": "Defense Evasion",
+      "reference": "https://attack.mitre.org/tactics/TA0005/"
+    },
+    "technique": [{
+      "id": "T1070",
+      "name": "Indicator Removal on Host",
+      "reference": "https://attack.mitre.org/techniques/T1070/",
+      "subtechnique": [{
+        "id": "T1070.004",
+        "name": "File Deletion",
+        "reference": "https://attack.mitre.org/techniques/T1070/004/"
+      }]
+    }, {
+      "id": "T1485",
+      "name": "Data Destruction",
+      "reference": "https://attack.mitre.org/techniques/T1485/"
+    }]
+  }],
+  "throttle": "no_actions",
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "event.ingested",
+  "timestamp_override_fallback_disabled": false,
+  "to": "now",
+  "version": 1,
+  "language": "dsl",
+  "query": "file where event.action == \"deletion\" and file.path : (\"/etc/ssh/*\", \"~/.ssh/*\")",
+  "type": "eql",
+  "alert_suppression": {
+    "duration": {
+      "unit": "s",
+      "value": 300
+    },
+    "group_by": ["destination.address"],
+    "missing_fields_strategy": "doNotSuppress"
+  },
+  "data_view_id": "",
+  "event_category_override": "file",
+  "filters": [],
+  "index": ["filebeat-*"],
+  "tiebreaker_field": "",
+  "timestamp_field": "@timestamp"
+}

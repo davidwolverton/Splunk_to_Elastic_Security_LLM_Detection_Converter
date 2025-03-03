@@ -1,0 +1,46 @@
+{
+  "name": "OpenAI GPT4-o Linux Auditd File Permissions Modification Via Chattr",
+  "description": "The following analytic detects suspicious file permissions modifications using the chattr command, which may indicate an attacker attempting to manipulate file attributes to evade detection or prevent alteration. The chattr command can be used to make files immutable or restrict deletion, which can be leveraged to protect malicious files or disrupt system operations. By monitoring for unusual or unauthorized chattr usage, this analytic helps identify potential tampering with critical files, enabling security teams to quickly respond to and mitigate threats associated with unauthorized file attribute changes. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o", "Linux Living Off The Land", "Linux Privilege Escalation", "Linux Persistence Techniques", "Compromised Linux Host"],
+  "risk_score": 50,
+  "severity": "medium",
+  "interval": "5m",
+  "enabled": true,
+  "from": "now-6m",
+  "index": ["auditd-*"],
+  "query": "process where process.executable : \"*chattr*\" and process.args : \"*-i*\"",
+  "language": "eql",
+  "type": "eql",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1222",
+          "name": "File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/"
+        },
+        {
+          "id": "T1222.002",
+          "name": "Linux and Mac File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/002/"
+        }
+      ]
+    }
+  ],
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html"
+  ],
+  "max_signals": 100,
+  "version": 1,
+  "exceptions_list": [],
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ]
+}

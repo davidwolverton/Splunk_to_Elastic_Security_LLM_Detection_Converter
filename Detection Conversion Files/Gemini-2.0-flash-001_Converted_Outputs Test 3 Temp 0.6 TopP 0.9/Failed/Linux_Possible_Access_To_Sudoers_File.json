@@ -1,0 +1,71 @@
+{
+  "actions": [],
+  "alias_purpose": "rule",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects potential access or modification of the /etc/sudoers file on a Linux system. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on processes like \"cat,\" \"nano,\" \"vim,\" and \"vi\" accessing the /etc/sudoers file. This activity is significant because the sudoers file controls user permissions for executing commands with elevated privileges. If confirmed malicious, an attacker could gain persistence or escalate privileges, compromising the security of the targeted host. This rule was converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "1m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Possible Access To Sudoers File",
+  "note": "The detection is based on data that originates from Endpoint Detection and Response (EDR) agents. These agents are designed to provide security-related telemetry from the endpoints where the agent is installed. To implement this search, you must ingest logs that contain the process GUID, process name, and parent process. Additionally, you must ingest complete command-line executions. These logs must be processed using the appropriate Elastic Agent integrations that are specific to the EDR product. The logs must also be mapped to the Elastic Common Schema (ECS).",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://attack.mitre.org/techniques/T1548/003/",
+    "https://web.archive.org/web/20210708035426/https://www.cobaltstrike.com/downloads/csmanual43.pdf"
+  ],
+  "risk_score": 25,
+  "rule_id": "linux_possible_access_to_sudoers_file",
+  "severity": "medium",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "Elastic",
+    "Endpoint",
+    "Persistence",
+    "Privilege Escalation",
+    "China-Nexus Threat Activity",
+    "Linux Persistence Techniques",
+    "Linux Privilege Escalation",
+    "Earth Estries"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": [
+            {
+              "id": "T1548.003",
+              "name": "Sudo and Sudoers",
+              "reference": "https://attack.mitre.org/techniques/T1548/003/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.hostname\n [process where event.type == \"start\" and process.name in (\"cat\", \"nano\", \"vim\", \"vi\") and process.args : \"/etc/sudoers\"]\n [file where event.type == \"change\" and file.path == \"/etc/sudoers\"]",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

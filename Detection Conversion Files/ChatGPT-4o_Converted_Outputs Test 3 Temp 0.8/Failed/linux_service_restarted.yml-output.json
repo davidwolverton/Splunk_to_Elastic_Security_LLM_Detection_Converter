@@ -1,0 +1,51 @@
+{
+  "actions": [],
+  "author": ["OpenAI GPT4-o"],
+  "description": "The following analytic detects the restarting or re-enabling of services on Linux systems using the `systemctl` or `service` commands. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and command-line execution logs. This activity is significant as adversaries may use it to maintain persistence or execute unauthorized actions. If confirmed malicious, this behavior could lead to repeated execution of malicious payloads, unauthorized access, or data destruction. Security analysts should investigate these events to mitigate risks and prevent further compromise. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."],
+  "from": "now-6m",
+  "interval": "5m",
+  "license": "",
+  "max_signals": 100,
+  "meta": {
+    "author": "Teoderick Contreras, Splunk"
+  },
+  "name": "OpenAI GPT4-o Linux Service Restarted",
+  "output_index": ".siem-signals-default",
+  "references": ["https://attack.mitre.org/techniques/T1543/003/"],
+  "risk_score": 50,
+  "rule_id": "openai-gpt4-o-linux-service-restarted",
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "Linux", "Persistence", "EDR"],
+  "threat": [{
+    "framework": "MITRE ATT&CK",
+    "tactic": {
+      "id": "TA0003",
+      "name": "Persistence",
+      "reference": "https://attack.mitre.org/tactics/TA0003/"
+    },
+    "technique": [{
+      "id": "T1543.003",
+      "name": "Windows Service",
+      "reference": "https://attack.mitre.org/techniques/T1543/003/"
+    }]
+  }],
+  "timeline_id": "",
+  "timeline_title": "",
+  "timestamp_override": "event.ingested",
+  "type": "eql",
+  "language": "eql",
+  "query": """
+    process where event.action in ("executed") and (
+      process.name == "systemctl" or process.name == "service" or
+      process.command_line regex /.*systemctl.*/ or process.command_line regex /.*service.*/
+    ) and (
+      process.command_line regex /.*restart.*/ or 
+      process.command_line regex /.*reload.*/ or 
+      process.command_line regex /.*reenable.*/
+    )
+  """,
+  "version": 1
+}

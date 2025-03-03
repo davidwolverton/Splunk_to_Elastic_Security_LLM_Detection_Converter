@@ -1,0 +1,37 @@
+{
+  "name": "OpenAI GPT4-o Linux SSH Remote Services Script Execute",
+  "description": "The following analytic detects the use of SSH to move laterally and execute a script or file on a remote host. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on specific SSH command-line parameters and URLs. This activity is significant as it may indicate an attacker attempting to execute remote commands or scripts, potentially leading to unauthorized access or control over additional systems. If confirmed malicious, this could result in lateral movement, privilege escalation, or the execution of malicious payloads, compromising the security of the network. Converted with OpenAI GPT4-o.",
+  "author": ["Michael Haag, Splunk", "OpenAI GPT4-o"],
+  "tags": ["OpenAI GPT4-o"],
+  "risk_score": 56,
+  "severity": "high",
+  "index": ["endpoint-*"],
+  "language": "eql",
+  "query": "process where process.name == \"ssh\" and process.command_line : (\"*oStrictHostKeyChecking*\", \"*oConnectTimeout*\", \"*oBatchMode*\") and process.command_line : (\"*http:*\", \"*https:*\")",
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021.004",
+          "name": "SSH",
+          "reference": "https://attack.mitre.org/techniques/T1021/004/"
+        }
+      ]
+    }
+  ],
+  "references": ["https://redcanary.com/blog/lateral-movement-with-secure-shell/"],
+  "enabled": true,
+  "interval": "5m",
+  "max_signals": 100,
+  "type": "eql",
+  "version": 1,
+  "from": "now-6m",
+  "to": "now",
+  "exceptions_list": []
+}

@@ -1,0 +1,75 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Teoderick Contreras, Splunk",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the restarting or re-enabling of services on Linux systems using the `systemctl` or `service` commands. It leverages data from Endpoint Detection and Response (EDR) agents, focusing on process and command-line execution logs. This activity is significant as adversaries may use it to maintain persistence or execute unauthorized actions. If confirmed malicious, this behavior could lead to repeated execution of malicious payloads, unauthorized access, or data destruction. Security analysts should investigate these events to mitigate risks and prevent further compromise.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this commandline for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "license": "Apache 2.0",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001 Linux Service Restarted",
+  "note": "Investigate the process details, user context, and parent process to determine the legitimacy of the service restart or re-enablement.",
+  "output_index": ".siem-signals-*",
+  "references": [
+    "https://attack.mitre.org/techniques/T1543/003/"
+  ],
+  "risk_score": 25,
+  "rule_id": "084275ba-61b8-11ec-8d64-acde48001122",
+  "severity": "medium",
+  "tags": [
+    "AwfulShred",
+    "Linux Privilege Escalation",
+    "Linux Living Off The Land",
+    "Data Destruction",
+    "Linux Persistence Techniques",
+    "Scheduled Tasks",
+    "Gomir",
+    "Endpoint",
+    "T1053.006",
+    "Google Gemini 2.0 Flash 001"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": [
+            {
+              "id": "T1543.003",
+              "name": "Linux and Mac System Services",
+              "reference": "https://attack.mitre.org/techniques/T1543/004/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "language": "eql",
+  "query": """sequence by host.name
+    [process where event.type == "start" and process.name in ("systemctl", "service") and
+     process.args in ("restart", "reload", "reenable")]
+    [process where event.type == "start" and process.name in ("systemctl", "service")]""",
+  "index": [
+    "logs-endpoint.events.*"
+  ]
+}

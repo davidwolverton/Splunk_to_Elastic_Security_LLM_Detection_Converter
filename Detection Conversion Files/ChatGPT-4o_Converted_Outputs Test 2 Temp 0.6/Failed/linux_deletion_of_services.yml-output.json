@@ -1,0 +1,50 @@
+{
+  "name": "OpenAI GPT4-o Linux Deletion Of Services",
+  "description": "The following analytic detects the deletion of services on a Linux machine. It leverages filesystem event logs to identify when service files within system directories (e.g., /etc/systemd/, /lib/systemd/, /run/systemd/) are deleted. This activity is significant because attackers may delete or modify services to disable security features or evade defenses. If confirmed malicious, this behavior could indicate an attempt to impair system functionality or execute a destructive payload, potentially leading to system instability or data loss. Immediate investigation is required to determine the responsible process and user. Converted with OpenAI GPT4-o.",
+  "author": ["Teoderick Contreras", "Splunk", "OpenAI GPT4-o"],
+  "enabled": true,
+  "risk_score": 64,
+  "severity": "medium",
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "AcidRain", "Data Destruction", "AcidPour", "endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": [
+            {
+              "id": "T1070.004",
+              "name": "File Deletion",
+              "reference": "https://attack.mitre.org/techniques/T1070/004/"
+            }
+          ]
+        },
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/"
+        }
+      ]
+    }
+  ],
+  "query": "file where event.action == \"deletion\" and file.path regex \"/etc/systemd/.*|.*/lib/systemd/.*|.*/run/systemd/.*\" and file.extension == \"service\"",
+  "language": "eql",
+  "index": ["your-index-pattern"],
+  "max_signals": 100,
+  "references": [
+    "https://www.sentinelone.com/labs/acidrain-a-modem-wiper-rains-down-on-europe/",
+    "https://unix.stackexchange.com/questions/224992/where-do-i-put-my-systemd-unit-file",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "interval": "5m",
+  "from": "now-360s",
+  "to": "now"
+}

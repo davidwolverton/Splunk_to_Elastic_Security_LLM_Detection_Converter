@@ -1,0 +1,47 @@
+{
+  "actions": [],
+  "author": ["Teoderick Contreras", "OpenAI GPT4-o"],
+  "building_block_type": "TTP",
+  "description": "The following analytic detects processes that clear or free page cache on a Linux system. It leverages Endpoint Detection and Response (EDR) data, focusing on specific command-line executions involving the kernel system request `drop_caches`. This activity is significant as it may indicate an attempt to delete forensic evidence or the presence of wiper malware like Awfulshred. If confirmed malicious, this behavior could allow an attacker to cover their tracks, making it difficult to investigate other malicious activities or system compromises. Converted with OpenAI GPT4-o.",
+  "enabled": true,
+  "exceptions_list": [],
+  "false_positives": ["unknown"],
+  "from": "now-6m",
+  "index": ["logs-edr-*"],
+  "interval": "5m",
+  "language": "eql",
+  "max_signals": 100,
+  "name": "OpenAI GPT4-o Linux Indicator Removal Clear Cache",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/overview-of-the-cyber-weapons-used-in-the-ukraine-russia-war/",
+    "https://cert.gov.ua/article/3718487"
+  ],
+  "risk_score": 75,
+  "risk_score_mapping": [],
+  "rule_id": "e0940505-0b73-4719-84e6-cb94c44a5245",
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": ["OpenAI GPT4-o", "AwfulShred", "Data Destruction", "Endpoint"],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal on Host",
+          "reference": "https://attack.mitre.org/techniques/T1070/"
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "type": "eql",
+  "version": 1,
+  "query": "process where process.name in (\"dash\", \"sudo\", \"bash\") and process.command_line == \"/proc/sys/vm/drop_caches\" and process.command_line like \"* echo 3 > *\" or process.command_line like \"* echo 2 > *\" or process.command_line like \"* echo 1 > *\""
+}

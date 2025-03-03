@@ -1,0 +1,69 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "Google Gemini 2.0 Flash 001: The following analytic detects suspicious file and directory discovery activities, which may indicate an attacker's effort to locate sensitive documents and files on a compromised system. This behavior often precedes data exfiltration, as adversaries seek to identify valuable or confidential information for theft. By identifying unusual or unauthorized attempts to browse or enumerate files and directories, this analytic helps security teams detect potential reconnaissance or preparatory actions by an attacker, enabling timely intervention to prevent data breaches or unauthorized access.",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can use this application for automation purposes. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "10m",
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "name": "Google Gemini 2.0 Flash 001: Linux Auditd File And Directory Discovery",
+  "note": "Rule converted with Google Gemini 2.0 Flash 001",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/deep-dive-on-persistence-privilege-escalation-technique-and-detection-in-linux-platform.html",
+    "https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS"
+  ],
+  "risk_score": 25,
+  "rule_id": "0bbfb79c-a755-49a5-a38a-1128d0a452f1",
+  "severity": "low",
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Living Off The Land",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:Compromised Linux Host",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1083",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/"
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "type": "eql",
+  "version": 4,
+  "language": "eql",
+  "query": "sequence by host.name\n  [process where event.category == \"process\" and event.type == \"start\" and process.name : (\"grep\", \"find\") and process.args : (\"*.tif\", \"*.tiff\", \"*.gif\", \"*.jpeg\", \"*.jpg\", \"*.jif\", \"*.jfif\", \"*.jp2\", \"*.jpx\", \"*.j2k\", \"*.j2c\", \"*.fpx\", \"*.pcd\", \"*.png\", \"*.flv\", \"*.pdf\", \"*.mp4\", \"*.mp3\", \"*.gifv\", \"*.avi\", \"*.mov\", \"*.mpeg\", \"*.wav\", \"*.doc\", \"*.docx\", \"*.xls\", \"*.xlsx\", \"*.svg\")]\n",
+  "index": [
+    "auditbeat-*",
+    "filebeat-*",
+    "logs-endpoint.events.*",
+    "logs-system.*"
+  ]
+}

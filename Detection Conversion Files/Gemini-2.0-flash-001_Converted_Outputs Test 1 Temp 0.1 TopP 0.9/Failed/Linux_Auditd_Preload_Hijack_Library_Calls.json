@@ -1,0 +1,90 @@
+{
+  "actions": [],
+  "alias_purpose": "savedObjectConversion",
+  "author": [
+    "Google Gemini 2.0 Flash 001",
+    "Teoderick Contreras, Splunk"
+  ],
+  "building_block_type": "default",
+  "description": "The following analytic detects the use of the LD_PRELOAD environment variable to hijack or hook library functions on a Linux platform. It leverages data from Linux Auditd, focusing on process execution logs that include command-line details. This activity is significant because adversaries, malware authors, and red teamers commonly use this technique to gain elevated privileges and establish persistence on a compromised machine. If confirmed malicious, this behavior could allow attackers to execute arbitrary code, escalate privileges, and maintain long-term access to the system.\n\nRule converted with Google Gemini 2.0 Flash 001",
+  "enabled": true,
+  "false_positives": [
+    "Administrator or network operator can execute this command. Please update the filter macros to remove false positives."
+  ],
+  "from": "now-60m",
+  "interval": "5m",
+  "investigation_fields": {
+    "field_names": []
+  },
+  "license": "Elastic License v2",
+  "max_signals": 100,
+  "meta": {
+    "version": "1"
+  },
+  "name": "Google Gemini 2.0 Flash 001 Linux Auditd Preload Hijack Library Calls",
+  "namespace": "default",
+  "note": "Investigate any instances where LD_PRELOAD is used to load libraries, especially if the libraries are not standard or expected. Verify the legitimacy of the process and the loaded library.",
+  "outcome": "unknown",
+  "output_index": ".siem-signals-default",
+  "references": [
+    "https://compilepeace.medium.com/memory-malware-part-0x2-writing-userland-rootkits-via-ld-preload-30121c8343d5"
+  ],
+  "related_integrations": [],
+  "required_fields": [
+    "process.name",
+    "process.args"
+  ],
+  "risk_score": 47,
+  "risk_score_mapping": [],
+  "rule_id": "linux_auditd_preload_hijack_library_calls",
+  "severity": "high",
+  "severity_mapping": [],
+  "tags": [
+    "Google Gemini 2.0 Flash 001",
+    "analytic_story:Linux Privilege Escalation",
+    "analytic_story:Compromised Linux Host",
+    "analytic_story:Linux Persistence Techniques",
+    "analytic_story:China-Nexus Threat Activity",
+    "analytic_story:Earth Estries",
+    "asset_type:Endpoint",
+    "mitre_attack_id:T1574.006",
+    "product:Splunk Enterprise",
+    "product:Splunk Enterprise Security",
+    "product:Splunk Cloud",
+    "security_domain:endpoint"
+  ],
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574.006",
+          "name": "Hijack Execution Flow: LD_PRELOAD",
+          "reference": "https://attack.mitre.org/techniques/T1574/006/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "throttle": "no_actions",
+  "timeline_id": "linux_auditd_preload_hijack_library_calls_timeline",
+  "timeline_title": "Linux Auditd Preload Hijack Library Calls Timeline",
+  "to": "now",
+  "version": 1,
+  "language": "eql",
+  "query": "sequence by host.name, process.pid\n  [process where event.type == \"start\" and process.name == \"ld-linux.so\" and process.args == \"--preload\"]\n  [process where event.type == \"start\" and process.args : \"LD_PRELOAD=*\"]",
+  "type": "eql",
+  "data_view_id": "global",
+  "index": [
+    "auditbeat-*",
+    "logs-system.*",
+    "endgame-*",
+    "filebeat-*",
+    "apm-*"
+  ]
+}
