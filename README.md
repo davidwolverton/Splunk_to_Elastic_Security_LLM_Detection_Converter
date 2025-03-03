@@ -10,6 +10,7 @@ Utilized in SANS Master Program research for converting Splunk detections to Ela
 
 
 Python Scripts: Contains the 3 python scripts used to convert and upload the detection content. Documented below
+
 Detection Conversion Files: Contains all the input files and the outputs associated with the 7 tests/conversions ran
 
 **Files:**
