@@ -3,8 +3,7 @@ Scripts used to convert Splunk detections to Elastic Security using OpenAI and G
 
 Utilized in SANS Master Program research for converting Splunk detections to Elastic Security using LLM's
 
-**Files:
-**
+**Files:**
 
 SplunkDetectionLogicConverter-Gemini.py 
 
