@@ -7,5 +7,10 @@ Utilized in SANS Master Program research for converting Splunk detections to Ela
 
 SplunkDetectionLogicConverter-Gemini.py 
 
-Purpose: This script iterates over a folder of YAML files and queries Gemini with a pre defined prompt and the YAML file contents. This script
-is used as apart of a SANS Masters research paper determining the effectiveness of LLM's in converting SIEM logic. 
+Purpose: This script iterates over a folder of YAML files and queries Gemini with a pre-defined prompt and the YAML file contents. This script
+is used as a part of a SANS Masters research paper determining the effectiveness of LLMs in converting SIEM logic. 
+
+SplunkDetectionLogicConverter-OpenAI.py 
+
+Purpose: This script iterates over a folder of YAML files and queries OpenAI with a pre-defined prompt and the YAML file contents. This script
+is used as a part of a SANS Masters research paper determining the effectiveness of LLMs in converting SIEM logic. 
